@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>2026학년도 1학년 프레젠테이션 발표대회 실시간 심사 시스템</title>
+  <!-- Tailwind CSS & Pretendard Font & Font Awesome -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
@@ -14,18 +15,71 @@
       color: #0f172a;
       -webkit-tap-highlight-color: transparent;
     }
+
+    /* 채점표 테이블 스타일 (sticky 열 테두리 유지를 위해 separate 사용) */
     .rubric-table {
-      border-collapse: collapse;
+      border-collapse: separate;
+      border-spacing: 0;
       width: 100%;
     }
-    .rubric-table th, .rubric-table td {
-      border: 1.5px solid #475569;
+    .rubric-table th,
+    .rubric-table td {
+      border-right: 1px solid #64748b;
+      border-bottom: 1px solid #64748b;
     }
-    .rubric-outer {
-      border: 3px double #1e293b;
+    .rubric-table thead th {
+      border-top: 2px solid #1e293b;
     }
+    .rubric-table th:first-child,
+    .rubric-table td.first-col {
+      border-left: 2px solid #1e293b;
+    }
+    .rubric-table th:last-child,
+    .rubric-table td:last-child {
+      border-right: 2px solid #1e293b;
+    }
+    .rubric-table tr.total-row td {
+      border-top: 2px solid #1e293b;
+      border-bottom: 2px solid #1e293b;
+    }
+
+    /* 태블릿·PC 가로 스크롤 시 좌측 평가항목 열 고정 */
+    @media (min-width: 768px) {
+      .sticky-col-1 {
+        position: sticky;
+        left: 0;
+        z-index: 15;
+        width: 88px;
+        min-width: 88px;
+        max-width: 88px;
+      }
+      .sticky-col-2 {
+        position: sticky;
+        left: 88px;
+        z-index: 15;
+        width: 48px;
+        min-width: 48px;
+        max-width: 48px;
+      }
+      .sticky-col-3 {
+        position: sticky;
+        left: 136px;
+        z-index: 15;
+        width: 210px;
+        min-width: 210px;
+        max-width: 210px;
+        box-shadow: 4px 0 6px -2px rgba(15, 23, 42, 0.12);
+      }
+      .rubric-table thead .sticky-col-1,
+      .rubric-table thead .sticky-col-2,
+      .rubric-table thead .sticky-col-3 {
+        z-index: 20;
+      }
+    }
+
+    /* 점수 셀 인터랙션 */
     .score-cell {
-      transition: background-color 0.12s ease, transform 0.1s ease;
+      transition: background-color 0.12s ease, transform 0.08s ease;
       cursor: pointer;
       user-select: none;
     }
@@ -34,74 +88,78 @@
     }
     .score-cell:active {
       background-color: #dbeafe;
-      transform: scale(0.96);
+      transform: scale(0.95);
     }
     .score-cell.missing-highlight {
       background-color: #fee2e2 !important;
-      box-shadow: inset 0 0 0 2px #ef4444;
+      box-shadow: inset 0 0 0 2.5px #ef4444;
       animation: pulseRed 1.1s infinite;
     }
     @keyframes pulseRed {
       0%, 100% { background-color: #fee2e2; }
       50% { background-color: #fecaca; }
     }
-    .handwriting-canvas {
-      background-image:
-        linear-gradient(to right, rgba(148, 163, 184, 0.25) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(148, 163, 184, 0.25) 1px, transparent 1px);
-      background-size: 20px 20px;
-      touch-action: none;
-    }
+
+    /* 자필 서명 캔버스 터치 스크롤 방지 */
     .signature-canvas {
       touch-action: none;
     }
+
+    /* 인쇄 전용 스타일 */
     @media print {
       .no-print { display: none !important; }
       body { background: #ffffff !important; }
-      .print-area { box-shadow: none !important; border: none !important; padding: 0 !important; }
+      .print-area {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+      }
     }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
-  <!-- 상단 네비게이션 -->
-  <header class="bg-blue-950 text-white shadow-md no-print sticky top-0 z-30">
+  <!-- ==================== 상단 헤더 네비게이션 ==================== -->
+  <header class="bg-slate-900 text-white shadow-md no-print sticky top-0 z-30 border-b border-blue-900">
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-2">
       <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center font-bold text-lg shadow">
+        <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center font-bold text-lg shadow">
           <i class="fa-solid fa-award"></i>
         </div>
         <div>
           <div class="text-xs text-blue-300 font-medium">한국의료마이스터고등학교 1학년부</div>
-          <h1 class="text-base sm:text-lg font-bold tracking-tight">2026학년도 1학년 프레젠테이션 발표대회 심사시스템</h1>
+          <h1 class="text-sm sm:text-lg font-bold tracking-tight">2026학년도 1학년 프레젠테이션 발표대회 심사시스템</h1>
         </div>
       </div>
 
       <div class="flex items-center gap-2">
-        <span id="connectionBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-950 text-emerald-300 border border-emerald-700">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          실시간 서버 연결 확인 중...
+        <span id="connectionBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-800 text-slate-300 border border-slate-700">
+          <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+          서버 연결 확인 중...
         </span>
-        <button id="btnGoHome" type="button" class="hidden px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-xs sm:text-sm font-medium transition flex items-center gap-1.5">
+        <button id="btnHeaderSync" type="button" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium transition border border-slate-700" title="수동 새로고침">
+          <i class="fa-solid fa-arrows-rotate"></i>
+        </button>
+        <button id="btnGoHome" type="button" class="hidden px-3 py-1.5 rounded-lg bg-blue-700 hover:bg-blue-600 text-xs sm:text-sm font-bold transition flex items-center gap-1.5">
           <i class="fa-solid fa-house"></i> 초기화면
         </button>
       </div>
     </div>
   </header>
 
-  <!-- 메인 콘텐츠 -->
+  <!-- ==================== 메인 콘텐츠 영역 ==================== -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-6">
 
-    <!-- ==================== 1. 초기화면 (역할 및 비밀번호 인증) ==================== -->
-    <section id="viewHome" class="max-w-4xl mx-auto mt-4 sm:mt-8">
+    <!-- 1. 초기화면 (로비) -->
+    <section id="viewHome" class="max-w-4xl mx-auto mt-2 sm:mt-6">
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 mb-6 text-center">
-        <span class="inline-block px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold mb-3 border border-blue-200">
+        <span class="inline-block px-3 py-1 rounded-full bg-blue-50 text-blue-800 text-xs font-bold mb-3 border border-blue-200">
           2026. 12. 18.(금) 1~3교시 | 성실관 1층 마이스터룸
         </span>
-        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2">『My Dream & Career Roadmap』 발표대회</h2>
-        <p class="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto">
-          심사위원은 배정받은 번호와 개별 비밀번호를 입력하여 독립적으로 채점하며, 심사위원 간 점수는 철저히 비공개됩니다.<br class="hidden sm:inline" />
-          모든 심사위원의 점수가 전송되면 담당자 집계실에서 실시간 합산 및 최종 순위가 산출됩니다.
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2">『My Dream &amp; Career Roadmap』 발표대회</h2>
+        <p class="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+          심사위원은 본인 성함(번호)을 선택하고 부여받은 비밀번호(PIN)를 입력해 독립적으로 채점합니다.<br class="hidden sm:inline" />
+          심사위원 간 점수는 철저히 비공개되며, 전송 완료 시 담당자 집계실에서 실시간 순위가 자동 산출됩니다.
         </p>
       </div>
 
@@ -110,12 +168,12 @@
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between">
           <div>
             <div class="flex items-center gap-3 mb-4">
-              <div class="w-11 h-11 rounded-xl bg-blue-600 text-white flex items-center justify-center text-xl shadow-sm">
-                <i class="fa-solid fa-pen-to-square"></i>
+              <div class="w-11 h-11 rounded-xl bg-blue-700 text-white flex items-center justify-center text-xl shadow-sm">
+                <i class="fa-solid fa-user-check"></i>
               </div>
               <div>
                 <h3 class="text-lg font-bold text-slate-900">심사위원 입장</h3>
-                <p class="text-xs text-slate-500">본인 번호 선택 후 비밀번호 4자리 입력 (점수 상호 비공개)</p>
+                <p class="text-xs text-slate-500">본인 성함(번호) 선택 후 개별 PIN 4자리 입력</p>
               </div>
             </div>
 
@@ -123,9 +181,9 @@
           </div>
 
           <div class="bg-slate-50 rounded-xl p-3.5 text-xs text-slate-600 border border-slate-200 space-y-1">
-            <div class="font-semibold text-slate-800"><i class="fa-solid fa-circle-info text-blue-600 mr-1"></i> 심사 안내</div>
-            <p>• 빈칸을 터치하면 <strong>손글씨 필기 입력</strong> 또는 <strong>배점 버튼 터치</strong>로 채점됩니다.</p>
-            <p>• 모든 참가자 입력 후 하단 <strong>[최종 점수 전송하기]</strong>를 눌러야 집계가 완료됩니다.</p>
+            <div class="font-semibold text-slate-800"><i class="fa-solid fa-circle-info text-blue-600 mr-1"></i> 채점 방법 안내</div>
+            <p>• 채점표 빈칸 터치 시 <strong>원터치 배점 선택 창</strong>으로 빠르고 정확하게 입력</p>
+            <p>• 모든 참가자 채점 및 자필 서명 후 하단 <strong>[최종 점수 전송하기]</strong> 클릭</p>
           </div>
         </div>
 
@@ -138,77 +196,84 @@
               </div>
               <div>
                 <h3 class="text-lg font-bold text-slate-900">담당자(관리자) 집계실</h3>
-                <p class="text-xs text-slate-500">실시간 제출 현황 확인, 합산 순위 산출 및 대회 설정</p>
+                <p class="text-xs text-slate-500">실시간 합산·순위 산출, 학생 명단 및 심사위원 성함 관리</p>
               </div>
             </div>
 
             <div class="my-5 space-y-3">
               <label for="adminPinInput" class="block text-xs font-semibold text-slate-700">관리자 비밀번호 (PIN 4자리)</label>
               <div class="flex gap-2">
-                <input type="password" id="adminPinInput" maxlength="8" inputmode="numeric" placeholder="비밀번호 입력"
+                <input type="password" id="adminPinInput" maxlength="8" inputmode="numeric" placeholder="PIN 입력"
                   class="flex-1 px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-800 text-base tracking-widest" />
                 <button type="button" id="btnEnterAdmin" class="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm transition shadow-sm whitespace-nowrap">
                   집계실 입장 <i class="fa-solid fa-arrow-right ml-1"></i>
                 </button>
               </div>
-              <p id="adminPinError" class="text-xs text-red-600 font-bold hidden">관리자 비밀번호가 일치하지 않습니다.</p>
+              <p id="adminPinError" class="text-xs text-rose-600 font-bold hidden">관리자 비밀번호가 일치하지 않습니다.</p>
             </div>
           </div>
 
-          <div class="bg-amber-50 rounded-xl p-3.5 text-xs text-amber-900 border border-amber-200 space-y-1">
-            <div class="font-semibold"><i class="fa-solid fa-shield-halved text-amber-600 mr-1"></i> 공정 심사 보호</div>
-            <p>• 관리자 화면에서만 4명의 심사위원 점수 합산 및 1위~최하위 등수를 확인할 수 있습니다.</p>
-            <p>• 시상 기준: 1등(1명·9매), 2등(3명·6매), 3등(5명·3매), 장려(9명·2매)</p>
+          <div class="bg-blue-50 rounded-xl p-3.5 text-xs text-blue-950 border border-blue-200 space-y-1">
+            <div class="font-semibold"><i class="fa-solid fa-shield-halved text-blue-700 mr-1"></i> 시상 기준 및 실시간 동기화</div>
+            <p>• 1등(1명·9매), 2등(3명·6매), 3등(5명·3매), 장려(9명·2매) 자동 배정</p>
+            <p>• 관리자 설정에서 학생 명단과 심사위원 성함을 저장하면 모든 기기에 즉시 동기화됩니다.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ==================== 2. 심사위원 채점표 화면 ==================== -->
+    <!-- 2. 심사위원 채점표 화면 -->
     <section id="viewJudge" class="hidden space-y-4">
+      <!-- 심사위원 상단 정보 및 서명 바 -->
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-5">
         <div class="flex flex-wrap items-center justify-between gap-4">
           <div class="flex items-center gap-3">
-            <span id="judgeBadgeTitle" class="px-3.5 py-1.5 rounded-xl bg-blue-600 text-white font-extrabold text-base shadow-sm">
+            <span id="judgeBadgeTitle" class="px-3.5 py-2 rounded-xl bg-blue-700 text-white font-extrabold text-sm sm:text-base shadow-sm">
               심사위원 1
             </span>
             <div>
-              <div class="flex items-center gap-2">
-                <label for="judgeNameInput" class="text-xs font-bold text-slate-600">심사위원 성명:</label>
-                <input type="text" id="judgeNameInput" placeholder="성명을 입력하세요"
-                  class="px-3 py-1.5 rounded-lg border border-slate-300 text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 w-36 sm:w-44" />
-              </div>
-              <p class="text-xs text-slate-500 mt-1">
-                <i class="fa-solid fa-lock text-slate-400 mr-1"></i>타 심사위원 점수는 비공개되며, 입력 내용은 자동 저장됩니다.
+              <div class="text-sm font-bold text-slate-900" id="judgeHeaderSubName">채점 진행 중</div>
+              <p class="text-xs text-slate-500 mt-0.5">
+                <i class="fa-solid fa-lock text-slate-400 mr-1"></i>타 심사위원 점수는 비공개되며, 입력 시 자동 저장됩니다.
               </p>
             </div>
           </div>
 
-          <div class="flex flex-wrap items-center gap-3">
-            <button type="button" id="btnOpenSignature" class="px-3.5 py-2 rounded-xl border border-slate-300 hover:bg-slate-50 text-xs sm:text-sm font-bold text-slate-700 flex items-center gap-2 transition">
-              <i class="fa-solid fa-signature text-blue-600"></i>
-              <span id="signatureBtnLabel">심사위원 서명하기</span>
-              <img id="signaturePreviewThumb" class="hidden h-6 border-l border-slate-300 pl-2 object-contain" alt="서명" />
-            </button>
+          <!-- 자필 서명 영역 + 완료 현황 -->
+          <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+            <div class="flex flex-wrap items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2">
+              <span class="text-xs font-bold text-slate-600">심사위원 서명:</span>
+              <img id="signaturePreviewThumb" class="hidden h-8 max-w-[100px] bg-white border border-slate-300 rounded px-1 object-contain" alt="서명 미리보기" />
+              <span id="signatureEmptyLabel" class="text-xs text-rose-500 font-semibold">미서명</span>
+              <button type="button" id="btnOpenSignature" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition flex items-center gap-1">
+                <i class="fa-solid fa-signature"></i>
+                <span id="signatureBtnLabel">서명하기</span>
+              </button>
+              <button type="button" id="btnClearSavedSignature" class="hidden px-2.5 py-1.5 rounded-lg border border-rose-300 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold transition">
+                <i class="fa-solid fa-eraser mr-1"></i>서명 지우기
+              </button>
+            </div>
 
-            <div class="bg-slate-100 px-3.5 py-2 rounded-xl text-right">
-              <div class="text-[11px] text-slate-500 font-medium">채점 완료 진행률</div>
-              <div class="text-sm font-extrabold text-blue-700">
-                <span id="judgeCompletedCount">0</span> / <span id="judgeTotalParticipants">18</span>명 완료
+            <div class="bg-blue-50 border border-blue-200 px-3.5 py-2 rounded-xl text-right">
+              <div class="text-[11px] text-blue-700 font-semibold">채점 완료</div>
+              <div class="text-sm font-extrabold text-blue-900">
+                <span id="judgeCompletedCount">0</span> / <span id="judgeTotalParticipants">18</span>명
               </div>
             </div>
           </div>
         </div>
 
+        <!-- 전송 완료 잠금 안내 배너 -->
         <div id="judgeLockedBanner" class="hidden mt-4 p-3.5 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-900 flex flex-wrap items-center justify-between gap-2">
           <div class="flex items-center gap-2 text-sm font-bold">
             <i class="fa-solid fa-circle-check text-emerald-600 text-lg"></i>
-            <span>최종 점수가 집계실로 전송 완료되었습니다. (수정 잠금 상태)</span>
+            <span>최종 점수가 집계실로 전송 완료되었습니다. (읽기 전용 잠금 상태)</span>
           </div>
           <span class="text-xs text-emerald-700">수정이 필요한 경우 대회 담당자에게 잠금 해제를 요청하세요.</span>
         </div>
       </div>
 
+      <!-- 채점표 본체 -->
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
         <div class="flex flex-wrap items-end justify-between mb-3 gap-2">
           <div>
@@ -216,16 +281,16 @@
               프레젠테이션 발표대회 채점표
             </h2>
             <p class="text-xs text-slate-500 mt-1.5">
-              ※ 각 빈칸을 터치하면 <strong>손글씨 필기 입력</strong> 또는 <strong>원터치 배점 버튼</strong>으로 점수를 입력할 수 있습니다.
+              ※ 각 빈칸을 터치하면 <strong>원터치 배점 선택 창</strong>이 열립니다. (태블릿·PC에서는 좌측 평가항목 열이 고정되어 가로 스크롤이 편리합니다.)
             </p>
           </div>
-          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-semibold border border-blue-200">
-            <i class="fa-solid fa-pen"></i> 필기 + 버튼 하이브리드 지원
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-50 text-blue-800 text-xs font-bold border border-blue-200">
+            <i class="fa-solid fa-hand-pointer"></i> 원터치 간편 채점
           </span>
         </div>
 
-        <div class="overflow-x-auto pb-2">
-          <table class="rubric-table rubric-outer text-center text-xs sm:text-sm min-w-[1050px]" id="rubricTable">
+        <div class="overflow-x-auto pb-2 rounded-lg">
+          <table class="rubric-table text-center text-xs sm:text-sm min-w-[1180px]" id="rubricTable">
             <thead>
               <tr class="bg-slate-100 text-slate-900 font-bold" id="rubricTableHeadRow"></tr>
             </thead>
@@ -236,11 +301,11 @@
         <div class="mt-6 pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
           <div class="text-xs sm:text-sm text-slate-600">
             <i class="fa-solid fa-circle-exclamation text-amber-500 mr-1"></i>
-            전송 버튼을 누르면 <strong>모든 참가자의 누락 여부를 자동 검증</strong>합니다.
+            전송 버튼 클릭 시 <strong>전체 참가자의 7개 항목 누락 여부 및 서명 완료 여부를 자동 검증</strong>합니다.
           </div>
 
           <button type="button" id="btnSubmitScores"
-            class="px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-extrabold text-sm sm:text-base shadow-md transition flex items-center gap-2 ml-auto">
+            class="px-6 py-3.5 rounded-xl bg-blue-700 hover:bg-blue-800 active:bg-blue-900 text-white font-extrabold text-sm sm:text-base shadow-md transition flex items-center gap-2 ml-auto">
             <i class="fa-solid fa-paper-plane"></i>
             <span>최종 점수 전송하기</span>
           </button>
@@ -248,142 +313,234 @@
       </div>
     </section>
 
-    <!-- ==================== 3. 담당자(관리자) 집계실 화면 ==================== -->
-    <section id="viewAdmin" class="hidden space-y-6">
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4 mb-4">
+    <!-- 3. 담당자(관리자) 집계실 화면 -->
+    <section id="viewAdmin" class="hidden space-y-5">
+      <!-- 상단 타이틀 및 탭 전환 -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-5 no-print">
+        <div class="flex flex-wrap items-center justify-between gap-4">
           <div>
             <div class="flex items-center gap-2">
-              <span class="px-2.5 py-0.5 rounded-md bg-slate-800 text-white text-xs font-bold">관리자 전용</span>
-              <h2 class="text-xl font-extrabold text-slate-900">실시간 심사 집계 및 최종 순위 대시보드</h2>
+              <span class="px-2.5 py-0.5 rounded-md bg-slate-900 text-white text-xs font-bold">관리자 전용</span>
+              <h2 class="text-lg sm:text-xl font-extrabold text-slate-900">집계실 실시간 대시보드</h2>
             </div>
-            <p class="text-xs text-slate-500 mt-1">4명의 심사위원이 전송한 점수가 실시간으로 합산되어 등수와 시상 등급이 자동 계산됩니다.</p>
+            <p class="text-xs text-slate-500 mt-1">4초마다 Firebase 서버와 자동 동기화됩니다.</p>
           </div>
 
-          <div class="flex flex-wrap items-center gap-2 no-print">
-            <button type="button" id="btnManualSync" class="px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 font-bold text-xs sm:text-sm transition flex items-center gap-1.5">
-              <i class="fa-solid fa-arrows-rotate"></i> 지금 새로고침
+          <div class="flex flex-wrap items-center gap-2">
+            <button type="button" id="tabBtnRanking" class="px-4 py-2 rounded-xl bg-blue-700 text-white font-bold text-xs sm:text-sm shadow-sm transition">
+              <i class="fa-solid fa-ranking-star mr-1.5"></i>실시간 집계 및 순위표
             </button>
-            <button type="button" id="btnOpenSettings" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs sm:text-sm transition flex items-center gap-1.5">
-              <i class="fa-solid fa-gear"></i> 대회 설정·명단 관리
-            </button>
-            <button type="button" id="btnExportCsv" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm">
-              <i class="fa-solid fa-file-excel"></i> 엑셀(CSV) 저장
-            </button>
-            <button type="button" id="btnPrintResult" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm">
-              <i class="fa-solid fa-print"></i> 결과표 인쇄
+            <button type="button" id="tabBtnSettings" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm transition">
+              <i class="fa-solid fa-users-gear mr-1.5"></i>명단·심사위원 설정
             </button>
           </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3" id="adminJudgeStatusGrid"></div>
-      </div>
-
-      <div id="tieAlertBanner" class="hidden bg-amber-50 border border-amber-300 rounded-2xl p-4 text-amber-950 flex items-start gap-3">
-        <i class="fa-solid fa-triangle-exclamation text-amber-600 text-xl mt-0.5"></i>
-        <div class="text-xs sm:text-sm">
-          <div class="font-bold">동점자가 발생했습니다!</div>
-          <p id="tieAlertDetail" class="mt-0.5 text-amber-800 whitespace-pre-line"></p>
         </div>
       </div>
 
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 print-area">
-        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
-          <h3 class="text-lg font-extrabold text-slate-900">
-            <i class="fa-solid fa-ranking-star text-blue-600 mr-1.5"></i>참가자별 실시간 합산 및 최종 순위표
-          </h3>
-          <div class="text-xs text-slate-500">
-            * 시상 기준(총 18명 / 60매): <strong>1등(1명·9매)</strong>, <strong>2등(3명·6매)</strong>, <strong>3등(5명·3매)</strong>, <strong>장려(9명·2매)</strong>
+      <!-- 관리자 탭 1: 실시간 집계 및 순위표 -->
+      <div id="adminTabRanking" class="space-y-5">
+        <!-- 심사위원 1~4 제출 현황 카드 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4 no-print">
+            <h3 class="text-base font-extrabold text-slate-900">
+              <i class="fa-solid fa-clipboard-check text-blue-700 mr-1.5"></i>심사위원 1~4 제출 현황
+            </h3>
+            <div class="flex flex-wrap items-center gap-2">
+              <button type="button" id="btnAdminRefresh" class="px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 font-bold text-xs transition flex items-center gap-1.5">
+                <i class="fa-solid fa-arrows-rotate"></i> 지금 새로고침
+              </button>
+              <button type="button" id="btnExportCsv" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-sm">
+                <i class="fa-solid fa-file-excel"></i> 엑셀(CSV) 다운로드
+              </button>
+              <button type="button" id="btnPrintResult" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-sm">
+                <i class="fa-solid fa-print"></i> 결과표 인쇄
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3" id="adminJudgeStatusGrid"></div>
+        </div>
+
+        <!-- 동점자 경고 배너 -->
+        <div id="tieAlertBanner" class="hidden bg-amber-50 border border-amber-300 rounded-2xl p-4 text-amber-950 flex items-start gap-3">
+          <i class="fa-solid fa-triangle-exclamation text-amber-600 text-xl mt-0.5"></i>
+          <div class="text-xs sm:text-sm">
+            <div class="font-bold">동점자가 발생했습니다!</div>
+            <p id="tieAlertDetail" class="mt-0.5 text-amber-800 whitespace-pre-line"></p>
           </div>
         </div>
 
-        <div class="overflow-x-auto">
-          <table class="w-full text-center border-collapse text-xs sm:text-sm">
-            <thead>
-              <tr class="bg-slate-800 text-white font-bold">
-                <th class="py-3 px-2 border border-slate-700 w-16">순위</th>
-                <th class="py-3 px-2 border border-slate-700 w-28">시상 구분</th>
-                <th class="py-3 px-2 border border-slate-700 w-16">발표<br/>번호</th>
-                <th class="py-3 px-2 border border-slate-700 w-36">학번 / 성명</th>
-                <th class="py-3 px-2 border border-slate-700">발표 주제</th>
-                <th class="py-3 px-2 border border-slate-700 w-20 bg-slate-700" id="thJudge1">심사위원1</th>
-                <th class="py-3 px-2 border border-slate-700 w-20 bg-slate-700" id="thJudge2">심사위원2</th>
-                <th class="py-3 px-2 border border-slate-700 w-20 bg-slate-700" id="thJudge3">심사위원3</th>
-                <th class="py-3 px-2 border border-slate-700 w-20 bg-slate-700" id="thJudge4">심사위원4</th>
-                <th class="py-3 px-2 border border-slate-700 w-24 bg-blue-900">합산 총점<br/>(400점)</th>
-                <th class="py-3 px-2 border border-slate-700 w-20 bg-blue-950">평균<br/>(100점)</th>
-              </tr>
-            </thead>
-            <tbody id="adminRankingBody" class="divide-y divide-slate-200"></tbody>
-          </table>
+        <!-- 실시간 순위표 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 print-area">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <h3 class="text-lg font-extrabold text-slate-900">
+              <i class="fa-solid fa-trophy text-amber-500 mr-1.5"></i>참가자별 실시간 합산 및 최종 순위표
+            </h3>
+            <div class="text-xs text-slate-500 no-print">
+              * 참가자 행을 클릭하면 <strong>심사위원별 7개 항목 세부 점수</strong>를 비교할 수 있습니다.
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-center border-collapse text-xs sm:text-sm">
+              <thead>
+                <tr class="bg-slate-800 text-white font-bold">
+                  <th class="py-3 px-2 border border-slate-700 w-16">순위</th>
+                  <th class="py-3 px-2 border border-slate-700 w-32">시상 구분</th>
+                  <th class="py-3 px-2 border border-slate-700 w-16">번호</th>
+                  <th class="py-3 px-3 border border-slate-700 w-44">참가자 (학번·성명)</th>
+                  <th class="py-3 px-2 border border-slate-700 w-24 bg-slate-700" id="thJudge1">심사위원 1</th>
+                  <th class="py-3 px-2 border border-slate-700 w-24 bg-slate-700" id="thJudge2">심사위원 2</th>
+                  <th class="py-3 px-2 border border-slate-700 w-24 bg-slate-700" id="thJudge3">심사위원 3</th>
+                  <th class="py-3 px-2 border border-slate-700 w-24 bg-slate-700" id="thJudge4">심사위원 4</th>
+                  <th class="py-3 px-2 border border-slate-700 w-24 bg-blue-900">합산 총점<br/>(400점)</th>
+                  <th class="py-3 px-2 border border-slate-700 w-20 bg-blue-950">평균<br/>(100점)</th>
+                </tr>
+              </thead>
+              <tbody id="adminRankingBody" class="divide-y divide-slate-200"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 관리자 탭 2: 명단·심사위원 설정 -->
+      <div id="adminTabSettings" class="hidden space-y-5 no-print">
+        <!-- 1. 심사위원 1~4 성함 설정 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+            <div>
+              <h3 class="text-base font-extrabold text-slate-900">1. 심사위원 1~4 성함 설정</h3>
+              <p class="text-xs text-slate-500 mt-0.5">성함을 입력하고 저장하면 초기화면 카드, PIN 인증창, 채점표 상단에 실시간 반영됩니다.</p>
+            </div>
+            <button type="button" id="btnSaveAllSettingsTop" class="px-4 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold shadow-sm transition">
+              <i class="fa-solid fa-floppy-disk mr-1"></i>설정 저장 및 동기화
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+              <label for="jEditName_1" class="block text-xs font-bold text-slate-700 mb-1.5">심사위원 1 <span class="font-mono text-blue-700">(PIN: 1218)</span></label>
+              <input type="text" id="jEditName_1" placeholder="예: 홍길동" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm font-bold bg-white focus:outline-none focus:ring-2 focus:ring-blue-600" />
+            </div>
+            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+              <label for="jEditName_2" class="block text-xs font-bold text-slate-700 mb-1.5">심사위원 2 <span class="font-mono text-blue-700">(PIN: 1229)</span></label>
+              <input type="text" id="jEditName_2" placeholder="예: 김의료" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm font-bold bg-white focus:outline-none focus:ring-2 focus:ring-blue-600" />
+            </div>
+            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+              <label for="jEditName_3" class="block text-xs font-bold text-slate-700 mb-1.5">심사위원 3 <span class="font-mono text-blue-700">(PIN: 1230)</span></label>
+              <input type="text" id="jEditName_3" placeholder="예: 이바이오" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm font-bold bg-white focus:outline-none focus:ring-2 focus:ring-blue-600" />
+            </div>
+            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+              <label for="jEditName_4" class="block text-xs font-bold text-slate-700 mb-1.5">심사위원 4 <span class="font-mono text-blue-700">(PIN: 1241)</span></label>
+              <input type="text" id="jEditName_4" placeholder="예: 박진로" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm font-bold bg-white focus:outline-none focus:ring-2 focus:ring-blue-600" />
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. 참가 학생 명단 및 인원수 설정 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+            <div>
+              <h3 class="text-base font-extrabold text-slate-900">2. 발표자 명단 및 인원수 설정 (기본 18명)</h3>
+              <p class="text-xs text-slate-500 mt-0.5">이름을 입력·저장하면 모든 심사위원 채점표 열 헤더에 <strong>'1. 홍길동'</strong> 형태로 즉시 동기화됩니다.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <label for="settingParticipantCount" class="text-xs font-bold text-slate-700">참가 인원:</label>
+              <input type="number" id="settingParticipantCount" min="1" max="24" value="18"
+                class="w-16 px-2.5 py-1.5 rounded-lg border border-slate-300 text-sm font-bold text-center" />
+              <button type="button" id="btnApplyCount" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold">
+                인원 적용
+              </button>
+              <button type="button" id="btnSaveAllSettingsBottom" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition">
+                <i class="fa-solid fa-check mr-1"></i>설정 저장 및 동기화
+              </button>
+            </div>
+          </div>
+
+          <!-- 일괄 붙여넣기 영역 -->
+          <div class="bg-blue-50/70 border border-blue-200 rounded-xl p-4 space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <label for="bulkPasteTextarea" class="text-xs font-bold text-blue-950">
+                <i class="fa-solid fa-paste text-blue-700 mr-1"></i>명단 일괄 붙여넣기 (엑셀·한글에서 복사 후 줄바꿈 구분으로 붙여넣기)
+              </label>
+              <button type="button" id="btnApplyBulkPaste" class="px-3.5 py-1.5 rounded-lg bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold transition">
+                아래 표에 일괄 채우기
+              </button>
+            </div>
+            <textarea id="bulkPasteTextarea" rows="3" placeholder="예시:&#10;10101 김민준&#10;10102 이서연&#10;10205 박지훈"
+              class="w-full px-3 py-2 rounded-lg border border-blue-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"></textarea>
+          </div>
+
+          <!-- 개별 입력 그리드 -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5" id="participantEditGrid"></div>
+        </div>
+
+        <!-- 3. 대회 테스트 및 초기화 · 서버 설정 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-4">
+          <h3 class="text-base font-extrabold text-slate-900 border-b border-slate-100 pb-3">3. 대회 테스트 및 초기화 · 서버 설정</h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+              <div class="text-xs font-bold text-slate-800">모의 테스트 및 본 대회 전 초기화</div>
+              <p class="text-xs text-slate-500 leading-relaxed">
+                <strong>[전체 점수 초기화]</strong>는 심사 점수, 자필 서명, 제출 잠금 상태만 초기화하며, 등록해 둔 <strong>심사위원 성함과 참가 학생 명단은 그대로 보존</strong>됩니다.
+              </p>
+              <div class="flex flex-wrap gap-2 pt-1">
+                <button type="button" id="btnFillDemo" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition shadow-sm">
+                  <i class="fa-solid fa-flask mr-1"></i>테스트 점수 채우기
+                </button>
+                <button type="button" id="btnResetScoresOnly" class="px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition shadow-sm">
+                  <i class="fa-solid fa-rotate-left mr-1"></i>전체 점수 초기화
+                </button>
+              </div>
+            </div>
+
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+              <div class="text-xs font-bold text-slate-800">Firebase Realtime Database URL 설정</div>
+              <div class="flex gap-2">
+                <input type="text" id="settingFirebaseUrl"
+                  class="flex-1 px-3 py-2 rounded-lg border border-slate-300 text-xs font-mono bg-white" />
+                <button type="button" id="btnUpdateFbUrl" class="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold whitespace-nowrap">
+                  URL 저장
+                </button>
+              </div>
+              <p class="text-[11px] text-slate-500">관리자 PIN: <code>0010</code> | 심사위원 PIN: <code>1218 / 1229 / 1230 / 1241</code></p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
   </main>
 
-  <!-- ==================== 모달 1: 손글씨 필기 + 원터치 배점 입력 모달 ==================== -->
+  <!-- ==================== 모달 1: 원터치 배점 선택 모달 ==================== -->
   <div id="scoreInputModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200">
-      <div class="bg-slate-900 text-white px-5 py-3.5 flex items-center justify-between">
+      <div class="bg-slate-900 text-white px-5 py-4 flex items-center justify-between">
         <div>
           <span id="modalParticipantTag" class="text-xs font-bold text-blue-300">발표자 1번</span>
-          <h4 id="modalCriterionTitle" class="text-base font-extrabold">발표 내용 숙지 여부</h4>
+          <h4 id="modalCriterionTitle" class="text-base sm:text-lg font-extrabold mt-0.5">발표 내용 숙지 여부</h4>
         </div>
-        <button type="button" id="btnCloseScoreModalTop" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center">
+        <button type="button" id="btnCloseScoreModalTop" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center" title="닫기 (ESC)">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
       <div class="p-5 space-y-5">
         <div>
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold text-slate-700"><i class="fa-solid fa-hand-pointer text-blue-600 mr-1"></i>방법 1. 배점 원터치 선택</span>
-            <span id="modalValidScoresHint" class="text-[11px] text-slate-500">배점: 20, 18, 16, 14, 12</span>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-bold text-slate-700"><i class="fa-solid fa-hand-pointer text-blue-600 mr-1"></i>점수를 터치하여 선택하세요</span>
+            <span id="modalValidScoresHint" class="text-[11px] font-semibold text-blue-700">배점: 20, 18, 16, 14, 12점</span>
           </div>
-          <div id="modalQuickButtons" class="grid grid-cols-5 gap-2"></div>
+          <div class="grid grid-cols-5 gap-2.5" id="modalQuickButtons"></div>
         </div>
 
-        <div class="relative flex py-1 items-center">
-          <div class="flex-grow border-t border-slate-200"></div>
-          <span class="flex-shrink mx-3 text-xs font-semibold text-slate-400">또는 손글씨로 직접 쓰기</span>
-          <div class="flex-grow border-t border-slate-200"></div>
-        </div>
-
-        <div>
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold text-slate-700"><i class="fa-solid fa-pen-nib text-indigo-600 mr-1"></i>방법 2. 손글씨 숫자 필기 인식</span>
-            <button type="button" id="btnClearHwCanvas" class="text-xs text-slate-500 hover:text-red-600 font-semibold">
-              <i class="fa-solid fa-eraser mr-1"></i>지우기
-            </button>
-          </div>
-
-          <div class="flex items-center gap-3">
-            <div class="relative flex-1 border-2 border-dashed border-slate-300 rounded-xl overflow-hidden bg-slate-50">
-              <canvas id="handwritingCanvas" width="240" height="120" class="handwriting-canvas w-full h-28 cursor-crosshair"></canvas>
-              <div id="canvasPlaceholder" class="pointer-events-none absolute inset-0 flex items-center justify-center text-xs text-slate-400">
-                여기에 숫자를 쓰세요 (예: 18, 9)
-              </div>
-            </div>
-
-            <div class="w-28 flex flex-col items-center justify-center bg-blue-50 border border-blue-200 rounded-xl p-2.5 h-28">
-              <span class="text-[11px] font-semibold text-blue-700">필기 인식 결과</span>
-              <div id="recognizedScoreDisplay" class="text-3xl font-black text-blue-900 my-1">-</div>
-              <button type="button" id="btnApplyRecognized" disabled
-                class="w-full py-1.5 rounded-lg bg-blue-600 disabled:bg-slate-300 text-white text-xs font-bold transition">
-                적용하기
-              </button>
-            </div>
-          </div>
-          <p id="handwritingFeedbackMsg" class="text-[11px] text-slate-500 mt-1.5 min-h-[16px]"></p>
-        </div>
-
-        <div class="flex items-center justify-between pt-2 border-t border-slate-100">
-          <button type="button" id="btnClearCellScore" class="px-3 py-2 rounded-lg text-xs font-bold text-red-600 hover:bg-red-50 transition">
-            <i class="fa-solid fa-trash-can mr-1"></i>점수 비우기
+        <div class="flex items-center justify-between pt-3 border-t border-slate-100">
+          <button type="button" id="btnClearCellScore" class="px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition">
+            <i class="fa-solid fa-trash-can mr-1"></i>이 칸 점수 비우기
           </button>
-          <button type="button" id="btnCloseScoreModalBottom" class="px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold transition">
-            닫기
+          <button type="button" id="btnCloseScoreModalBottom" class="px-5 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold transition">
+            닫기 (ESC)
           </button>
         </div>
       </div>
@@ -398,13 +555,13 @@
         <button type="button" id="btnCloseSigModalTop" class="text-slate-300 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="p-5 space-y-4">
-        <p class="text-xs text-slate-600">아래 서명란에 손가락이나 터치펜으로 서명해 주세요. 최종 전송 시 서명이 첨부됩니다.</p>
+        <p class="text-xs text-slate-600">아래 서명란에 마우스·손가락·터치펜으로 서명해 주세요.</p>
         <div class="border-2 border-slate-300 rounded-xl bg-slate-50 overflow-hidden">
           <canvas id="signatureCanvas" width="380" height="160" class="signature-canvas w-full h-40 cursor-crosshair"></canvas>
         </div>
         <div class="flex justify-between gap-2">
           <button type="button" id="btnClearSigCanvas" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">
-            다시 쓰기
+            <i class="fa-solid fa-eraser mr-1"></i>지우기
           </button>
           <div class="flex gap-2">
             <button type="button" id="btnCancelSigModal" class="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-xs font-bold">취소</button>
@@ -415,137 +572,47 @@
     </div>
   </div>
 
-  <!-- ==================== 모달 3: 심사위원 본인 확인 비밀번호 모달 ==================== -->
+  <!-- ==================== 모달 3: 심사위원 본인 확인 PIN 모달 ==================== -->
   <div id="judgeAuthModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 border border-slate-200">
       <div class="flex items-center gap-3 mb-4">
-        <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center text-lg">
+        <div class="w-10 h-10 rounded-xl bg-blue-700 text-white flex items-center justify-center text-lg">
           <i class="fa-solid fa-key"></i>
         </div>
         <div>
           <h4 id="judgeAuthModalTitle" class="text-lg font-extrabold text-slate-900">심사위원 1 본인 확인</h4>
-          <p class="text-xs text-slate-500">배정받은 4자리 심사위원 비밀번호를 입력하세요.</p>
+          <p class="text-xs text-slate-500">배정받은 4자리 비밀번호(PIN)를 입력하세요.</p>
         </div>
       </div>
       <div class="space-y-3">
-        <input type="password" id="judgePinInput" maxlength="8" inputmode="numeric" placeholder="비밀번호 4자리 입력"
+        <input type="password" id="judgePinInput" maxlength="8" inputmode="numeric" placeholder="PIN 4자리"
           class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600 text-center text-lg font-bold tracking-widest" />
         <p id="judgePinError" class="text-xs text-rose-600 font-bold text-center hidden">비밀번호가 일치하지 않습니다. 다시 확인해 주세요.</p>
       </div>
       <div class="mt-5 flex justify-end gap-2">
         <button type="button" id="btnCancelJudgeAuth" class="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-xs font-bold">취소</button>
-        <button type="button" id="btnVerifyJudgeAuth" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow">입장하기</button>
+        <button type="button" id="btnVerifyJudgeAuth" class="px-5 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold shadow">입장하기</button>
       </div>
     </div>
   </div>
 
-  <!-- ==================== 모달 4: 커스텀 안내/확인 모달 ==================== -->
+  <!-- ==================== 모달 4: 커스텀 안내/확인 다이얼로그 ==================== -->
   <div id="customDialogModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 border border-slate-200">
       <div class="flex items-start gap-3.5">
         <div id="dialogIconWrap" class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-lg shrink-0">
-          <i id="dialogIcon" class="fa-solid fa-circle-check"></i>
+          <i id="dialogIcon" class="fa-solid fa-circle-info"></i>
         </div>
-        <div class="flex-1">
+        <div class="flex-1 min-w-0">
           <h4 id="dialogTitle" class="text-lg font-extrabold text-slate-900">안내</h4>
-          <div id="dialogMessage" class="text-sm text-slate-600 mt-1.5 leading-relaxed whitespace-pre-line"></div>
+          <div id="dialogMessage" class="text-sm text-slate-600 mt-1.5 leading-relaxed whitespace-pre-line max-h-64 overflow-y-auto"></div>
         </div>
       </div>
       <div class="mt-6 flex justify-end gap-2" id="dialogButtons"></div>
     </div>
   </div>
 
-  <!-- ==================== 모달 5: 관리자 설정 및 명단 관리 모달 ==================== -->
-  <div id="adminSettingsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] flex flex-col overflow-hidden border border-slate-200">
-      <div class="bg-slate-900 text-white px-5 py-4 flex items-center justify-between">
-        <h4 class="text-base font-extrabold"><i class="fa-solid fa-sliders mr-1.5 text-blue-400"></i>대회 환경 설정 및 참가자 명단 관리</h4>
-        <button type="button" id="btnCloseSettingsTop" class="text-slate-300 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-
-      <div class="p-5 overflow-y-auto space-y-6 flex-1">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
-          <div>
-            <label for="settingParticipantCount" class="block text-xs font-bold text-slate-700 mb-1">본선 발표 참가 인원수 (명)</label>
-            <div class="flex gap-2">
-              <input type="number" id="settingParticipantCount" min="1" max="24" value="18"
-                class="w-24 px-3 py-2 rounded-lg border border-slate-300 text-sm font-bold" />
-              <button type="button" id="btnApplyCount" class="px-3.5 py-2 rounded-lg bg-slate-800 text-white text-xs font-bold hover:bg-slate-700">
-                인원 적용
-              </button>
-            </div>
-          </div>
-
-          <div>
-            <label for="settingAdminPin" class="block text-xs font-bold text-slate-700 mb-1">집계실(관리자) 비밀번호</label>
-            <div class="flex gap-2">
-              <input type="text" id="settingAdminPin" maxlength="8" value="0010"
-                class="w-28 px-3 py-2 rounded-lg border border-slate-300 text-sm font-bold" />
-              <button type="button" id="btnUpdateAdminPin" class="px-3.5 py-2 rounded-lg bg-slate-800 text-white text-xs font-bold hover:bg-slate-700">
-                비밀번호 변경
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-blue-50/60 p-4 rounded-xl border border-blue-200 space-y-3">
-          <div>
-            <label for="settingFirebaseUrl" class="block text-xs font-bold text-blue-900 mb-1">Firebase Realtime Database URL</label>
-            <div class="flex gap-2">
-              <input type="text" id="settingFirebaseUrl"
-                class="flex-1 px-3 py-2 rounded-lg border border-blue-300 text-xs font-mono bg-white" />
-              <button type="button" id="btnUpdateFbUrl" class="px-3.5 py-2 rounded-lg bg-blue-700 text-white text-xs font-bold hover:bg-blue-800 whitespace-nowrap">
-                URL 저장
-              </button>
-            </div>
-          </div>
-          <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-blue-200">
-            <div class="text-xs text-blue-900">
-              <strong>심사위원 비밀번호:</strong> 1번(<code>1218</code>), 2번(<code>1229</code>), 3번(<code>1230</code>), 4번(<code>1241</code>)
-            </div>
-            <div class="flex gap-2">
-              <button type="button" id="btnFillDemo" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold">
-                <i class="fa-solid fa-flask mr-1"></i>테스트 점수 채우기
-              </button>
-              <button type="button" id="btnResetAll" class="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold">
-                <i class="fa-solid fa-rotate-left mr-1"></i>전체 점수 초기화
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <div class="flex items-center justify-between mb-2">
-            <h5 class="text-sm font-extrabold text-slate-900">발표자 1~18번 학번 · 성명 · 발표 주제 설정</h5>
-            <button type="button" id="btnSaveParticipantsTop" class="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold">
-              <i class="fa-solid fa-check mr-1"></i>명단 저장하기
-            </button>
-          </div>
-          <div class="border border-slate-200 rounded-xl overflow-hidden">
-            <table class="w-full text-xs">
-              <thead class="bg-slate-100 text-slate-700 font-bold">
-                <tr>
-                  <th class="py-2 px-3 w-14 text-center">번호</th>
-                  <th class="py-2 px-2 w-28 text-left">학번</th>
-                  <th class="py-2 px-2 w-28 text-left">성명</th>
-                  <th class="py-2 px-2 text-left">발표 주제</th>
-                </tr>
-              </thead>
-              <tbody id="participantEditList" class="divide-y divide-slate-200"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-slate-50 px-5 py-3.5 border-t border-slate-200 flex justify-end gap-2">
-        <button type="button" id="btnSaveParticipantsBottom" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow">
-          설정 및 명단 저장 후 닫기
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== 모달 6: 참가자별 심사위원 세부 점수 비교 모달 ==================== -->
+  <!-- ==================== 모달 5: 참가자별 세부 점수 비교 모달 ==================== -->
   <div id="participantDetailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden border border-slate-200">
       <div class="bg-slate-900 text-white px-5 py-3.5 flex items-center justify-between">
@@ -555,13 +622,7 @@
       <div class="p-5 overflow-x-auto">
         <table class="w-full text-center border-collapse text-xs">
           <thead>
-            <tr class="bg-slate-100 font-bold text-slate-800">
-              <th class="py-2 px-2 border border-slate-300 text-left">평가항목 (배점)</th>
-              <th class="py-2 px-2 border border-slate-300 w-20">심사위원 1</th>
-              <th class="py-2 px-2 border border-slate-300 w-20">심사위원 2</th>
-              <th class="py-2 px-2 border border-slate-300 w-20">심사위원 3</th>
-              <th class="py-2 px-2 border border-slate-300 w-20">심사위원 4</th>
-            </tr>
+            <tr class="bg-slate-100 font-bold text-slate-800" id="detailModalHeadRow"></tr>
           </thead>
           <tbody id="detailModalBody"></tbody>
         </table>
@@ -572,16 +633,16 @@
     </div>
   </div>
 
+  <!-- ==================== 애플리케이션 스크립트 ==================== -->
   <script>
     (function () {
       'use strict';
 
-      // ==================== 1. 상수 및 비밀번호 설정 ====================
+      // ==================== 1. 상수 및 기본 설정 ====================
       const DEFAULT_FIREBASE_BASE = 'https://presentation-2026-default-rtdb.asia-southeast1.firebasedatabase.app';
-      const DB_URL_STORAGE_KEY = 'med_meister_pt_2026_db_url';
-      const LOCAL_CACHE_KEY = 'med_meister_pt_2026_cache_v3';
-
-      let FIREBASE_DB_BASE = localStorage.getItem(DB_URL_STORAGE_KEY) || DEFAULT_FIREBASE_BASE;
+      const DB_URL_STORAGE_KEY = 'kmmhs_pt_2026_db_url';
+      const LOCAL_CACHE_KEY = 'kmmhs_pt_2026_local_cache_v5';
+      const ADMIN_PASSWORD = '0010';
 
       const JUDGE_PASSWORDS = {
         1: '1218',
@@ -597,6 +658,7 @@
           groupRowSpan: 3,
           maxScore: 20,
           title: '발표 내용 숙지 여부',
+          shortTitle: '발표 내용 숙지',
           desc: '(20, 18, 16, 14, 12)',
           validScores: [20, 18, 16, 14, 12]
         },
@@ -606,6 +668,7 @@
           groupRowSpan: 0,
           maxScore: 20,
           title: '자신감\n(목소리, 톤)',
+          shortTitle: '자신감(목소리·톤)',
           desc: '(20, 18, 16, 14, 12)',
           validScores: [20, 18, 16, 14, 12]
         },
@@ -615,15 +678,17 @@
           groupRowSpan: 0,
           maxScore: 10,
           title: '표현력\n(몸짓, 동작, 시선)',
+          shortTitle: '표현력',
           desc: '(10, 9, 8, 7, 6)',
           validScores: [10, 9, 8, 7, 6]
         },
         {
           id: 'c4',
-          group: 'PPT\n주제\n선정 및\n내용구성\n(40)',
+          group: 'PPT\n주제 선정\n및\n내용구성\n(40)',
           groupRowSpan: 3,
           maxScore: 20,
           title: '주제 선정\n(PPT 디자인, 내용 전달)',
+          shortTitle: '주제 선정(PPT 디자인)',
           desc: '(20, 18, 16, 14, 12)',
           validScores: [20, 18, 16, 14, 12]
         },
@@ -633,6 +698,7 @@
           groupRowSpan: 0,
           maxScore: 10,
           title: '내용구성',
+          shortTitle: '내용구성',
           desc: '(10, 9, 8, 7, 6)',
           validScores: [10, 9, 8, 7, 6]
         },
@@ -642,7 +708,8 @@
           groupRowSpan: 0,
           maxScore: 10,
           title: '도구의 활용도',
-          desc: '(예)그래프, 동영상, 신뢰성 있는 Data 등 (10, 9, 8, 7, 6)',
+          shortTitle: '도구의 활용도',
+          desc: '(그래프, 동영상, 신뢰성 있는 Data 등) (10, 9, 8, 7, 6)',
           validScores: [10, 9, 8, 7, 6]
         },
         {
@@ -651,7 +718,8 @@
           groupRowSpan: 1,
           maxScore: 10,
           title: '복장, 시간 준수, 진정성',
-          desc: '(교복 단정, 시간 준수, 발표 진정성) (10, 9, 8, 7, 6)',
+          shortTitle: '태도(복장·시간·진정성)',
+          desc: '(10, 9, 8, 7, 6)',
           validScores: [10, 9, 8, 7, 6]
         }
       ];
@@ -660,46 +728,80 @@
         { rankMax: 1, label: '1등(최우수)', vouchers: 9, badgeClass: 'bg-amber-100 text-amber-900 border-amber-400' },
         { rankMax: 4, label: '2등(우수)', vouchers: 6, badgeClass: 'bg-blue-100 text-blue-900 border-blue-300' },
         { rankMax: 9, label: '3등(장려)', vouchers: 3, badgeClass: 'bg-emerald-100 text-emerald-900 border-emerald-300' },
-        { rankMax: 18, label: '노력상', vouchers: 2, badgeClass: 'bg-slate-100 text-slate-800 border-slate-300' }
+        { rankMax: 18, label: '장려', vouchers: 2, badgeClass: 'bg-slate-100 text-slate-800 border-slate-300' }
       ];
+
+      let FIREBASE_DB_BASE = localStorage.getItem(DB_URL_STORAGE_KEY) || DEFAULT_FIREBASE_BASE;
+      let pollIntervalId = null;
 
       // ==================== 2. 애플리케이션 상태 ====================
       const state = {
-        role: 'home',
+        role: 'home', // 'home' | 'judge' | 'admin'
+        adminTab: 'ranking', // 'ranking' | 'settings'
         currentJudgeId: null,
         pendingJudgeAuthId: null,
         activeCell: null,
-        recognizedNumber: null,
         config: {
           participantCount: 18,
-          adminPin: '0010',
-          participants: Array.from({ length: 24 }, function (_, i) {
-            return { num: i + 1, studentId: '', name: '', topic: '' };
+          judgeNames: { 1: '', 2: '', 3: '', 4: '' },
+          participants: Array.from({ length: 24 }, function (_, idx) {
+            return { num: idx + 1, name: '' };
           })
         },
         judges: {
-          1: { id: 1, name: '', signature: '', submitted: false, submittedAt: null, scores: {} },
-          2: { id: 2, name: '', signature: '', submitted: false, submittedAt: null, scores: {} },
-          3: { id: 3, name: '', signature: '', submitted: false, submittedAt: null, scores: {} },
-          4: { id: 4, name: '', signature: '', submitted: false, submittedAt: null, scores: {} }
+          1: { id: 1, signature: '', submitted: false, submittedAt: null, resetToken: null, scores: {} },
+          2: { id: 2, signature: '', submitted: false, submittedAt: null, resetToken: null, scores: {} },
+          3: { id: 3, signature: '', submitted: false, submittedAt: null, resetToken: null, scores: {} },
+          4: { id: 4, signature: '', submitted: false, submittedAt: null, resetToken: null, scores: {} }
         }
       };
 
-      let pollIntervalId = null;
-
-      function getFirebaseRootUrl() {
-        return FIREBASE_DB_BASE.replace(/\/+$/, '') + '/contest2026';
-      }
-
+      // ==================== 3. 유틸리티 함수 ====================
       function escapeHtml(str) {
-        return String(str)
+        return String(str || '')
           .replace(/&/g, '&amp;')
           .replace(/</g, '&lt;')
           .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
       }
 
-      // ==================== 3. 로컬 백업 및 Firebase REST API 동기화 ====================
+      function getFirebaseRootUrl() {
+        return FIREBASE_DB_BASE.replace(/\/+$/, '') + '/pt2026_v2';
+      }
+
+      function getJudgeDisplayName(judgeId) {
+        const customName = state.config.judgeNames && state.config.judgeNames[judgeId];
+        if (customName && customName.trim() !== '') {
+          return customName.trim() + ' 심사위원';
+        }
+        return '심사위원 ' + judgeId;
+      }
+
+      function getJudgeShortName(judgeId) {
+        const customName = state.config.judgeNames && state.config.judgeNames[judgeId];
+        if (customName && customName.trim() !== '') {
+          return customName.trim();
+        }
+        return '심사위원 ' + judgeId;
+      }
+
+      function getParticipantHeaderLabel(pNum) {
+        const pObj = state.config.participants[pNum - 1];
+        if (pObj && pObj.name && pObj.name.trim() !== '') {
+          return pNum + '. ' + pObj.name.trim();
+        }
+        return pNum + '번';
+      }
+
+      function getParticipantDisplayName(pNum) {
+        const pObj = state.config.participants[pNum - 1];
+        if (pObj && pObj.name && pObj.name.trim() !== '') {
+          return pObj.name.trim();
+        }
+        return pNum + '번 참가자';
+      }
+
       function saveLocalBackup() {
         try {
           localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify({
@@ -707,7 +809,7 @@
             judges: state.judges
           }));
         } catch (e) {
-          console.warn('LocalStorage save failed:', e);
+          console.warn('LocalStorage save error:', e);
         }
       }
 
@@ -718,27 +820,38 @@
           const parsed = JSON.parse(raw);
           if (parsed && parsed.config) {
             state.config.participantCount = parsed.config.participantCount || 18;
-            state.config.adminPin = parsed.config.adminPin || '0010';
+            if (parsed.config.judgeNames) {
+              for (let k = 1; k <= 4; k++) {
+                state.config.judgeNames[k] = parsed.config.judgeNames[k] || '';
+              }
+            }
             if (Array.isArray(parsed.config.participants)) {
-              state.config.participants = parsed.config.participants;
+              for (let i = 0; i < 24; i++) {
+                const item = parsed.config.participants[i];
+                state.config.participants[i] = {
+                  num: i + 1,
+                  name: item && item.name ? String(item.name) : ''
+                };
+              }
             }
           }
           if (parsed && parsed.judges) {
-            for (let i = 1; i <= 4; i++) {
-              if (parsed.judges[i]) {
-                state.judges[i] = {
-                  id: i,
-                  name: parsed.judges[i].name || '',
-                  signature: parsed.judges[i].signature || '',
-                  submitted: Boolean(parsed.judges[i].submitted),
-                  submittedAt: parsed.judges[i].submittedAt || null,
-                  scores: parsed.judges[i].scores || {}
+            for (let jId = 1; jId <= 4; jId++) {
+              const jData = parsed.judges[jId];
+              if (jData) {
+                state.judges[jId] = {
+                  id: jId,
+                  signature: jData.signature || '',
+                  submitted: Boolean(jData.submitted),
+                  submittedAt: jData.submittedAt || null,
+                  resetToken: jData.resetToken || null,
+                  scores: jData.scores || {}
                 };
               }
             }
           }
         } catch (e) {
-          console.warn('LocalStorage load failed:', e);
+          console.warn('LocalStorage load error:', e);
         }
       }
 
@@ -747,15 +860,36 @@
         if (!badge) return;
         if (isConnected) {
           badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-950 text-emerald-300 border border-emerald-700';
-          badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400"></span>' + (customText || '실시간 서버 연결됨');
+          badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400"></span>' + (customText || '실시간 연결됨');
         } else {
           badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-950 text-amber-300 border border-amber-700';
-          badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400"></span>로컬 백업 모드 (오프라인)';
+          badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400"></span>오프라인 (로컬 백업)';
+        }
+      }
+
+      // ==================== 4. Firebase REST API 통신 ====================
+      function applyRemoteConfig(cfgData) {
+        if (!cfgData) return;
+        state.config.participantCount = cfgData.participantCount || 18;
+        if (cfgData.judgeNames) {
+          for (let k = 1; k <= 4; k++) {
+            state.config.judgeNames[k] = cfgData.judgeNames[k] || '';
+          }
+        }
+        if (Array.isArray(cfgData.participants)) {
+          for (let i = 0; i < 24; i++) {
+            const p = cfgData.participants[i];
+            state.config.participants[i] = {
+              num: i + 1,
+              name: p && p.name ? String(p.name) : ''
+            };
+          }
         }
       }
 
       async function fetchStateFromFirebase() {
         try {
+          // 심사위원 모드: 타 심사위원 점수는 절대 불러오지 않음 (철저한 비공개 분리)
           if (state.role === 'judge' && state.currentJudgeId) {
             const jId = state.currentJudgeId;
             const responses = await Promise.all([
@@ -767,21 +901,23 @@
             const cfgData = await responses[0].json();
             const myData = await responses[1].json();
 
-            if (cfgData) {
-              state.config.participantCount = cfgData.participantCount || 18;
-              state.config.adminPin = cfgData.adminPin || '0010';
-              if (Array.isArray(cfgData.participants)) {
-                state.config.participants = cfgData.participants;
-              }
-            }
+            applyRemoteConfig(cfgData);
 
             if (myData) {
-              if (state.judges[jId].submitted && !myData.submitted) {
-                state.judges[jId].submitted = false;
-                state.judges[jId].submittedAt = null;
+              state.judges[jId].submitted = Boolean(myData.submitted);
+              state.judges[jId].submittedAt = myData.submittedAt || null;
+
+              if (myData.resetToken && myData.resetToken !== state.judges[jId].resetToken) {
+                state.judges[jId].scores = myData.scores || {};
+                state.judges[jId].signature = myData.signature || '';
+                state.judges[jId].resetToken = myData.resetToken;
+              } else if (Object.keys(state.judges[jId].scores || {}).length === 0 && myData.scores) {
+                state.judges[jId].scores = myData.scores;
               }
-            } else if (state.judges[jId].submitted) {
-              state.judges[jId] = { id: jId, name: '', signature: '', submitted: false, submittedAt: null, scores: {} };
+
+              if (!state.judges[jId].signature && myData.signature) {
+                state.judges[jId].signature = myData.signature;
+              }
             }
 
             updateConnectionBadge(true);
@@ -790,32 +926,27 @@
             return;
           }
 
+          // 초기화면(로비) 또는 관리자 모드
           const res = await fetch(getFirebaseRootUrl() + '.json');
           if (!res.ok) throw new Error('HTTP ' + res.status);
           const rootData = await res.json();
           updateConnectionBadge(true);
 
           if (rootData) {
-            if (rootData.config) {
-              state.config.participantCount = rootData.config.participantCount || 18;
-              state.config.adminPin = rootData.config.adminPin || '0010';
-              if (Array.isArray(rootData.config.participants)) {
-                state.config.participants = rootData.config.participants;
-              }
-            }
+            applyRemoteConfig(rootData.config);
             for (let i = 1; i <= 4; i++) {
               const jRemote = rootData.judges && rootData.judges['judge' + i];
               if (jRemote) {
                 state.judges[i] = {
                   id: i,
-                  name: jRemote.name || '',
                   signature: jRemote.signature || '',
                   submitted: Boolean(jRemote.submitted),
                   submittedAt: jRemote.submittedAt || null,
+                  resetToken: jRemote.resetToken || null,
                   scores: jRemote.scores || {}
                 };
               } else {
-                state.judges[i] = { id: i, name: '', signature: '', submitted: false, submittedAt: null, scores: {} };
+                state.judges[i] = { id: i, signature: '', submitted: false, submittedAt: null, resetToken: null, scores: {} };
               }
             }
             saveLocalBackup();
@@ -834,7 +965,7 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               participantCount: state.config.participantCount,
-              adminPin: state.config.adminPin,
+              judgeNames: state.config.judgeNames,
               participants: state.config.participants,
               updatedAt: new Date().toISOString()
             })
@@ -857,10 +988,10 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               id: judgeId,
-              name: j.name || '',
               signature: j.signature || '',
               submitted: Boolean(j.submitted),
               submittedAt: j.submittedAt || null,
+              resetToken: j.resetToken || null,
               scores: j.scores || {}
             })
           });
@@ -875,31 +1006,38 @@
 
       function startPollingLoop() {
         if (pollIntervalId) clearInterval(pollIntervalId);
+        // 로비 화면 및 관리자 집계실에서 4초마다 자동 폴링 동기화
         pollIntervalId = setInterval(function () {
+          if (state.role === 'admin' && state.adminTab === 'settings') return;
           fetchStateFromFirebase();
-        }, 3000);
+        }, 4000);
       }
 
-      // ==================== 4. 초기화면 및 인증 로직 ====================
+      // ==================== 5. 화면 전환 및 PIN 인증 ====================
       function renderHomeJudgeButtons() {
         const grid = document.getElementById('judgeSelectGrid');
         grid.innerHTML = '';
+
         for (let i = 1; i <= 4; i++) {
           const j = state.judges[i];
+          const displayName = getJudgeDisplayName(i);
+          const hasCustomName = Boolean(state.config.judgeNames && state.config.judgeNames[i] && state.config.judgeNames[i].trim());
           const statusBadge = j.submitted
-            ? '<span class="text-[11px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">제출 완료</span>'
-            : '<span class="text-[11px] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">입장 가능</span>';
+            ? '<span class="text-[11px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full shrink-0">제출 완료</span>'
+            : '<span class="text-[11px] font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full shrink-0">입장 가능</span>';
 
           const btn = document.createElement('button');
           btn.type = 'button';
-          btn.className = 'p-4 rounded-xl border-2 border-slate-200 hover:border-blue-600 hover:bg-blue-50/50 transition text-left flex flex-col justify-between gap-2 group';
+          btn.className = 'p-4 rounded-xl border-2 border-slate-200 hover:border-blue-600 hover:bg-blue-50/40 transition text-left flex flex-col justify-between gap-2 group';
           btn.innerHTML =
-            '<div class="flex items-center justify-between w-full">' +
-              '<span class="text-base font-extrabold text-slate-900 group-hover:text-blue-700"><i class="fa-solid fa-lock text-xs text-slate-400 mr-1"></i>심사위원 ' + i + '</span>' +
+            '<div class="flex items-center justify-between w-full gap-1">' +
+              '<span class="text-sm sm:text-base font-extrabold text-slate-900 group-hover:text-blue-700 truncate">' +
+                '<i class="fa-solid fa-lock text-xs text-slate-400 mr-1.5"></i>' + escapeHtml(displayName) +
+              '</span>' +
               statusBadge +
             '</div>' +
             '<div class="text-xs text-slate-500 truncate w-full">' +
-              (j.name ? '성명: <strong class="text-slate-700">' + escapeHtml(j.name) + '</strong>' : '비밀번호 입력 후 채점표 열기') +
+              (hasCustomName ? '심사위원 ' + i + '번 · PIN 입력 후 입장' : 'PIN 입력 후 채점표 입장') +
             '</div>';
 
           btn.addEventListener('click', (function (judgeId) {
@@ -914,14 +1052,14 @@
 
       function openJudgeAuthModal(judgeId) {
         state.pendingJudgeAuthId = judgeId;
-        document.getElementById('judgeAuthModalTitle').textContent = '심사위원 ' + judgeId + ' 본인 확인';
+        document.getElementById('judgeAuthModalTitle').textContent = getJudgeDisplayName(judgeId) + ' 본인 확인';
         const inputEl = document.getElementById('judgePinInput');
         inputEl.value = '';
         document.getElementById('judgePinError').classList.add('hidden');
         const modal = document.getElementById('judgeAuthModal');
         modal.classList.remove('hidden');
         modal.classList.add('flex');
-        setTimeout(function () { inputEl.focus(); }, 50);
+        setTimeout(function () { inputEl.focus(); }, 60);
       }
 
       function closeJudgeAuthModal() {
@@ -959,8 +1097,9 @@
       function enterAdminMode() {
         const pin = document.getElementById('adminPinInput').value.trim();
         const errEl = document.getElementById('adminPinError');
-        if (pin !== state.config.adminPin) {
+        if (pin !== ADMIN_PASSWORD) {
           errEl.classList.remove('hidden');
+          document.getElementById('adminPinInput').select();
           return;
         }
         errEl.classList.add('hidden');
@@ -971,8 +1110,30 @@
         document.getElementById('viewJudge').classList.add('hidden');
         document.getElementById('viewAdmin').classList.remove('hidden');
         document.getElementById('btnGoHome').classList.remove('hidden');
-        renderAdminView();
+        switchAdminTab('ranking');
         fetchStateFromFirebase();
+      }
+
+      function switchAdminTab(tabName) {
+        state.adminTab = tabName;
+        const btnRank = document.getElementById('tabBtnRanking');
+        const btnSet = document.getElementById('tabBtnSettings');
+        const panelRank = document.getElementById('adminTabRanking');
+        const panelSet = document.getElementById('adminTabSettings');
+
+        if (tabName === 'ranking') {
+          btnRank.className = 'px-4 py-2 rounded-xl bg-blue-700 text-white font-bold text-xs sm:text-sm shadow-sm transition';
+          btnSet.className = 'px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm transition';
+          panelRank.classList.remove('hidden');
+          panelSet.classList.add('hidden');
+          renderAdminRankingView();
+        } else {
+          btnSet.className = 'px-4 py-2 rounded-xl bg-blue-700 text-white font-bold text-xs sm:text-sm shadow-sm transition';
+          btnRank.className = 'px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm transition';
+          panelRank.classList.add('hidden');
+          panelSet.classList.remove('hidden');
+          renderAdminSettingsView();
+        }
       }
 
       function returnHome() {
@@ -989,10 +1150,10 @@
       function refreshCurrentView() {
         if (state.role === 'home') renderHomeJudgeButtons();
         else if (state.role === 'judge') renderJudgeView();
-        else if (state.role === 'admin') renderAdminView();
+        else if (state.role === 'admin' && state.adminTab === 'ranking') renderAdminRankingView();
       }
 
-      // ==================== 5. 심사위원 채점표 렌더링 ====================
+      // ==================== 6. 심사위원 채점표 렌더링 ====================
       function getParticipantJudgeScore(scoresObj, pNum) {
         const pScores = (scoresObj && scoresObj[pNum]) || {};
         let sum = 0;
@@ -1012,61 +1173,79 @@
         if (!j) return;
         const pCount = state.config.participantCount;
 
-        document.getElementById('judgeBadgeTitle').textContent = '심사위원 ' + j.id;
-        document.getElementById('judgeNameInput').value = j.name || '';
-        document.getElementById('judgeNameInput').disabled = j.submitted;
-        document.getElementById('judgeTotalParticipants').textContent = pCount;
+        document.getElementById('judgeBadgeTitle').textContent = getJudgeDisplayName(j.id);
+        document.getElementById('judgeHeaderSubName').textContent =
+          '심사위원 ' + j.id + '번 (' + (j.submitted ? '최종 전송 완료' : '채점 진행 중') + ')';
+        document.getElementById('judgeTotalParticipants').textContent = String(pCount);
 
+        // 서명 미리보기 및 지우기 버튼 상태 제어
         const sigThumb = document.getElementById('signaturePreviewThumb');
-        const sigLabel = document.getElementById('signatureBtnLabel');
+        const sigEmpty = document.getElementById('signatureEmptyLabel');
+        const sigBtn = document.getElementById('btnOpenSignature');
+        const sigBtnLabel = document.getElementById('signatureBtnLabel');
+        const sigClearBtn = document.getElementById('btnClearSavedSignature');
+
         if (j.signature) {
           sigThumb.src = j.signature;
           sigThumb.classList.remove('hidden');
-          sigLabel.textContent = '서명 완료';
+          sigEmpty.classList.add('hidden');
+          sigBtnLabel.textContent = '다시 서명';
+          if (!j.submitted) {
+            sigClearBtn.classList.remove('hidden');
+          } else {
+            sigClearBtn.classList.add('hidden');
+          }
         } else {
           sigThumb.classList.add('hidden');
-          sigLabel.textContent = '심사위원 서명하기';
+          sigThumb.removeAttribute('src');
+          sigEmpty.classList.remove('hidden');
+          sigBtnLabel.textContent = '서명하기';
+          sigClearBtn.classList.add('hidden');
         }
 
+        // 잠금 배너 및 전송 버튼 제어
         const lockedBanner = document.getElementById('judgeLockedBanner');
         const btnSubmit = document.getElementById('btnSubmitScores');
-        const btnSig = document.getElementById('btnOpenSignature');
 
         if (j.submitted) {
           lockedBanner.classList.remove('hidden');
           btnSubmit.disabled = true;
           btnSubmit.className = 'px-6 py-3.5 rounded-xl bg-slate-400 text-white font-extrabold text-sm sm:text-base cursor-not-allowed flex items-center gap-2 ml-auto';
-          btnSubmit.innerHTML = '<i class="fa-solid fa-lock"></i><span>제출 완료됨 (잠금)</span>';
-          btnSig.disabled = true;
-          btnSig.classList.add('opacity-60', 'cursor-not-allowed');
+          btnSubmit.innerHTML = '<i class="fa-solid fa-lock"></i><span>전송 완료됨 (잠금)</span>';
+          sigBtn.disabled = true;
+          sigBtn.classList.add('opacity-50', 'cursor-not-allowed');
         } else {
           lockedBanner.classList.add('hidden');
           btnSubmit.disabled = false;
-          btnSubmit.className = 'px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-extrabold text-sm sm:text-base shadow-md transition flex items-center gap-2 ml-auto';
+          btnSubmit.className = 'px-6 py-3.5 rounded-xl bg-blue-700 hover:bg-blue-800 active:bg-blue-900 text-white font-extrabold text-sm sm:text-base shadow-md transition flex items-center gap-2 ml-auto';
           btnSubmit.innerHTML = '<i class="fa-solid fa-paper-plane"></i><span>최종 점수 전송하기</span>';
-          btnSig.disabled = false;
-          btnSig.classList.remove('opacity-60', 'cursor-not-allowed');
+          sigBtn.disabled = false;
+          sigBtn.classList.remove('opacity-50', 'cursor-not-allowed');
         }
 
-        // 헤더 렌더링
+        // 채점표 헤더 렌더링 (좌측 3열 sticky 적용)
         const theadRow = document.getElementById('rubricTableHeadRow');
         theadRow.innerHTML =
-          '<th class="w-24 py-2.5 px-2 bg-slate-100">평가항목</th>' +
-          '<th class="w-12 py-2.5 px-1 bg-slate-100">배<br/>점</th>' +
-          '<th class="w-56 py-2.5 px-2 bg-slate-100">세부 평가 내용</th>';
+          '<th class="sticky-col-1 py-2.5 px-2 bg-slate-100">평가항목</th>' +
+          '<th class="sticky-col-2 py-2.5 px-1 bg-slate-100">배<br/>점</th>' +
+          '<th class="sticky-col-3 py-2.5 px-2 bg-slate-100">세부 평가 내용</th>';
 
         for (let p = 1; p <= pCount; p++) {
-          const pInfo = state.config.participants[p - 1];
-          const subName = (pInfo && pInfo.name)
-            ? '<div class="text-[10px] font-normal text-slate-600 truncate max-w-[44px] mx-auto">' + escapeHtml(pInfo.name) + '</div>'
-            : '';
+          const pObj = state.config.participants[p - 1];
+          const hasName = Boolean(pObj && pObj.name && pObj.name.trim());
           const th = document.createElement('th');
-          th.className = 'min-w-[46px] py-2 px-1 bg-slate-100 font-extrabold text-slate-900';
-          th.innerHTML = '<div>' + p + '</div>' + subName;
+          th.className = 'min-w-[60px] py-2 px-1 bg-slate-100 font-extrabold text-slate-900 align-middle';
+          if (hasName) {
+            th.innerHTML =
+              '<div class="text-[11px] text-slate-500 leading-none">' + p + '.</div>' +
+              '<div class="text-xs font-extrabold text-blue-900 mt-1 break-keep leading-tight">' + escapeHtml(pObj.name.trim()) + '</div>';
+          } else {
+            th.innerHTML = '<div class="text-sm">' + p + '번</div>';
+          }
           theadRow.appendChild(th);
         }
 
-        // 바디 렌더링
+        // 채점표 바디 렌더링
         const tbody = document.getElementById('rubricTableBody');
         tbody.innerHTML = '';
 
@@ -1075,18 +1254,18 @@
           if (item.group) {
             const tdGroup = document.createElement('td');
             tdGroup.rowSpan = item.groupRowSpan;
-            tdGroup.className = 'font-bold text-slate-900 bg-slate-50/70 px-2 py-2 whitespace-pre-line leading-snug';
+            tdGroup.className = 'first-col sticky-col-1 font-bold text-slate-900 bg-slate-50 px-2 py-2 whitespace-pre-line leading-snug';
             tdGroup.textContent = item.group;
             tr.appendChild(tdGroup);
           }
 
           const tdMax = document.createElement('td');
-          tdMax.className = 'font-bold text-slate-800 bg-slate-50/40 py-2';
-          tdMax.textContent = item.maxScore;
+          tdMax.className = 'sticky-col-2 font-bold text-slate-800 bg-slate-50 py-2';
+          tdMax.textContent = String(item.maxScore);
           tr.appendChild(tdMax);
 
           const tdDesc = document.createElement('td');
-          tdDesc.className = 'px-2 py-2.5 leading-snug';
+          tdDesc.className = 'sticky-col-3 bg-white px-2.5 py-2.5 leading-snug';
           tdDesc.innerHTML =
             '<div class="font-bold text-slate-900 whitespace-pre-line">' + escapeHtml(item.title) + '</div>' +
             '<div class="text-[11px] text-slate-500 mt-0.5">' + escapeHtml(item.desc) + '</div>';
@@ -1097,7 +1276,7 @@
             const hasVal = typeof val === 'number';
             const tdCell = document.createElement('td');
             tdCell.id = 'cell_' + p + '_' + item.id;
-            tdCell.className = 'score-cell font-extrabold text-base ' + (hasVal ? 'text-blue-700 bg-blue-50/30' : 'text-slate-300');
+            tdCell.className = 'score-cell font-extrabold text-base ' + (hasVal ? 'text-blue-700 bg-blue-50/40' : 'text-slate-300 bg-white');
             tdCell.textContent = hasVal ? String(val) : '';
             tdCell.addEventListener('click', (function (pNum, cId) {
               return function () {
@@ -1110,32 +1289,32 @@
           tbody.appendChild(tr);
         });
 
-        // 총점 행
+        // 합계(100점 만점) 행
         const totalTr = document.createElement('tr');
-        totalTr.className = 'bg-slate-100 font-black text-slate-900 border-t-2 border-slate-700';
+        totalTr.className = 'total-row bg-slate-100 font-black text-slate-900';
         totalTr.innerHTML =
-          '<td class="py-3 px-2 leading-tight">합계<br/>(100)</td>' +
-          '<td class="py-3 px-1">100</td>' +
-          '<td class="py-3 px-2">총점</td>';
+          '<td class="first-col sticky-col-1 bg-slate-100 py-3 px-2 leading-tight">합계<br/>(100)</td>' +
+          '<td class="sticky-col-2 bg-slate-100 py-3 px-1">100</td>' +
+          '<td class="sticky-col-3 bg-slate-100 py-3 px-2">참가자별 총점</td>';
 
-        let completedParticipants = 0;
+        let completedCount = 0;
         for (let p = 1; p <= pCount; p++) {
           const res = getParticipantJudgeScore(j.scores, p);
-          if (res.isComplete) completedParticipants++;
+          if (res.isComplete) completedCount++;
           const tdTotal = document.createElement('td');
-          tdTotal.className = 'py-3 px-1 text-sm sm:text-base ' + (res.isComplete ? 'text-emerald-700 bg-emerald-50/70' : 'text-slate-600');
+          tdTotal.className = 'py-3 px-1 text-sm sm:text-base ' + (res.isComplete ? 'text-emerald-700 bg-emerald-50' : 'text-slate-600 bg-slate-100');
           tdTotal.textContent = res.sum > 0 ? String(res.sum) : '-';
           totalTr.appendChild(tdTotal);
         }
         tbody.appendChild(totalTr);
 
-        document.getElementById('judgeCompletedCount').textContent = String(completedParticipants);
+        document.getElementById('judgeCompletedCount').textContent = String(completedCount);
       }
 
       function handleCellClick(pNum, cId) {
         const j = state.judges[state.currentJudgeId];
         if (!j || j.submitted) {
-          showDialog('수정 불가', '이미 최종 전송이 완료되어 채점표를 수정할 수 없습니다.', 'warning');
+          showDialog('수정 불가', '이미 최종 전송이 완료되어 채점표를 수정할 수 없습니다.\n수정이 필요하면 담당자에게 잠금 해제를 요청해 주세요.', 'warning');
           return;
         }
         const cellEl = document.getElementById('cell_' + pNum + '_' + cId);
@@ -1143,251 +1322,15 @@
         openScoreModal(pNum, cId);
       }
 
-      // ==================== 6. 손글씨 필기 + 원터치 배점 모달 ====================
-      const hwCanvas = document.getElementById('handwritingCanvas');
-      const hwCtx = hwCanvas.getContext('2d');
-      let isDrawingHw = false;
-      let hwStrokes = [];
-      let currentStroke = [];
-      let hwRecognizeTimer = null;
-
-      function initHandwritingCanvasEvents() {
-        function getPos(e) {
-          const rect = hwCanvas.getBoundingClientRect();
-          const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-          const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-          return {
-            x: (clientX - rect.left) * (hwCanvas.width / rect.width),
-            y: (clientY - rect.top) * (hwCanvas.height / rect.height)
-          };
-        }
-
-        function startDraw(e) {
-          e.preventDefault();
-          if (hwRecognizeTimer) clearTimeout(hwRecognizeTimer);
-          isDrawingHw = true;
-          document.getElementById('canvasPlaceholder').classList.add('hidden');
-          const pos = getPos(e);
-          currentStroke = [pos];
-          hwCtx.lineWidth = 5;
-          hwCtx.lineCap = 'round';
-          hwCtx.lineJoin = 'round';
-          hwCtx.strokeStyle = '#1e3a8a';
-          hwCtx.beginPath();
-          hwCtx.moveTo(pos.x, pos.y);
-        }
-
-        function moveDraw(e) {
-          if (!isDrawingHw) return;
-          e.preventDefault();
-          const pos = getPos(e);
-          currentStroke.push(pos);
-          hwCtx.lineTo(pos.x, pos.y);
-          hwCtx.stroke();
-        }
-
-        function endDraw(e) {
-          if (!isDrawingHw) return;
-          e.preventDefault();
-          isDrawingHw = false;
-          if (currentStroke.length > 0) {
-            hwStrokes.push(currentStroke);
-          }
-          hwRecognizeTimer = setTimeout(function () {
-            runHandwritingRecognition();
-          }, 420);
-        }
-
-        hwCanvas.addEventListener('mousedown', startDraw);
-        hwCanvas.addEventListener('mousemove', moveDraw);
-        window.addEventListener('mouseup', endDraw);
-        hwCanvas.addEventListener('touchstart', startDraw, { passive: false });
-        hwCanvas.addEventListener('touchmove', moveDraw, { passive: false });
-        hwCanvas.addEventListener('touchend', endDraw, { passive: false });
-      }
-
-      function clearHandwritingCanvas() {
-        hwCtx.clearRect(0, 0, hwCanvas.width, hwCanvas.height);
-        hwStrokes = [];
-        currentStroke = [];
-        state.recognizedNumber = null;
-        document.getElementById('canvasPlaceholder').classList.remove('hidden');
-        document.getElementById('recognizedScoreDisplay').textContent = '-';
-        document.getElementById('btnApplyRecognized').disabled = true;
-        document.getElementById('handwritingFeedbackMsg').textContent = '';
-      }
-
-      function runHandwritingRecognition() {
-        if (hwStrokes.length === 0 || !state.activeCell) return;
-        const item = RUBRIC_ITEMS.find(function (x) { return x.id === state.activeCell.cId; });
-        if (!item) return;
-
-        const imgData = hwCtx.getImageData(0, 0, hwCanvas.width, hwCanvas.height);
-        const data = imgData.data;
-        const width = imgData.width;
-        const height = imgData.height;
-
-        const colCounts = new Array(width).fill(0);
-        let totalPixels = 0;
-
-        for (let y = 0; y < height; y++) {
-          for (let x = 0; x < width; x++) {
-            const alpha = data[(y * width + x) * 4 + 3];
-            if (alpha > 40) {
-              colCounts[x]++;
-              totalPixels++;
-            }
-          }
-        }
-
-        if (totalPixels < 15) return;
-
-        const segments = [];
-        let inSeg = false;
-        let segStart = 0;
-        for (let x = 0; x < width; x++) {
-          if (colCounts[x] > 0 && !inSeg) {
-            inSeg = true;
-            segStart = x;
-          } else if (colCounts[x] === 0 && inSeg) {
-            inSeg = false;
-            if (x - segStart >= 3) {
-              segments.push({ x1: segStart, x2: x - 1 });
-            }
-          }
-        }
-        if (inSeg) segments.push({ x1: segStart, x2: width - 1 });
-
-        const mergedSegments = [];
-        for (let i = 0; i < segments.length; i++) {
-          const seg = segments[i];
-          if (mergedSegments.length === 0) {
-            mergedSegments.push({ x1: seg.x1, x2: seg.x2 });
-          } else {
-            const prev = mergedSegments[mergedSegments.length - 1];
-            const gap = seg.x1 - prev.x2;
-            const prevW = prev.x2 - prev.x1;
-            const curW = seg.x2 - seg.x1;
-            if (gap < 8 && (prevW < 18 || curW < 18)) {
-              prev.x2 = seg.x2;
-            } else {
-              mergedSegments.push({ x1: seg.x1, x2: seg.x2 });
-            }
-          }
-        }
-
-        const digits = mergedSegments.map(function (seg) {
-          return classifySingleDigit(data, width, height, seg.x1, seg.x2);
-        });
-        const parsedNum = parseInt(digits.join(''), 10);
-
-        let matchedScore = null;
-        const msgEl = document.getElementById('handwritingFeedbackMsg');
-
-        if (!isNaN(parsedNum) && item.validScores.indexOf(parsedNum) !== -1) {
-          matchedScore = parsedNum;
-          msgEl.className = 'text-[11px] text-emerald-700 font-semibold mt-1.5';
-          msgEl.textContent = "인식 완료: '" + matchedScore + "점'으로 판독되었습니다. [적용하기]를 누르세요.";
-        } else if (!isNaN(parsedNum)) {
-          matchedScore = item.validScores.reduce(function (prev, curr) {
-            return Math.abs(curr - parsedNum) < Math.abs(prev - parsedNum) ? curr : prev;
-          });
-          msgEl.className = 'text-[11px] text-amber-700 font-semibold mt-1.5';
-          msgEl.textContent = "인식값(" + parsedNum + ")을 가장 가까운 유효 배점 '" + matchedScore + "점'으로 보정했습니다.";
-        } else {
-          msgEl.className = 'text-[11px] text-rose-600 font-semibold mt-1.5';
-          msgEl.textContent = '숫자를 명확히 인식하지 못했습니다. 다시 쓰거나 위 버튼을 터치하세요.';
-        }
-
-        state.recognizedNumber = matchedScore;
-        document.getElementById('recognizedScoreDisplay').textContent = matchedScore !== null ? String(matchedScore) : '?';
-        document.getElementById('btnApplyRecognized').disabled = matchedScore === null;
-      }
-
-      function classifySingleDigit(data, width, height, x1, x2) {
-        let y1 = height;
-        let y2 = 0;
-        for (let y = 0; y < height; y++) {
-          for (let x = x1; x <= x2; x++) {
-            if (data[(y * width + x) * 4 + 3] > 40) {
-              if (y < y1) y1 = y;
-              if (y > y2) y2 = y;
-            }
-          }
-        }
-        const boxW = Math.max(1, x2 - x1 + 1);
-        const boxH = Math.max(1, y2 - y1 + 1);
-        if (boxW / boxH < 0.34) return 1;
-
-        const G = 16;
-        const grid = [];
-        for (let r = 0; r < G; r++) {
-          grid.push(new Array(G).fill(0));
-        }
-
-        for (let gy = 0; gy < G; gy++) {
-          for (let gx = 0; gx < G; gx++) {
-            const sx = Math.min(width - 1, Math.floor(x1 + (gx + 0.5) * (boxW / G)));
-            const sy = Math.min(height - 1, Math.floor(y1 + (gy + 0.5) * (boxH / G)));
-            let hit = 0;
-            for (let dy = -1; dy <= 1; dy++) {
-              for (let dx = -1; dx <= 1; dx++) {
-                const nx = Math.min(width - 1, Math.max(0, sx + dx));
-                const ny = Math.min(height - 1, Math.max(0, sy + dy));
-                if (data[(ny * width + nx) * 4 + 3] > 40) hit++;
-              }
-            }
-            grid[gy][gx] = hit > 0 ? 1 : 0;
-          }
-        }
-
-        const templates = {
-          0: ['0000111111110000','0001110000111000','0011000000001100','0011000000001100','0110000000000110','0110000000000110','0110000000000110','0110000000000110','0110000000000110','0110000000000110','0110000000000110','0110000000000110','0011000000001100','0011000000001100','0001110000111000','0000111111110000'],
-          1: ['0000001110000000','0000011110000000','0000110110000000','0000000110000000','0000000110000000','0000000110000000','0000000110000000','0000000110000000','0000000110000000','0000000110000000','0000000110000000','0000000110000000','0000000110000000','0000000110000000','0000000110000000','0000111111110000'],
-          2: ['0001111111110000','0011100000111000','0110000000001100','0000000000001100','0000000000011000','0000000000110000','0000000011100000','0000001110000000','0000111000000000','0001100000000000','0011000000000000','0110000000000000','0110000000000000','0110000000000000','0111111111111100','0111111111111100'],
-          4: ['0000000001110000','0000000011110000','0000000110110000','0000001100110000','0000011000110000','0000110000110000','0001100000110000','0011000000110000','0110000000110000','0111111111111110','0111111111111110','0000000000110000','0000000000110000','0000000000110000','0000000000110000','0000000000110000'],
-          6: ['0000011111110000','0001110000000000','0011000000000000','0110000000000000','0110000000000000','0110000000000000','0110111111100000','0111100000111000','0110000000001100','0110000000001100','0110000000001100','0110000000001100','0110000000001100','0011000000011000','0001110000110000','0000111111100000'],
-          7: ['0111111111111100','0111111111111100','0000000000011000','0000000000110000','0000000000110000','0000000001100000','0000000001100000','0000000011000000','0000000011000000','0000000110000000','0000000110000000','0000001100000000','0000001100000000','0000011000000000','0000011000000000','0000011000000000'],
-          8: ['0000111111110000','0001100000011000','0011000000001100','0011000000001100','0011000000001100','0001100000011000','0000111111110000','0001100000011000','0011000000001100','0110000000000110','0110000000000110','0110000000000110','0011000000001100','0011000000001100','0001100000011000','0000111111110000'],
-          9: ['0000111111100000','0001100000110000','0011000000011000','0110000000001100','0110000000001100','0110000000001100','0110000000001100','0011100000111100','0000111111101100','0000000000001100','0000000000001100','0000000000011000','0000000000011000','0000000000110000','0000000011100000','0000111110000000']
-        };
-
-        const candidates = [0, 1, 2, 4, 6, 7, 8, 9];
-        let bestDigit = 8;
-        let bestScore = -Infinity;
-
-        for (let idx = 0; idx < candidates.length; idx++) {
-          const d = candidates[idx];
-          const tmpl = templates[d];
-          let match = 0;
-          for (let r = 0; r < G; r++) {
-            for (let c = 0; c < G; c++) {
-              const tVal = Number(tmpl[r][c]);
-              if (grid[r][c] === tVal) {
-                match += grid[r][c] === 1 ? 2.2 : 1.0;
-              } else {
-                match -= 0.8;
-              }
-            }
-          }
-          if (match > bestScore) {
-            bestScore = match;
-            bestDigit = d;
-          }
-        }
-        return bestDigit;
-      }
-
+      // ==================== 7. 원터치 배점 선택 모달 ====================
       function openScoreModal(pNum, cId) {
         state.activeCell = { pNum: pNum, cId: cId };
         const item = RUBRIC_ITEMS.find(function (x) { return x.id === cId; });
-        const pInfo = state.config.participants[pNum - 1];
         const currentVal = state.judges[state.currentJudgeId].scores[pNum] && state.judges[state.currentJudgeId].scores[pNum][cId];
 
-        document.getElementById('modalParticipantTag').textContent =
-          '발표자 ' + pNum + '번' + (pInfo && pInfo.name ? ' (' + pInfo.name + ')' : '');
+        document.getElementById('modalParticipantTag').textContent = '발표자 ' + getParticipantHeaderLabel(pNum);
         document.getElementById('modalCriterionTitle').textContent = item.title.replace(/\n/g, ' ');
-        document.getElementById('modalValidScoresHint').textContent = '유효 배점: ' + item.validScores.join(', ') + '점';
+        document.getElementById('modalValidScoresHint').textContent = '배점: ' + item.validScores.join(', ') + '점';
 
         const btnWrap = document.getElementById('modalQuickButtons');
         btnWrap.innerHTML = '';
@@ -1397,14 +1340,14 @@
           const isSelected = currentVal === sc;
           const btn = document.createElement('button');
           btn.type = 'button';
-          btn.className = 'py-2.5 px-1 rounded-xl border-2 font-extrabold transition flex flex-col items-center justify-center ' + (
+          btn.className = 'py-4 px-1 rounded-xl border-2 font-extrabold transition flex flex-col items-center justify-center active:scale-95 ' + (
             isSelected
-              ? 'border-blue-600 bg-blue-600 text-white shadow-sm'
+              ? 'border-blue-700 bg-blue-700 text-white shadow-md'
               : 'border-slate-200 hover:border-blue-500 hover:bg-blue-50 text-slate-900'
           );
           btn.innerHTML =
-            '<span class="text-lg leading-none">' + sc + '</span>' +
-            '<span class="text-[10px] mt-1 ' + (isSelected ? 'text-blue-100' : 'text-slate-400') + '">' + labels[idx] + '</span>';
+            '<span class="text-2xl leading-none">' + sc + '</span>' +
+            '<span class="text-[11px] font-semibold mt-1.5 ' + (isSelected ? 'text-blue-100' : 'text-slate-400') + '">' + labels[idx] + '</span>';
 
           btn.addEventListener('click', function () {
             selectScoreAndClose(sc);
@@ -1412,7 +1355,6 @@
           btnWrap.appendChild(btn);
         });
 
-        clearHandwritingCanvas();
         const modal = document.getElementById('scoreInputModal');
         modal.classList.remove('hidden');
         modal.classList.add('flex');
@@ -1438,7 +1380,7 @@
         closeScoreModal();
       }
 
-      // ==================== 7. 심사위원 서명 패드 ====================
+      // ==================== 8. 심사위원 자필 서명 패드 ====================
       const sigCanvas = document.getElementById('signatureCanvas');
       const sigCtx = sigCanvas.getContext('2d');
       let isDrawingSig = false;
@@ -1520,7 +1462,15 @@
         closeSignatureModal();
       }
 
-      // ==================== 8. 전체 유효성 검증 및 최종 전송 ====================
+      function clearSavedSignature() {
+        const j = state.judges[state.currentJudgeId];
+        if (!j || j.submitted) return;
+        j.signature = '';
+        persistJudgeToCloud(j.id);
+        renderJudgeView();
+      }
+
+      // ==================== 9. 누락 전수 검증 및 최종 전송 ====================
       function validateAndPromptSubmit() {
         const j = state.judges[state.currentJudgeId];
         if (!j || j.submitted) return;
@@ -1529,35 +1479,34 @@
           el.classList.remove('missing-highlight');
         });
 
-        if (!j.name || j.name.trim() === '') {
-          document.getElementById('judgeNameInput').focus();
-          showDialog('심사위원 성명 누락', '상단의 [심사위원 성명]을 먼저 입력해 주세요.', 'warning');
-          return;
-        }
-
         const pCount = state.config.participantCount;
-        const missingList = [];
+        const missingDetails = [];
+        let totalMissing = 0;
 
         for (let p = 1; p <= pCount; p++) {
+          const missingItems = [];
           RUBRIC_ITEMS.forEach(function (item) {
             const val = j.scores[p] && j.scores[p][item.id];
             if (typeof val !== 'number' || item.validScores.indexOf(val) === -1) {
-              missingList.push({ p: p, item: item });
+              totalMissing++;
+              missingItems.push(item.shortTitle);
               const cell = document.getElementById('cell_' + p + '_' + item.id);
               if (cell) cell.classList.add('missing-highlight');
             }
           });
+          if (missingItems.length > 0) {
+            missingDetails.push('• ' + getParticipantHeaderLabel(p) + ': ' + missingItems.join(', '));
+          }
         }
 
-        if (missingList.length > 0) {
-          const previewItems = missingList
-            .slice(0, 5)
-            .map(function (m) { return '• 발표자 ' + m.p + '번 - ' + m.item.title.replace(/\n/g, ' '); })
-            .join('\n');
-          const extraCount = missingList.length > 5 ? '\n...외 ' + (missingList.length - 5) + '개 칸 누락' : '';
+        if (totalMissing > 0) {
+          const previewList = missingDetails.slice(0, 8);
+          if (missingDetails.length > 8) {
+            previewList.push('...외 ' + (missingDetails.length - 8) + '명 미입력 항목 존재');
+          }
           showDialog(
-            '미입력 점수 발견 (총 ' + missingList.length + '칸 누락)',
-            '빨간색으로 표시된 빈칸을 모두 입력해야 전송할 수 있습니다.\n\n' + previewItems + extraCount,
+            '미입력 점수 발견 (총 ' + totalMissing + '칸 누락)',
+            '빨간색으로 강조된 빈칸을 모두 입력해야 전송할 수 있습니다.\n\n' + previewList.join('\n'),
             'error'
           );
           return;
@@ -1566,15 +1515,15 @@
         if (!j.signature) {
           showDialog(
             '심사위원 서명 필요',
-            '모든 점수가 정확히 입력되었습니다.\n우측 상단의 [심사위원 서명하기] 버튼을 눌러 서명을 완료한 뒤 전송해 주세요.',
+            '모든 참가자의 점수가 입력되었습니다.\n상단의 [서명하기] 버튼을 눌러 자필 서명을 완료한 뒤 전송해 주세요.',
             'warning'
           );
           return;
         }
 
         showConfirmDialog(
-          '점수 검증 완료 및 최종 전송 확인',
-          '모든 참가자의 점수가 오류없이 입력되었습니다.\n집계실로 최종 점수를 전송할까요?\n\n(전송 후에는 심사위원 화면에서 임의 수정이 잠금 처리됩니다.)',
+          '점수 검증 완료 및 최종 전송',
+          '모든 참가자의 점수가 오류없이 입력되었습니다.\n집계실로 최종 점수를 전송할까요?\n\n(전송 후에는 채점표가 잠금 처리됩니다.)',
           async function () {
             j.submitted = true;
             j.submittedAt = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -1582,14 +1531,14 @@
             renderJudgeView();
             if (ok) {
               showDialog(
-                '전송 완료',
-                '심사위원 ' + j.id + '(' + j.name + ')님의 채점 결과가 집계실 서버로 안전하게 전송되었습니다.',
+                '최종 전송 완료',
+                getJudgeDisplayName(j.id) + '님의 채점 결과가 집계실로 안전하게 전송되었습니다.',
                 'success'
               );
             } else {
               showDialog(
                 '로컬 저장 완료 (오프라인)',
-                '인터넷 연결이 불안정하여 기기에 우선 저장되었습니다. 연결 복구 후 재전송하거나 담당자에게 알려주세요.',
+                '네트워크가 일시적으로 불안정하여 기기에 우선 저장되었습니다. 연결 복구 후 새로고침하거나 담당자에게 알려주세요.',
                 'warning'
               );
             }
@@ -1597,19 +1546,20 @@
         );
       }
 
-      // ==================== 9. 관리자 집계실 렌더링 ====================
+      // ==================== 10. 관리자 집계실: 실시간 순위표 렌더링 ====================
       function getAwardTier(rank) {
         if (typeof rank !== 'number') return null;
         return AWARD_TIERS.find(function (t) { return rank <= t.rankMax; }) || null;
       }
 
-      function renderAdminView() {
+      function renderAdminRankingView() {
         const pCount = state.config.participantCount;
         const statusGrid = document.getElementById('adminJudgeStatusGrid');
         statusGrid.innerHTML = '';
 
         for (let i = 1; i <= 4; i++) {
           const j = state.judges[i];
+          const displayJName = getJudgeDisplayName(i);
           let completedCnt = 0;
           for (let p = 1; p <= pCount; p++) {
             if (getParticipantJudgeScore(j.scores, p).isComplete) completedCnt++;
@@ -1618,57 +1568,64 @@
           let badgeHtml = '';
           let cardBorder = 'border-slate-200';
           if (j.submitted) {
-            badgeHtml = '<span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-extrabold"><i class="fa-solid fa-check mr-1"></i>전송 완료</span>';
+            badgeHtml = '<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-extrabold"><i class="fa-solid fa-check mr-1"></i>전송 완료</span>';
             cardBorder = 'border-emerald-400 bg-emerald-50/20';
-          } else if (completedCnt > 0 || j.name) {
-            badgeHtml = '<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold">작성 중 (' + completedCnt + '/' + pCount + ')</span>';
+          } else if (completedCnt > 0 || j.signature) {
+            badgeHtml = '<span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[11px] font-bold">작성 중 (' + completedCnt + '/' + pCount + ')</span>';
             cardBorder = 'border-amber-300';
           } else {
-            badgeHtml = '<span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-500 text-xs font-bold">미접속/대기</span>';
+            badgeHtml = '<span class="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-500 text-[11px] font-bold">대기 중</span>';
           }
 
           const card = document.createElement('div');
-          card.className = 'rounded-xl border-2 ' + cardBorder + ' p-3.5 flex flex-col justify-between gap-2';
+          card.className = 'rounded-xl border-2 ' + cardBorder + ' p-3.5 flex flex-col justify-between gap-2.5';
           card.innerHTML =
-            '<div class="flex items-center justify-between">' +
-              '<span class="font-extrabold text-slate-900">심사위원 ' + i + ' <span class="text-[11px] font-mono text-slate-400">(PW: ' + JUDGE_PASSWORDS[i] + ')</span></span>' +
+            '<div class="flex items-center justify-between gap-1">' +
+              '<div class="min-w-0">' +
+                '<div class="font-extrabold text-sm text-slate-900 truncate">' + escapeHtml(displayJName) + '</div>' +
+                '<div class="text-[11px] font-mono text-slate-500">번호 ' + i + ' · PIN: ' + JUDGE_PASSWORDS[i] + '</div>' +
+              '</div>' +
               badgeHtml +
             '</div>' +
-            '<div class="flex items-center justify-between text-xs text-slate-600">' +
-              '<span>성명: <strong>' + (j.name ? escapeHtml(j.name) : '미입력') + '</strong></span>' +
-              (j.signature ? '<img src="' + j.signature + '" class="h-6 border border-slate-200 rounded bg-white px-1" alt="서명" />' : '<span class="text-slate-400">서명 없음</span>') +
+            '<div class="flex items-center justify-between text-xs text-slate-600 bg-white/80 rounded-lg px-2.5 py-1.5 border border-slate-100">' +
+              '<span>자필 서명</span>' +
+              (j.signature
+                ? '<img src="' + j.signature + '" class="h-6 max-w-[80px] object-contain" alt="서명" />'
+                : '<span class="text-slate-400 text-[11px]">없음</span>') +
             '</div>' +
-            '<div class="flex items-center justify-between pt-2 border-t border-slate-100 text-[11px] no-print">' +
-              '<span class="text-slate-400">' + (j.submittedAt ? '전송: ' + j.submittedAt : '미전송 상태') + '</span>' +
-              (j.submitted ? '<button type="button" data-unlock-id="' + i + '" class="btn-unlock-judge text-rose-600 hover:underline font-bold">잠금 해제(재수정 허용)</button>' : '<span></span>') +
+            '<div class="flex items-center justify-between pt-1 border-t border-slate-100 text-[11px] no-print">' +
+              '<span class="text-slate-400">' + (j.submittedAt ? '전송: ' + j.submittedAt : '미전송') + '</span>' +
+              (j.submitted
+                ? '<button type="button" data-unlock-id="' + i + '" class="btn-unlock-judge text-rose-600 hover:underline font-bold">잠금 해제</button>'
+                : '<span></span>') +
             '</div>';
           statusGrid.appendChild(card);
 
           const thEl = document.getElementById('thJudge' + i);
           if (thEl) {
-            thEl.innerHTML = '심사위원' + i + '<br/><span class="text-[10px] font-normal text-slate-300">' + (j.name ? escapeHtml(j.name) : '(미정)') + '</span>';
+            thEl.innerHTML = escapeHtml(getJudgeShortName(i)) + '<br/><span class="text-[10px] font-normal text-slate-300">(100점)</span>';
           }
         }
 
+        // 개별 잠금 해제 이벤트
         document.querySelectorAll('.btn-unlock-judge').forEach(function (btn) {
           btn.addEventListener('click', function () {
             const jId = Number(btn.getAttribute('data-unlock-id'));
             showConfirmDialog(
-              '심사위원 ' + jId + ' 잠금 해제',
-              '심사위원 ' + jId + '번의 제출 잠금을 해제하여 점수를 수정할 수 있도록 허용하시겠습니까?',
+              getJudgeDisplayName(jId) + ' 잠금 해제',
+              getJudgeDisplayName(jId) + '님의 제출 잠금을 해제하여 점수를 수정할 수 있도록 허용하시겠습니까?',
               function () {
                 state.judges[jId].submitted = false;
                 persistJudgeToCloud(jId);
-                renderAdminView();
+                renderAdminRankingView();
               }
             );
           });
         });
 
-        // 순위 산출
+        // 합산 및 순위 계산
         const results = [];
         for (let p = 1; p <= pCount; p++) {
-          const pInfo = state.config.participants[p - 1] || { num: p, studentId: '', name: '', topic: '' };
           const jTotals = {};
           let grandTotal = 0;
           let submittedJudgesCount = 0;
@@ -1687,9 +1644,7 @@
 
           results.push({
             num: p,
-            studentId: pInfo.studentId,
-            name: pInfo.name,
-            topic: pInfo.topic,
+            name: getParticipantDisplayName(p),
             jTotals: jTotals,
             grandTotal: grandTotal,
             submittedJudgesCount: submittedJudgesCount,
@@ -1715,21 +1670,23 @@
           }
         }
 
+        // 동점자 경고 배너
         const tieBanner = document.getElementById('tieAlertBanner');
         if (tieScores.size > 0) {
-          const tieDetailText = Array.from(tieScores).map(function (sc) {
-            const tiedNames = results
+          const tieLines = Array.from(tieScores).map(function (sc) {
+            const names = results
               .filter(function (r) { return r.grandTotal === sc; })
-              .map(function (r) { return '발표자 ' + r.num + '번' + (r.name ? '(' + r.name + ')' : ''); })
+              .map(function (r) { return getParticipantHeaderLabel(r.num); })
               .join(', ');
-            return '• 합산 ' + sc + '점 동점: ' + tiedNames;
-          }).join('\n');
-          document.getElementById('tieAlertDetail').textContent = tieDetailText;
+            return '• 합산 ' + sc + '점 동점: ' + names;
+          });
+          document.getElementById('tieAlertDetail').textContent = tieLines.join('\n');
           tieBanner.classList.remove('hidden');
         } else {
           tieBanner.classList.add('hidden');
         }
 
+        // 순위표 테이블 렌더링
         const tbody = document.getElementById('adminRankingBody');
         tbody.innerHTML = '';
 
@@ -1737,8 +1694,8 @@
           const award = getAwardTier(row.rank);
           const isTied = row.rank !== '-' && tieScores.has(row.grandTotal);
           const tr = document.createElement('tr');
-          tr.className = (row.rank === 1 ? 'bg-amber-50/40 font-semibold' : 'hover:bg-slate-50') + ' cursor-pointer';
-          tr.title = '클릭하여 심사위원별 세부 항목 점수를 비교합니다';
+          tr.className = (row.rank === 1 ? 'bg-amber-50/50 font-semibold' : 'hover:bg-blue-50/30') + ' cursor-pointer transition';
+          tr.title = '클릭하여 심사위원별 7개 항목 세부 점수를 비교합니다';
 
           tr.innerHTML =
             '<td class="py-3 px-2 border border-slate-200 font-black text-base ' + (row.rank === 1 ? 'text-amber-600' : 'text-slate-900') + '">' +
@@ -1750,15 +1707,8 @@
                 ? '<span class="inline-block px-2 py-0.5 rounded-md border text-[11px] font-bold ' + award.badgeClass + '">' + award.label + ' · ' + award.vouchers + '매</span>'
                 : '<span class="text-slate-400 text-xs">-</span>') +
             '</td>' +
-            '<td class="py-3 px-2 border border-slate-200 font-extrabold text-slate-800">' + row.num + '번</td>' +
-            '<td class="py-3 px-2 border border-slate-200">' +
-              (row.name || row.studentId
-                ? '<span class="text-slate-500 text-xs">' + escapeHtml(row.studentId) + '</span> <strong class="text-slate-900">' + escapeHtml(row.name) + '</strong>'
-                : '<span class="text-slate-400">발표자 ' + row.num + '</span>') +
-            '</td>' +
-            '<td class="py-3 px-3 border border-slate-200 text-left text-slate-700">' +
-              (row.topic ? escapeHtml(row.topic) : '<span class="text-slate-300">-</span>') +
-            '</td>' +
+            '<td class="py-3 px-2 border border-slate-200 font-extrabold text-slate-700">' + row.num + '번</td>' +
+            '<td class="py-3 px-3 border border-slate-200 font-bold text-slate-900 text-left">' + escapeHtml(row.name) + '</td>' +
             '<td class="py-3 px-2 border border-slate-200 font-bold ' + (row.jTotals[1] !== null ? 'text-slate-800' : 'text-slate-300') + '">' + (row.jTotals[1] !== null ? row.jTotals[1] : '미전송') + '</td>' +
             '<td class="py-3 px-2 border border-slate-200 font-bold ' + (row.jTotals[2] !== null ? 'text-slate-800' : 'text-slate-300') + '">' + (row.jTotals[2] !== null ? row.jTotals[2] : '미전송') + '</td>' +
             '<td class="py-3 px-2 border border-slate-200 font-bold ' + (row.jTotals[3] !== null ? 'text-slate-800' : 'text-slate-300') + '">' + (row.jTotals[3] !== null ? row.jTotals[3] : '미전송') + '</td>' +
@@ -1780,61 +1730,99 @@
         });
       }
 
-      // ==================== 10. 관리자 설정·명단·상세 비교 모달 ====================
-      function openAdminSettingsModal() {
+      // ==================== 11. 관리자 설정 탭 (심사위원 성함 & 학생 명단) ====================
+      function renderAdminSettingsView() {
+        for (let k = 1; k <= 4; k++) {
+          const el = document.getElementById('jEditName_' + k);
+          if (el) el.value = (state.config.judgeNames && state.config.judgeNames[k]) || '';
+        }
         document.getElementById('settingParticipantCount').value = state.config.participantCount;
-        document.getElementById('settingAdminPin').value = state.config.adminPin;
         document.getElementById('settingFirebaseUrl').value = FIREBASE_DB_BASE;
-        renderParticipantEditList();
-        const m = document.getElementById('adminSettingsModal');
-        m.classList.remove('hidden');
-        m.classList.add('flex');
+        renderParticipantEditGrid();
       }
 
-      function closeAdminSettingsModal() {
-        const m = document.getElementById('adminSettingsModal');
-        m.classList.add('hidden');
-        m.classList.remove('flex');
-      }
-
-      function renderParticipantEditList() {
-        const tbody = document.getElementById('participantEditList');
-        tbody.innerHTML = '';
+      function renderParticipantEditGrid() {
+        const grid = document.getElementById('participantEditGrid');
+        grid.innerHTML = '';
         const count = state.config.participantCount;
+
         for (let i = 0; i < count; i++) {
-          const p = state.config.participants[i] || { num: i + 1, studentId: '', name: '', topic: '' };
-          const tr = document.createElement('tr');
-          tr.innerHTML =
-            '<td class="py-1.5 px-3 text-center font-bold text-slate-700">' + (i + 1) + '</td>' +
-            '<td class="py-1.5 px-2"><input type="text" id="pEditId_' + i + '" value="' + escapeHtml(p.studentId || '') + '" placeholder="예: 10101" class="w-full px-2 py-1 rounded border border-slate-300 text-xs" /></td>' +
-            '<td class="py-1.5 px-2"><input type="text" id="pEditName_' + i + '" value="' + escapeHtml(p.name || '') + '" placeholder="성명" class="w-full px-2 py-1 rounded border border-slate-300 text-xs" /></td>' +
-            '<td class="py-1.5 px-2"><input type="text" id="pEditTopic_' + i + '" value="' + escapeHtml(p.topic || '') + '" placeholder="발표 주제 입력" class="w-full px-2 py-1 rounded border border-slate-300 text-xs" /></td>';
-          tbody.appendChild(tr);
+          const p = state.config.participants[i] || { num: i + 1, name: '' };
+          const wrap = document.createElement('div');
+          wrap.className = 'flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2';
+          wrap.innerHTML =
+            '<span class="w-8 text-xs font-extrabold text-blue-800 shrink-0">' + (i + 1) + '번</span>' +
+            '<input type="text" id="pEditName_' + i + '" value="' + escapeHtml(p.name || '') + '" placeholder="예: 10101 홍길동" ' +
+            'class="flex-1 px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold bg-white focus:outline-none focus:ring-2 focus:ring-blue-600" />';
+          grid.appendChild(wrap);
         }
       }
 
-      function saveParticipantList() {
+      async function saveAllConfigToCloud() {
+        for (let k = 1; k <= 4; k++) {
+          const jEl = document.getElementById('jEditName_' + k);
+          state.config.judgeNames[k] = jEl ? jEl.value.trim() : '';
+        }
         const count = state.config.participantCount;
         for (let i = 0; i < count; i++) {
-          const idEl = document.getElementById('pEditId_' + i);
-          const nameEl = document.getElementById('pEditName_' + i);
-          const topicEl = document.getElementById('pEditTopic_' + i);
+          const pEl = document.getElementById('pEditName_' + i);
           state.config.participants[i] = {
             num: i + 1,
-            studentId: idEl ? idEl.value.trim() : '',
-            name: nameEl ? nameEl.value.trim() : '',
-            topic: topicEl ? topicEl.value.trim() : ''
+            name: pEl ? pEl.value.trim() : ''
           };
         }
-        persistConfigToCloud();
-        renderAdminView();
-        closeAdminSettingsModal();
+
+        const ok = await persistConfigToCloud();
+        if (ok) {
+          showDialog(
+            '설정 저장 및 동기화 완료',
+            '심사위원 성함과 참가 학생 명단(' + count + '명)이 Firebase에 저장되어 모든 기기에 실시간 반영되었습니다.',
+            'success'
+          );
+        } else {
+          showDialog('로컬 저장 완료', '오프라인 상태로 기기에만 임시 저장되었습니다. 네트워크 연결 후 다시 저장해 주세요.', 'warning');
+        }
+      }
+
+      function applyBulkPasteParticipants() {
+        const rawText = document.getElementById('bulkPasteTextarea').value;
+        const lines = rawText
+          .split(/\r?\n/)
+          .map(function (line) { return line.trim(); })
+          .filter(function (line) { return line.length > 0; });
+
+        if (lines.length === 0) {
+          showDialog('입력 확인', '붙여넣기 칸에 학생 명단을 한 줄에 한 명씩 입력해 주세요.', 'warning');
+          return;
+        }
+
+        const newCount = Math.min(24, Math.max(1, lines.length));
+        state.config.participantCount = newCount;
+        document.getElementById('settingParticipantCount').value = newCount;
+
+        for (let i = 0; i < newCount; i++) {
+          state.config.participants[i] = { num: i + 1, name: lines[i] };
+        }
+        renderParticipantEditGrid();
+        showDialog(
+          '일괄 채우기 완료',
+          newCount + '명의 명단을 아래 표에 채웠습니다.\n반드시 [설정 저장 및 동기화] 버튼을 눌러 서버에 반영해 주세요.',
+          'info'
+        );
       }
 
       function openParticipantDetailModal(pNum) {
-        const pInfo = state.config.participants[pNum - 1] || {};
         document.getElementById('detailModalTitle').textContent =
-          '발표자 ' + pNum + '번' + (pInfo.name ? ' (' + pInfo.studentId + ' ' + pInfo.name + ')' : '') + ' 세부 채점 내역';
+          getParticipantHeaderLabel(pNum) + ' — 심사위원별 세부 항목 비교';
+
+        const headRow = document.getElementById('detailModalHeadRow');
+        headRow.innerHTML =
+          '<th class="py-2.5 px-2 border border-slate-300 text-left">평가항목 (배점)</th>' +
+          '<th class="py-2.5 px-2 border border-slate-300 w-24">' + escapeHtml(getJudgeShortName(1)) + '</th>' +
+          '<th class="py-2.5 px-2 border border-slate-300 w-24">' + escapeHtml(getJudgeShortName(2)) + '</th>' +
+          '<th class="py-2.5 px-2 border border-slate-300 w-24">' + escapeHtml(getJudgeShortName(3)) + '</th>' +
+          '<th class="py-2.5 px-2 border border-slate-300 w-24">' + escapeHtml(getJudgeShortName(4)) + '</th>';
+
         const tbody = document.getElementById('detailModalBody');
         tbody.innerHTML = '';
 
@@ -1867,7 +1855,7 @@
             totalCellsHtml += '<td class="py-2 px-2 border border-slate-300">' + getParticipantJudgeScore(j.scores, pNum).sum + '점</td>';
           }
         }
-        totalTr.innerHTML = '<td class="py-2 px-2 border border-slate-300 text-left">총점 (100점 만점)</td>' + totalCellsHtml;
+        totalTr.innerHTML = '<td class="py-2 px-2 border border-slate-300 text-left">합계 (100점 만점)</td>' + totalCellsHtml;
         tbody.appendChild(totalTr);
 
         const m = document.getElementById('participantDetailModal');
@@ -1881,18 +1869,24 @@
         m.classList.remove('flex');
       }
 
-      function fillDemoTestData() {
-        const sampleNames = ['김민준', '이서연', '박지훈', '최수빈', '정도윤', '강하은', '조현우', '윤지민', '장서준', '임채원', '한시우', '오유진', '서준서', '신예은', '권태윤', '황지아', '안건우', '송다인'];
-        const pCount = state.config.participantCount;
-        for (let i = 0; i < pCount; i++) {
-          if (!state.config.participants[i].name) {
-            state.config.participants[i].studentId = '10' + ((i % 6) + 1) + String(i + 1).padStart(2, '0');
-            state.config.participants[i].name = sampleNames[i % sampleNames.length];
-            state.config.participants[i].topic = '의료기기 품질관리 전문가 로드맵';
-          }
-        }
+      // ==================== 12. 모의 테스트, 초기화(명단 보존), CSV 저장 ====================
+      function createDemoSignatureDataUrl(labelText) {
+        const tmpCanvas = document.createElement('canvas');
+        tmpCanvas.width = 200;
+        tmpCanvas.height = 60;
+        const ctx = tmpCanvas.getContext('2d');
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'italic bold 20px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(labelText, 100, 32);
+        return tmpCanvas.toDataURL('image/png');
+      }
 
-        const judgeNames = ['김의료', '이바이오', '박진로', '최마이스터'];
+      async function fillDemoTestData() {
+        const pCount = state.config.participantCount;
+        const resetToken = 'demo_' + Date.now();
+
         for (let jId = 1; jId <= 4; jId++) {
           const scores = {};
           for (let p = 1; p <= pCount; p++) {
@@ -1904,29 +1898,52 @@
           }
           state.judges[jId] = {
             id: jId,
-            name: judgeNames[jId - 1],
-            signature: '',
+            signature: createDemoSignatureDataUrl(getJudgeShortName(jId) + ' (테스트)'),
             submitted: true,
             submittedAt: '모의테스트',
+            resetToken: resetToken,
             scores: scores
           };
-          persistJudgeToCloud(jId);
+          await persistJudgeToCloud(jId);
         }
-        persistConfigToCloud();
-        renderAdminView();
-        closeAdminSettingsModal();
-        showDialog('모의 테스트 데이터 생성 완료', '심사위원 1~4번의 가상 채점 데이터와 참가자 명단이 생성되어 실시간 순위표에 반영되었습니다.', 'success');
+
+        switchAdminTab('ranking');
+        showDialog('테스트 점수 채우기 완료', '심사위원 1~4번의 모의 점수와 모의 서명이 생성되어 실시간 순위표에 반영되었습니다.', 'success');
+      }
+
+      function promptResetScoresOnly() {
+        showConfirmDialog(
+          '전체 점수 초기화 확인',
+          '모든 심사위원의 채점 점수, 자필 서명, 제출 잠금 상태가 초기화됩니다.\n\n※ 등록해 둔 [심사위원 성함]과 [참가 학생 명단]은 삭제되지 않고 그대로 보존됩니다.\n진행하시겠습니까?',
+          async function () {
+            const resetToken = 'reset_' + Date.now();
+            for (let jId = 1; jId <= 4; jId++) {
+              state.judges[jId] = {
+                id: jId,
+                signature: '',
+                submitted: false,
+                submittedAt: null,
+                resetToken: resetToken,
+                scores: {}
+              };
+              await persistJudgeToCloud(jId);
+            }
+            renderAdminRankingView();
+            showDialog('초기화 완료', '점수·서명·잠금 상태가 깨끗하게 초기화되었습니다.\n(심사위원 성함과 학생 명단은 그대로 유지되었습니다.)', 'success');
+          }
+        );
       }
 
       function exportResultsCSV() {
         const pCount = state.config.participantCount;
-        const rows = [
-          ['순위', '시상구분', '상품권(매)', '발표번호', '학번', '성명', '발표주제', '심사위원1', '심사위원2', '심사위원3', '심사위원4', '합산총점(400)', '평균(100)']
-        ];
+        const rows = [[
+          '순위', '시상구분', '상품권(매)', '발표번호', '참가자(학번·성명)',
+          getJudgeShortName(1), getJudgeShortName(2), getJudgeShortName(3), getJudgeShortName(4),
+          '합산총점(400)', '평균(100)'
+        ]];
 
         const computed = [];
         for (let p = 1; p <= pCount; p++) {
-          const pInfo = state.config.participants[p - 1] || {};
           let total = 0;
           let cnt = 0;
           const jVals = [];
@@ -1942,9 +1959,7 @@
           }
           computed.push({
             num: p,
-            studentId: pInfo.studentId || '',
-            name: pInfo.name || '발표자' + p,
-            topic: pInfo.topic || '',
+            name: getParticipantDisplayName(p),
             jVals: jVals,
             total: total,
             cnt: cnt,
@@ -1966,9 +1981,7 @@
             award ? award.label : '',
             award ? award.vouchers : 0,
             r.num,
-            r.studentId,
             r.name,
-            r.topic,
             r.jVals[0],
             r.jVals[1],
             r.jVals[2],
@@ -1978,6 +1991,7 @@
           ]);
         });
 
+        // 한글 깨짐 방지를 위한 UTF-8 BOM 추가
         const csvContent = '\uFEFF' + rows.map(function (e) {
           return e.map(function (v) {
             return '"' + String(v).replace(/"/g, '""') + '"';
@@ -1993,7 +2007,7 @@
         URL.revokeObjectURL(url);
       }
 
-      // ==================== 11. 커스텀 다이얼로그 ====================
+      // ==================== 13. 커스텀 모달 다이얼로그 ====================
       function showDialog(title, message, type) {
         const modal = document.getElementById('customDialogModal');
         const iconWrap = document.getElementById('dialogIconWrap');
@@ -2035,7 +2049,7 @@
         document.getElementById('dialogTitle').textContent = title;
         document.getElementById('dialogMessage').textContent = message;
 
-        iconWrap.className = 'w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-lg shrink-0';
+        iconWrap.className = 'w-10 h-10 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-lg shrink-0';
         icon.className = 'fa-solid fa-paper-plane';
 
         const btnContainer = document.getElementById('dialogButtons');
@@ -2049,7 +2063,7 @@
 
         const confirmBtn = document.createElement('button');
         confirmBtn.type = 'button';
-        confirmBtn.className = 'px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-bold shadow';
+        confirmBtn.className = 'px-5 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs sm:text-sm font-bold shadow';
         confirmBtn.textContent = '확인 및 진행';
         confirmBtn.addEventListener('click', function () {
           closeCustomDialog();
@@ -2069,9 +2083,13 @@
         modal.classList.remove('flex');
       }
 
-      // ==================== 12. 모든 DOM 이벤트 일괄 바인딩 ====================
-      function bindAllUIEvents() {
+      // ==================== 14. 이벤트 바인딩 ====================
+      function bindAllEvents() {
         document.getElementById('btnGoHome').addEventListener('click', returnHome);
+        document.getElementById('btnHeaderSync').addEventListener('click', function () {
+          updateConnectionBadge(true, '동기화 중...');
+          fetchStateFromFirebase();
+        });
 
         // 관리자 로그인
         document.getElementById('btnEnterAdmin').addEventListener('click', enterAdminMode);
@@ -2079,32 +2097,24 @@
           if (e.key === 'Enter') enterAdminMode();
         });
 
-        // 심사위원 인증 모달
+        // 심사위원 PIN 인증 모달
         document.getElementById('btnCancelJudgeAuth').addEventListener('click', closeJudgeAuthModal);
         document.getElementById('btnVerifyJudgeAuth').addEventListener('click', verifyJudgePinAndEnter);
         document.getElementById('judgePinInput').addEventListener('keydown', function (e) {
           if (e.key === 'Enter') verifyJudgePinAndEnter();
         });
-
-        // 심사위원 채점표 컨트롤
-        document.getElementById('judgeNameInput').addEventListener('change', function () {
-          const j = state.judges[state.currentJudgeId];
-          if (!j || j.submitted) return;
-          j.name = document.getElementById('judgeNameInput').value.trim();
-          persistJudgeToCloud(j.id);
+        document.getElementById('judgeAuthModal').addEventListener('click', function (e) {
+          if (e.target === this) closeJudgeAuthModal();
         });
+
+        // 심사위원 채점표 상단 및 하단 컨트롤
         document.getElementById('btnOpenSignature').addEventListener('click', openSignatureModal);
+        document.getElementById('btnClearSavedSignature').addEventListener('click', clearSavedSignature);
         document.getElementById('btnSubmitScores').addEventListener('click', validateAndPromptSubmit);
 
-        // 점수 입력 모달 컨트롤
+        // 원터치 배점 선택 모달 컨트롤
         document.getElementById('btnCloseScoreModalTop').addEventListener('click', closeScoreModal);
         document.getElementById('btnCloseScoreModalBottom').addEventListener('click', closeScoreModal);
-        document.getElementById('btnClearHwCanvas').addEventListener('click', clearHandwritingCanvas);
-        document.getElementById('btnApplyRecognized').addEventListener('click', function () {
-          if (state.recognizedNumber !== null) {
-            selectScoreAndClose(state.recognizedNumber);
-          }
-        });
         document.getElementById('btnClearCellScore').addEventListener('click', function () {
           if (!state.activeCell) return;
           const pNum = state.activeCell.pNum;
@@ -2117,47 +2127,61 @@
           renderJudgeView();
           closeScoreModal();
         });
+        document.getElementById('scoreInputModal').addEventListener('click', function (e) {
+          if (e.target === this) closeScoreModal();
+        });
+
+        // ESC 키로 열린 모달 닫기
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') {
+            if (!document.getElementById('scoreInputModal').classList.contains('hidden')) closeScoreModal();
+            else if (!document.getElementById('signatureModal').classList.contains('hidden')) closeSignatureModal();
+            else if (!document.getElementById('judgeAuthModal').classList.contains('hidden')) closeJudgeAuthModal();
+            else if (!document.getElementById('participantDetailModal').classList.contains('hidden')) closeParticipantDetailModal();
+          }
+        });
 
         // 서명 모달 컨트롤
         document.getElementById('btnCloseSigModalTop').addEventListener('click', closeSignatureModal);
         document.getElementById('btnCancelSigModal').addEventListener('click', closeSignatureModal);
         document.getElementById('btnClearSigCanvas').addEventListener('click', clearSignatureCanvas);
         document.getElementById('btnSaveSigData').addEventListener('click', saveSignatureData);
+        document.getElementById('signatureModal').addEventListener('click', function (e) {
+          if (e.target === this) closeSignatureModal();
+        });
 
-        // 관리자 집계실 버튼
-        document.getElementById('btnManualSync').addEventListener('click', function () {
-          updateConnectionBadge(true, '동기화 확인 중...');
+        // 관리자 탭 전환 및 집계실 버튼
+        document.getElementById('tabBtnRanking').addEventListener('click', function () {
+          switchAdminTab('ranking');
           fetchStateFromFirebase();
         });
-        document.getElementById('btnOpenSettings').addEventListener('click', openAdminSettingsModal);
+        document.getElementById('tabBtnSettings').addEventListener('click', function () {
+          switchAdminTab('settings');
+        });
+        document.getElementById('btnAdminRefresh').addEventListener('click', function () {
+          updateConnectionBadge(true, '동기화 중...');
+          fetchStateFromFirebase();
+        });
         document.getElementById('btnExportCsv').addEventListener('click', exportResultsCSV);
         document.getElementById('btnPrintResult').addEventListener('click', function () {
           window.print();
         });
 
-        // 관리자 설정 모달 버튼
-        document.getElementById('btnCloseSettingsTop').addEventListener('click', closeAdminSettingsModal);
+        // 관리자 설정 탭 컨트롤
+        document.getElementById('btnSaveAllSettingsTop').addEventListener('click', saveAllConfigToCloud);
+        document.getElementById('btnSaveAllSettingsBottom').addEventListener('click', saveAllConfigToCloud);
         document.getElementById('btnApplyCount').addEventListener('click', function () {
           const val = parseInt(document.getElementById('settingParticipantCount').value, 10);
           if (isNaN(val) || val < 1 || val > 24) {
-            showDialog('입력 오류', '참가 인원수는 1명~24명 사이로 입력해 주세요.', 'warning');
+            showDialog('입력 오류', '참가 인원은 1명~24명 사이로 입력해 주세요.', 'warning');
             return;
           }
           state.config.participantCount = val;
-          persistConfigToCloud();
-          renderParticipantEditList();
-          renderAdminView();
+          renderParticipantEditGrid();
         });
-        document.getElementById('btnUpdateAdminPin').addEventListener('click', function () {
-          const newPin = document.getElementById('settingAdminPin').value.trim();
-          if (newPin.length < 4) {
-            showDialog('PIN 설정 오류', '비밀번호는 최소 4자리 이상으로 설정해 주세요.', 'warning');
-            return;
-          }
-          state.config.adminPin = newPin;
-          persistConfigToCloud();
-          showDialog('변경 완료', "관리자 비밀번호가 '" + newPin + "'으로 변경되었습니다.", 'success');
-        });
+        document.getElementById('btnApplyBulkPaste').addEventListener('click', applyBulkPasteParticipants);
+        document.getElementById('btnFillDemo').addEventListener('click', fillDemoTestData);
+        document.getElementById('btnResetScoresOnly').addEventListener('click', promptResetScoresOnly);
         document.getElementById('btnUpdateFbUrl').addEventListener('click', function () {
           const rawUrl = document.getElementById('settingFirebaseUrl').value.trim();
           if (rawUrl.indexOf('https://') !== 0) {
@@ -2169,42 +2193,19 @@
           fetchStateFromFirebase();
           showDialog('DB 주소 저장 완료', '새 Firebase 데이터베이스 주소가 저장되었습니다.', 'success');
         });
-        document.getElementById('btnFillDemo').addEventListener('click', fillDemoTestData);
-        document.getElementById('btnResetAll').addEventListener('click', function () {
-          showConfirmDialog(
-            '전체 점수 및 상태 초기화',
-            '모든 심사위원의 채점 데이터와 제출 상태가 영구 삭제됩니다.\n본 대회 시작 전 초기화하시겠습니까?',
-            function () {
-              for (let jId = 1; jId <= 4; jId++) {
-                state.judges[jId] = {
-                  id: jId,
-                  name: '',
-                  signature: '',
-                  submitted: false,
-                  submittedAt: null,
-                  scores: {}
-                };
-                persistJudgeToCloud(jId);
-              }
-              renderAdminView();
-              closeAdminSettingsModal();
-              showDialog('초기화 완료', '모든 심사 데이터가 깨끗하게 초기화되었습니다.', 'success');
-            }
-          );
-        });
-        document.getElementById('btnSaveParticipantsTop').addEventListener('click', saveParticipantList);
-        document.getElementById('btnSaveParticipantsBottom').addEventListener('click', saveParticipantList);
 
         // 세부 점수 비교 모달 닫기
         document.getElementById('btnCloseDetailTop').addEventListener('click', closeParticipantDetailModal);
         document.getElementById('btnCloseDetailBottom').addEventListener('click', closeParticipantDetailModal);
+        document.getElementById('participantDetailModal').addEventListener('click', function (e) {
+          if (e.target === this) closeParticipantDetailModal();
+        });
       }
 
-      // ==================== 13. 초기 부팅 ====================
+      // ==================== 15. 초기화 부팅 ====================
       window.addEventListener('DOMContentLoaded', function () {
         loadLocalBackup();
-        bindAllUIEvents();
-        initHandwritingCanvasEvents();
+        bindAllEvents();
         initSignatureCanvasEvents();
         renderHomeJudgeButtons();
         fetchStateFromFirebase();
