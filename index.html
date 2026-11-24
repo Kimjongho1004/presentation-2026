@@ -4,11 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>2026학년도 1학년 프레젠테이션 발표대회 실시간 심사 시스템</title>
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Pretendard Font -->
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <style>
     body {
@@ -17,7 +14,6 @@
       color: #0f172a;
       -webkit-tap-highlight-color: transparent;
     }
-    /* 채점표 테이블 전용 스타일 */
     .rubric-table {
       border-collapse: collapse;
       width: 100%;
@@ -29,7 +25,7 @@
       border: 3px double #1e293b;
     }
     .score-cell {
-      transition: all 0.12s ease;
+      transition: background-color 0.12s ease, transform 0.1s ease;
       cursor: pointer;
       user-select: none;
     }
@@ -38,20 +34,19 @@
     }
     .score-cell:active {
       background-color: #dbeafe;
-      transform: scale(0.97);
+      transform: scale(0.96);
     }
     .score-cell.missing-highlight {
       background-color: #fee2e2 !important;
       box-shadow: inset 0 0 0 2px #ef4444;
-      animation: pulseRed 1.2s infinite;
+      animation: pulseRed 1.1s infinite;
     }
     @keyframes pulseRed {
       0%, 100% { background-color: #fee2e2; }
       50% { background-color: #fecaca; }
     }
-    /* 필기 캔버스 격자 배경 */
     .handwriting-canvas {
-      background-image: 
+      background-image:
         linear-gradient(to right, rgba(148, 163, 184, 0.25) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(148, 163, 184, 0.25) 1px, transparent 1px);
       background-size: 20px 20px;
@@ -60,17 +55,16 @@
     .signature-canvas {
       touch-action: none;
     }
-    /* 인쇄용 스타일 */
     @media print {
       .no-print { display: none !important; }
-      body { background: white !important; }
+      body { background: #ffffff !important; }
       .print-area { box-shadow: none !important; border: none !important; padding: 0 !important; }
     }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
-  <!-- 상단 공통 네비게이션 헤더 -->
+  <!-- 상단 네비게이션 -->
   <header class="bg-blue-950 text-white shadow-md no-print sticky top-0 z-30">
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-2">
       <div class="flex items-center gap-3">
@@ -86,19 +80,19 @@
       <div class="flex items-center gap-2">
         <span id="connectionBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-950 text-emerald-300 border border-emerald-700">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          Firebase 실시간 연결 중...
+          실시간 서버 연결 확인 중...
         </span>
-        <button id="btnGoHome" onclick="confirmReturnHome()" class="hidden px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-xs sm:text-sm font-medium transition flex items-center gap-1.5">
+        <button id="btnGoHome" type="button" class="hidden px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-xs sm:text-sm font-medium transition flex items-center gap-1.5">
           <i class="fa-solid fa-house"></i> 초기화면
         </button>
       </div>
     </div>
   </header>
 
-  <!-- 메인 콘텐츠 영역 -->
+  <!-- 메인 콘텐츠 -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-6">
 
-    <!-- ==================== 1. 초기화면 (역할 선택) ==================== -->
+    <!-- ==================== 1. 초기화면 (역할 및 비밀번호 인증) ==================== -->
     <section id="viewHome" class="max-w-4xl mx-auto mt-4 sm:mt-8">
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 mb-6 text-center">
         <span class="inline-block px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold mb-3 border border-blue-200">
@@ -106,8 +100,8 @@
         </span>
         <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2">『My Dream & Career Roadmap』 발표대회</h2>
         <p class="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto">
-          심사위원은 본인의 번호를 선택하여 독립적으로 채점하며, 심사위원 간 점수는 철저히 비공개됩니다.<br class="hidden sm:inline" />
-          모든 심사위원의 채점이 전송되면 담당자 집계실에서 실시간 합산 및 순위가 산출됩니다.
+          심사위원은 배정받은 번호와 개별 비밀번호를 입력하여 독립적으로 채점하며, 심사위원 간 점수는 철저히 비공개됩니다.<br class="hidden sm:inline" />
+          모든 심사위원의 점수가 전송되면 담당자 집계실에서 실시간 합산 및 최종 순위가 산출됩니다.
         </p>
       </div>
 
@@ -121,19 +115,17 @@
               </div>
               <div>
                 <h3 class="text-lg font-bold text-slate-900">심사위원 입장</h3>
-                <p class="text-xs text-slate-500">배정받은 심사위원 번호를 선택하세요 (점수 상호 비공개)</p>
+                <p class="text-xs text-slate-500">본인 번호 선택 후 비밀번호 4자리 입력 (점수 상호 비공개)</p>
               </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-3 my-4" id="judgeSelectGrid">
-              <!-- JS로 심사위원 1~4 버튼 렌더링 -->
-            </div>
+            <div class="grid grid-cols-2 gap-3 my-4" id="judgeSelectGrid"></div>
           </div>
 
-          <div class="bg-slate-50 rounded-xl p-3.5 text-xs text-slate-600 border border-slate-200/80 space-y-1">
-            <div class="font-semibold text-slate-800"><i class="fa-solid fa-circle-info text-blue-600 mr-1"></i> 심사 유의사항</div>
-            <p>• 각 칸을 터치하여 <strong>손글씨 필기 입력</strong> 또는 <strong>배점 버튼 터치</strong>로 채점합니다.</p>
-            <p>• 모든 참가자 입력 후 <strong>[최종 점수 전송하기]</strong>를 눌러야 집계가 완료됩니다.</p>
+          <div class="bg-slate-50 rounded-xl p-3.5 text-xs text-slate-600 border border-slate-200 space-y-1">
+            <div class="font-semibold text-slate-800"><i class="fa-solid fa-circle-info text-blue-600 mr-1"></i> 심사 안내</div>
+            <p>• 빈칸을 터치하면 <strong>손글씨 필기 입력</strong> 또는 <strong>배점 버튼 터치</strong>로 채점됩니다.</p>
+            <p>• 모든 참가자 입력 후 하단 <strong>[최종 점수 전송하기]</strong>를 눌러야 집계가 완료됩니다.</p>
           </div>
         </div>
 
@@ -151,31 +143,29 @@
             </div>
 
             <div class="my-5 space-y-3">
-              <label class="block text-xs font-semibold text-slate-700">관리자 비밀번호 (PIN)</label>
+              <label for="adminPinInput" class="block text-xs font-semibold text-slate-700">관리자 비밀번호 (PIN 4자리)</label>
               <div class="flex gap-2">
-                <input type="password" id="adminPinInput" maxlength="8" placeholder="비밀번호 입력 (기본: 1234)"
-                  onkeydown="if(event.key==='Enter') enterAdminMode()"
+                <input type="password" id="adminPinInput" maxlength="8" inputmode="numeric" placeholder="비밀번호 입력"
                   class="flex-1 px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-800 text-base tracking-widest" />
-                <button onclick="enterAdminMode()" class="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm transition shadow-sm whitespace-nowrap">
+                <button type="button" id="btnEnterAdmin" class="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm transition shadow-sm whitespace-nowrap">
                   집계실 입장 <i class="fa-solid fa-arrow-right ml-1"></i>
                 </button>
               </div>
-              <p id="adminPinError" class="text-xs text-red-600 font-medium hidden">비밀번호가 일치하지 않습니다.</p>
+              <p id="adminPinError" class="text-xs text-red-600 font-bold hidden">관리자 비밀번호가 일치하지 않습니다.</p>
             </div>
           </div>
 
           <div class="bg-amber-50 rounded-xl p-3.5 text-xs text-amber-900 border border-amber-200 space-y-1">
-            <div class="font-semibold"><i class="fa-solid fa-shield-halved text-amber-600 mr-1"></i> 보안 및 공정성 안내</div>
+            <div class="font-semibold"><i class="fa-solid fa-shield-halved text-amber-600 mr-1"></i> 공정 심사 보호</div>
             <p>• 관리자 화면에서만 4명의 심사위원 점수 합산 및 1위~최하위 등수를 확인할 수 있습니다.</p>
-            <p>• 시상 기준: 1등(1명/9매), 2등(3명/6매), 3등(5명/3매), 장려(9명/2매)</p>
+            <p>• 시상 기준: 1등(1명·9매), 2등(3명·6매), 3등(5명·3매), 장려(9명·2매)</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ==================== 2. 심사위원 채점 화면 ==================== -->
+    <!-- ==================== 2. 심사위원 채점표 화면 ==================== -->
     <section id="viewJudge" class="hidden space-y-4">
-      <!-- 상단 심사위원 정보 및 진행률 바 -->
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-5">
         <div class="flex flex-wrap items-center justify-between gap-4">
           <div class="flex items-center gap-3">
@@ -186,18 +176,16 @@
               <div class="flex items-center gap-2">
                 <label for="judgeNameInput" class="text-xs font-bold text-slate-600">심사위원 성명:</label>
                 <input type="text" id="judgeNameInput" placeholder="성명을 입력하세요"
-                  onchange="saveJudgeMeta()"
                   class="px-3 py-1.5 rounded-lg border border-slate-300 text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 w-36 sm:w-44" />
               </div>
               <p class="text-xs text-slate-500 mt-1">
-                <i class="fa-solid fa-lock text-slate-400 mr-1"></i>타 심사위원 점수는 비공개되며, 입력 내용은 자동 임시저장됩니다.
+                <i class="fa-solid fa-lock text-slate-400 mr-1"></i>타 심사위원 점수는 비공개되며, 입력 내용은 자동 저장됩니다.
               </p>
             </div>
           </div>
 
-          <!-- 서명 및 제출 상태 -->
           <div class="flex flex-wrap items-center gap-3">
-            <button onclick="openSignatureModal()" id="btnOpenSignature" class="px-3.5 py-2 rounded-xl border border-slate-300 hover:bg-slate-50 text-xs sm:text-sm font-bold text-slate-700 flex items-center gap-2 transition">
+            <button type="button" id="btnOpenSignature" class="px-3.5 py-2 rounded-xl border border-slate-300 hover:bg-slate-50 text-xs sm:text-sm font-bold text-slate-700 flex items-center gap-2 transition">
               <i class="fa-solid fa-signature text-blue-600"></i>
               <span id="signatureBtnLabel">심사위원 서명하기</span>
               <img id="signaturePreviewThumb" class="hidden h-6 border-l border-slate-300 pl-2 object-contain" alt="서명" />
@@ -212,7 +200,6 @@
           </div>
         </div>
 
-        <!-- 잠금 배너 (전송 완료 시 표시) -->
         <div id="judgeLockedBanner" class="hidden mt-4 p-3.5 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-900 flex flex-wrap items-center justify-between gap-2">
           <div class="flex items-center gap-2 text-sm font-bold">
             <i class="fa-solid fa-circle-check text-emerald-600 text-lg"></i>
@@ -222,7 +209,6 @@
         </div>
       </div>
 
-      <!-- 채점표 본문 (업로드된 채점표 양식 그대로 구현) -->
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
         <div class="flex flex-wrap items-end justify-between mb-3 gap-2">
           <div>
@@ -233,51 +219,37 @@
               ※ 각 빈칸을 터치하면 <strong>손글씨 필기 입력</strong> 또는 <strong>원터치 배점 버튼</strong>으로 점수를 입력할 수 있습니다.
             </p>
           </div>
-          <div class="flex items-center gap-2 text-xs">
-            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 font-semibold border border-blue-200">
-              <i class="fa-solid fa-pen"></i> 필기 + 버튼 하이브리드 지원
-            </span>
-          </div>
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-semibold border border-blue-200">
+            <i class="fa-solid fa-pen"></i> 필기 + 버튼 하이브리드 지원
+          </span>
         </div>
 
-        <!-- 가로 스크롤 대응 채점표 컨테이너 -->
         <div class="overflow-x-auto pb-2">
           <table class="rubric-table rubric-outer text-center text-xs sm:text-sm min-w-[1050px]" id="rubricTable">
             <thead>
-              <tr class="bg-slate-100 text-slate-900 font-bold">
-                <th class="w-24 py-2.5 px-2">평가항목</th>
-                <th class="w-12 py-2.5 px-1">배<br/>점</th>
-                <th class="w-56 py-2.5 px-2">세부 평가 내용</th>
-                <!-- 참가자 번호 헤더 1~18 동적 생성 -->
-              </tr>
+              <tr class="bg-slate-100 text-slate-900 font-bold" id="rubricTableHeadRow"></tr>
             </thead>
-            <tbody id="rubricTableBody">
-              <!-- JS로 7개 평가 항목 + 총점 행 렌더링 -->
-            </tbody>
+            <tbody id="rubricTableBody"></tbody>
           </table>
         </div>
 
-        <!-- 하단 최종 검증 및 전송 버튼 영역 -->
         <div class="mt-6 pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
-          <div id="validationHintText" class="text-xs sm:text-sm text-slate-600">
+          <div class="text-xs sm:text-sm text-slate-600">
             <i class="fa-solid fa-circle-exclamation text-amber-500 mr-1"></i>
             전송 버튼을 누르면 <strong>모든 참가자의 누락 여부를 자동 검증</strong>합니다.
           </div>
 
-          <div class="flex items-center gap-3 ml-auto">
-            <button onclick="validateAndPromptSubmit()" id="btnSubmitScores"
-              class="px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-extrabold text-sm sm:text-base shadow-md transition flex items-center gap-2">
-              <i class="fa-solid fa-paper-plane"></i>
-              <span>최종 점수 전송하기</span>
-            </button>
-          </div>
+          <button type="button" id="btnSubmitScores"
+            class="px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-extrabold text-sm sm:text-base shadow-md transition flex items-center gap-2 ml-auto">
+            <i class="fa-solid fa-paper-plane"></i>
+            <span>최종 점수 전송하기</span>
+          </button>
         </div>
       </div>
     </section>
 
     <!-- ==================== 3. 담당자(관리자) 집계실 화면 ==================== -->
     <section id="viewAdmin" class="hidden space-y-6">
-      <!-- 상단 요약 및 제어 바 -->
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
         <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4 mb-4">
           <div>
@@ -289,37 +261,32 @@
           </div>
 
           <div class="flex flex-wrap items-center gap-2 no-print">
-            <button onclick="manualSyncNow()" class="px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 font-bold text-xs sm:text-sm transition flex items-center gap-1.5">
+            <button type="button" id="btnManualSync" class="px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 font-bold text-xs sm:text-sm transition flex items-center gap-1.5">
               <i class="fa-solid fa-arrows-rotate"></i> 지금 새로고침
             </button>
-            <button onclick="openAdminSettingsModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs sm:text-sm transition flex items-center gap-1.5">
+            <button type="button" id="btnOpenSettings" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs sm:text-sm transition flex items-center gap-1.5">
               <i class="fa-solid fa-gear"></i> 대회 설정·명단 관리
             </button>
-            <button onclick="exportResultsCSV()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm">
+            <button type="button" id="btnExportCsv" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm">
               <i class="fa-solid fa-file-excel"></i> 엑셀(CSV) 저장
             </button>
-            <button onclick="window.print()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm">
+            <button type="button" id="btnPrintResult" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm">
               <i class="fa-solid fa-print"></i> 결과표 인쇄
             </button>
           </div>
         </div>
 
-        <!-- 심사위원 1~4 제출 현황 카드 -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3" id="adminJudgeStatusGrid">
-          <!-- JS 렌더링 -->
-        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3" id="adminJudgeStatusGrid"></div>
       </div>
 
-      <!-- 동점자 알림 배너 (동점자 발생 시에만 표시) -->
       <div id="tieAlertBanner" class="hidden bg-amber-50 border border-amber-300 rounded-2xl p-4 text-amber-950 flex items-start gap-3">
         <i class="fa-solid fa-triangle-exclamation text-amber-600 text-xl mt-0.5"></i>
         <div class="text-xs sm:text-sm">
           <div class="font-bold">동점자가 발생했습니다!</div>
-          <p id="tieAlertDetail" class="mt-0.5 text-amber-800"></p>
+          <p id="tieAlertDetail" class="mt-0.5 text-amber-800 whitespace-pre-line"></p>
         </div>
       </div>
 
-      <!-- 실시간 순위표 -->
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 print-area">
         <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
           <h3 class="text-lg font-extrabold text-slate-900">
@@ -347,9 +314,7 @@
                 <th class="py-3 px-2 border border-slate-700 w-20 bg-blue-950">평균<br/>(100점)</th>
               </tr>
             </thead>
-            <tbody id="adminRankingBody" class="divide-y divide-slate-200">
-              <!-- JS로 실시간 순위표 렌더링 -->
-            </tbody>
+            <tbody id="adminRankingBody" class="divide-y divide-slate-200"></tbody>
           </table>
         </div>
       </div>
@@ -359,28 +324,24 @@
 
   <!-- ==================== 모달 1: 손글씨 필기 + 원터치 배점 입력 모달 ==================== -->
   <div id="scoreInputModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200 animate-fadeIn">
-      <!-- 모달 헤더 -->
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200">
       <div class="bg-slate-900 text-white px-5 py-3.5 flex items-center justify-between">
         <div>
           <span id="modalParticipantTag" class="text-xs font-bold text-blue-300">발표자 1번</span>
           <h4 id="modalCriterionTitle" class="text-base font-extrabold">발표 내용 숙지 여부</h4>
         </div>
-        <button onclick="closeScoreModal()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center">
+        <button type="button" id="btnCloseScoreModalTop" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
       <div class="p-5 space-y-5">
-        <!-- (A) 원터치 배점 버튼 영역 -->
         <div>
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-bold text-slate-700"><i class="fa-solid fa-hand-pointer text-blue-600 mr-1"></i>방법 1. 배점 원터치 선택</span>
             <span id="modalValidScoresHint" class="text-[11px] text-slate-500">배점: 20, 18, 16, 14, 12</span>
           </div>
-          <div id="modalQuickButtons" class="grid grid-cols-5 gap-2">
-            <!-- JS로 유효 배점 버튼 생성 -->
-          </div>
+          <div id="modalQuickButtons" class="grid grid-cols-5 gap-2"></div>
         </div>
 
         <div class="relative flex py-1 items-center">
@@ -389,11 +350,10 @@
           <div class="flex-grow border-t border-slate-200"></div>
         </div>
 
-        <!-- (B) 손글씨 필기 인식 패드 영역 -->
         <div>
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-bold text-slate-700"><i class="fa-solid fa-pen-nib text-indigo-600 mr-1"></i>방법 2. 손글씨 숫자 필기 인식</span>
-            <button onclick="clearHandwritingCanvas()" class="text-xs text-slate-500 hover:text-red-600 font-semibold">
+            <button type="button" id="btnClearHwCanvas" class="text-xs text-slate-500 hover:text-red-600 font-semibold">
               <i class="fa-solid fa-eraser mr-1"></i>지우기
             </button>
           </div>
@@ -409,7 +369,7 @@
             <div class="w-28 flex flex-col items-center justify-center bg-blue-50 border border-blue-200 rounded-xl p-2.5 h-28">
               <span class="text-[11px] font-semibold text-blue-700">필기 인식 결과</span>
               <div id="recognizedScoreDisplay" class="text-3xl font-black text-blue-900 my-1">-</div>
-              <button id="btnApplyRecognized" onclick="applyRecognizedScore()" disabled
+              <button type="button" id="btnApplyRecognized" disabled
                 class="w-full py-1.5 rounded-lg bg-blue-600 disabled:bg-slate-300 text-white text-xs font-bold transition">
                 적용하기
               </button>
@@ -418,12 +378,11 @@
           <p id="handwritingFeedbackMsg" class="text-[11px] text-slate-500 mt-1.5 min-h-[16px]"></p>
         </div>
 
-        <!-- 하단 초기화 / 닫기 -->
         <div class="flex items-center justify-between pt-2 border-t border-slate-100">
-          <button onclick="clearCurrentCellScore()" class="px-3 py-2 rounded-lg text-xs font-bold text-red-600 hover:bg-red-50 transition">
+          <button type="button" id="btnClearCellScore" class="px-3 py-2 rounded-lg text-xs font-bold text-red-600 hover:bg-red-50 transition">
             <i class="fa-solid fa-trash-can mr-1"></i>점수 비우기
           </button>
-          <button onclick="closeScoreModal()" class="px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold transition">
+          <button type="button" id="btnCloseScoreModalBottom" class="px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold transition">
             닫기
           </button>
         </div>
@@ -431,12 +390,12 @@
     </div>
   </div>
 
-  <!-- ==================== 모달 2: 심사위원 터치 서명 모달 ==================== -->
+  <!-- ==================== 모달 2: 심사위원 자필 서명 모달 ==================== -->
   <div id="signatureModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200">
       <div class="bg-slate-900 text-white px-5 py-3.5 flex items-center justify-between">
         <h4 class="text-base font-extrabold"><i class="fa-solid fa-signature mr-1.5 text-blue-400"></i>심사위원 자필 서명</h4>
-        <button onclick="closeSignatureModal()" class="text-slate-300 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+        <button type="button" id="btnCloseSigModalTop" class="text-slate-300 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="p-5 space-y-4">
         <p class="text-xs text-slate-600">아래 서명란에 손가락이나 터치펜으로 서명해 주세요. 최종 전송 시 서명이 첨부됩니다.</p>
@@ -444,19 +403,43 @@
           <canvas id="signatureCanvas" width="380" height="160" class="signature-canvas w-full h-40 cursor-crosshair"></canvas>
         </div>
         <div class="flex justify-between gap-2">
-          <button onclick="clearSignatureCanvas()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">
+          <button type="button" id="btnClearSigCanvas" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">
             다시 쓰기
           </button>
           <div class="flex gap-2">
-            <button onclick="closeSignatureModal()" class="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-xs font-bold">취소</button>
-            <button onclick="saveSignatureData()" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow">서명 저장</button>
+            <button type="button" id="btnCancelSigModal" class="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-xs font-bold">취소</button>
+            <button type="button" id="btnSaveSigData" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow">서명 저장</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ==================== 모달 3: 커스텀 알림 및 확인 모달 (alert/confirm 대체) ==================== -->
+  <!-- ==================== 모달 3: 심사위원 본인 확인 비밀번호 모달 ==================== -->
+  <div id="judgeAuthModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 border border-slate-200">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center text-lg">
+          <i class="fa-solid fa-key"></i>
+        </div>
+        <div>
+          <h4 id="judgeAuthModalTitle" class="text-lg font-extrabold text-slate-900">심사위원 1 본인 확인</h4>
+          <p class="text-xs text-slate-500">배정받은 4자리 심사위원 비밀번호를 입력하세요.</p>
+        </div>
+      </div>
+      <div class="space-y-3">
+        <input type="password" id="judgePinInput" maxlength="8" inputmode="numeric" placeholder="비밀번호 4자리 입력"
+          class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600 text-center text-lg font-bold tracking-widest" />
+        <p id="judgePinError" class="text-xs text-rose-600 font-bold text-center hidden">비밀번호가 일치하지 않습니다. 다시 확인해 주세요.</p>
+      </div>
+      <div class="mt-5 flex justify-end gap-2">
+        <button type="button" id="btnCancelJudgeAuth" class="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-xs font-bold">취소</button>
+        <button type="button" id="btnVerifyJudgeAuth" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow">입장하기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 모달 4: 커스텀 안내/확인 모달 ==================== -->
   <div id="customDialogModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 border border-slate-200">
       <div class="flex items-start gap-3.5">
@@ -468,1639 +451,1766 @@
           <div id="dialogMessage" class="text-sm text-slate-600 mt-1.5 leading-relaxed whitespace-pre-line"></div>
         </div>
       </div>
-      <div class="mt-6 flex justify-end gap-2" id="dialogButtons">
-        <!-- JS 동적 버튼 -->
-      </div>
+      <div class="mt-6 flex justify-end gap-2" id="dialogButtons"></div>
     </div>
   </div>
 
-  <!-- ==================== 모달 4: 관리자 설정 및 참가자 명단 관리 모달 ==================== -->
+  <!-- ==================== 모달 5: 관리자 설정 및 명단 관리 모달 ==================== -->
   <div id="adminSettingsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] flex flex-col overflow-hidden border border-slate-200">
       <div class="bg-slate-900 text-white px-5 py-4 flex items-center justify-between">
         <h4 class="text-base font-extrabold"><i class="fa-solid fa-sliders mr-1.5 text-blue-400"></i>대회 환경 설정 및 참가자 명단 관리</h4>
-        <button onclick="closeAdminSettingsModal()" class="text-slate-300 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+        <button type="button" id="btnCloseSettingsTop" class="text-slate-300 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
       <div class="p-5 overflow-y-auto space-y-6 flex-1">
-        <!-- 기본 설정 -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
           <div>
-  <!-- Firebase REST API 실시간 동기화 & Application Script -->
+            <label for="settingParticipantCount" class="block text-xs font-bold text-slate-700 mb-1">본선 발표 참가 인원수 (명)</label>
+            <div class="flex gap-2">
+              <input type="number" id="settingParticipantCount" min="1" max="24" value="18"
+                class="w-24 px-3 py-2 rounded-lg border border-slate-300 text-sm font-bold" />
+              <button type="button" id="btnApplyCount" class="px-3.5 py-2 rounded-lg bg-slate-800 text-white text-xs font-bold hover:bg-slate-700">
+                인원 적용
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label for="settingAdminPin" class="block text-xs font-bold text-slate-700 mb-1">집계실(관리자) 비밀번호</label>
+            <div class="flex gap-2">
+              <input type="text" id="settingAdminPin" maxlength="8" value="0010"
+                class="w-28 px-3 py-2 rounded-lg border border-slate-300 text-sm font-bold" />
+              <button type="button" id="btnUpdateAdminPin" class="px-3.5 py-2 rounded-lg bg-slate-800 text-white text-xs font-bold hover:bg-slate-700">
+                비밀번호 변경
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-blue-50/60 p-4 rounded-xl border border-blue-200 space-y-3">
+          <div>
+            <label for="settingFirebaseUrl" class="block text-xs font-bold text-blue-900 mb-1">Firebase Realtime Database URL</label>
+            <div class="flex gap-2">
+              <input type="text" id="settingFirebaseUrl"
+                class="flex-1 px-3 py-2 rounded-lg border border-blue-300 text-xs font-mono bg-white" />
+              <button type="button" id="btnUpdateFbUrl" class="px-3.5 py-2 rounded-lg bg-blue-700 text-white text-xs font-bold hover:bg-blue-800 whitespace-nowrap">
+                URL 저장
+              </button>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-blue-200">
+            <div class="text-xs text-blue-900">
+              <strong>심사위원 비밀번호:</strong> 1번(<code>1218</code>), 2번(<code>1229</code>), 3번(<code>1230</code>), 4번(<code>1241</code>)
+            </div>
+            <div class="flex gap-2">
+              <button type="button" id="btnFillDemo" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold">
+                <i class="fa-solid fa-flask mr-1"></i>테스트 점수 채우기
+              </button>
+              <button type="button" id="btnResetAll" class="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold">
+                <i class="fa-solid fa-rotate-left mr-1"></i>전체 점수 초기화
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <h5 class="text-sm font-extrabold text-slate-900">발표자 1~18번 학번 · 성명 · 발표 주제 설정</h5>
+            <button type="button" id="btnSaveParticipantsTop" class="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold">
+              <i class="fa-solid fa-check mr-1"></i>명단 저장하기
+            </button>
+          </div>
+          <div class="border border-slate-200 rounded-xl overflow-hidden">
+            <table class="w-full text-xs">
+              <thead class="bg-slate-100 text-slate-700 font-bold">
+                <tr>
+                  <th class="py-2 px-3 w-14 text-center">번호</th>
+                  <th class="py-2 px-2 w-28 text-left">학번</th>
+                  <th class="py-2 px-2 w-28 text-left">성명</th>
+                  <th class="py-2 px-2 text-left">발표 주제</th>
+                </tr>
+              </thead>
+              <tbody id="participantEditList" class="divide-y divide-slate-200"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-slate-50 px-5 py-3.5 border-t border-slate-200 flex justify-end gap-2">
+        <button type="button" id="btnSaveParticipantsBottom" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow">
+          설정 및 명단 저장 후 닫기
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 모달 6: 참가자별 심사위원 세부 점수 비교 모달 ==================== -->
+  <div id="participantDetailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden border border-slate-200">
+      <div class="bg-slate-900 text-white px-5 py-3.5 flex items-center justify-between">
+        <h4 id="detailModalTitle" class="text-base font-extrabold">참가자 세부 항목별 채점 내역</h4>
+        <button type="button" id="btnCloseDetailTop" class="text-slate-300 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="p-5 overflow-x-auto">
+        <table class="w-full text-center border-collapse text-xs">
+          <thead>
+            <tr class="bg-slate-100 font-bold text-slate-800">
+              <th class="py-2 px-2 border border-slate-300 text-left">평가항목 (배점)</th>
+              <th class="py-2 px-2 border border-slate-300 w-20">심사위원 1</th>
+              <th class="py-2 px-2 border border-slate-300 w-20">심사위원 2</th>
+              <th class="py-2 px-2 border border-slate-300 w-20">심사위원 3</th>
+              <th class="py-2 px-2 border border-slate-300 w-20">심사위원 4</th>
+            </tr>
+          </thead>
+          <tbody id="detailModalBody"></tbody>
+        </table>
+      </div>
+      <div class="bg-slate-50 px-5 py-3 border-t border-slate-200 flex justify-end">
+        <button type="button" id="btnCloseDetailBottom" class="px-4 py-2 rounded-xl bg-slate-800 text-white text-xs font-bold">닫기</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // ==================== 0. Firebase Realtime Database 설정 ====================
-    const FIREBASE_DB_URL = 'https://presentation-2026-default-rtdb.asia-southeast1.firebasedatabase.app/contest2026';
-    const LOCAL_CACHE_KEY = 'med_meister_pt_2026_cache_v1';
+    (function () {
+      'use strict';
 
-    // ==================== 1. 채점 기준표 상수 정의 ====================
-    const RUBRIC_ITEMS = [
-      {
-        id: 'c1',
-        group: '발표력\n(50)',
-        groupRowSpan: 3,
-        maxScore: 20,
-        title: '발표 내용 숙지 여부',
-        desc: '(20, 18, 16, 14, 12)',
-        validScores: [20, 18, 16, 14, 12]
-      },
-      {
-        id: 'c2',
-        group: null,
-        maxScore: 20,
-        title: '자신감\n(목소리, 톤)',
-        desc: '(20, 18, 16, 14, 12)',
-        validScores: [20, 18, 16, 14, 12]
-      },
-      {
-        id: 'c3',
-        group: null,
-        maxScore: 10,
-        title: '표현력\n(몸짓, 동작, 시선)',
-        desc: '(10, 9, 8, 7, 6)',
-        validScores: [10, 9, 8, 7, 6]
-      },
-      {
-        id: 'c4',
-        group: 'PPT\n주제\n선정 및\n내용구성\n(40)',
-        groupRowSpan: 3,
-        maxScore: 20,
-        title: '주제 선정\n(PPT 디자인, 내용 전달)',
-        desc: '(20, 18, 16, 14, 12)',
-        validScores: [20, 18, 16, 14, 12]
-      },
-      {
-        id: 'c5',
-        group: null,
-        maxScore: 10,
-        title: '내용구성',
-        desc: '(10, 9, 8, 7, 6)',
-        validScores: [10, 9, 8, 7, 6]
-      },
-      {
-        id: 'c6',
-        group: null,
-        maxScore: 10,
-        title: '도구의 활용도\n(예)그래프, 동영상,\n신뢰성 있는 Data 등',
-        desc: '(10, 9, 8, 7, 6)',
-        validScores: [10, 9, 8, 7, 6]
-      },
-      {
-        id: 'c7',
-        group: '태도\n(10)',
-        groupRowSpan: 1,
-        maxScore: 10,
-        title: '복장, 시간 준수, 진정성\n(교복, 지연 및 발표시간\n과부족, 발표의 진정성)',
-        desc: '(10, 9, 8, 7, 6)',
-        validScores: [10, 9, 8, 7, 6]
+      // ==================== 1. 상수 및 비밀번호 설정 ====================
+      const DEFAULT_FIREBASE_BASE = 'https://presentation-2026-default-rtdb.asia-southeast1.firebasedatabase.app';
+      const DB_URL_STORAGE_KEY = 'med_meister_pt_2026_db_url';
+      const LOCAL_CACHE_KEY = 'med_meister_pt_2026_cache_v3';
+
+      let FIREBASE_DB_BASE = localStorage.getItem(DB_URL_STORAGE_KEY) || DEFAULT_FIREBASE_BASE;
+
+      const JUDGE_PASSWORDS = {
+        1: '1218',
+        2: '1229',
+        3: '1230',
+        4: '1241'
+      };
+
+      const RUBRIC_ITEMS = [
+        {
+          id: 'c1',
+          group: '발표력\n(50)',
+          groupRowSpan: 3,
+          maxScore: 20,
+          title: '발표 내용 숙지 여부',
+          desc: '(20, 18, 16, 14, 12)',
+          validScores: [20, 18, 16, 14, 12]
+        },
+        {
+          id: 'c2',
+          group: null,
+          groupRowSpan: 0,
+          maxScore: 20,
+          title: '자신감\n(목소리, 톤)',
+          desc: '(20, 18, 16, 14, 12)',
+          validScores: [20, 18, 16, 14, 12]
+        },
+        {
+          id: 'c3',
+          group: null,
+          groupRowSpan: 0,
+          maxScore: 10,
+          title: '표현력\n(몸짓, 동작, 시선)',
+          desc: '(10, 9, 8, 7, 6)',
+          validScores: [10, 9, 8, 7, 6]
+        },
+        {
+          id: 'c4',
+          group: 'PPT\n주제\n선정 및\n내용구성\n(40)',
+          groupRowSpan: 3,
+          maxScore: 20,
+          title: '주제 선정\n(PPT 디자인, 내용 전달)',
+          desc: '(20, 18, 16, 14, 12)',
+          validScores: [20, 18, 16, 14, 12]
+        },
+        {
+          id: 'c5',
+          group: null,
+          groupRowSpan: 0,
+          maxScore: 10,
+          title: '내용구성',
+          desc: '(10, 9, 8, 7, 6)',
+          validScores: [10, 9, 8, 7, 6]
+        },
+        {
+          id: 'c6',
+          group: null,
+          groupRowSpan: 0,
+          maxScore: 10,
+          title: '도구의 활용도',
+          desc: '(예)그래프, 동영상, 신뢰성 있는 Data 등 (10, 9, 8, 7, 6)',
+          validScores: [10, 9, 8, 7, 6]
+        },
+        {
+          id: 'c7',
+          group: '태도\n(10)',
+          groupRowSpan: 1,
+          maxScore: 10,
+          title: '복장, 시간 준수, 진정성',
+          desc: '(교복 단정, 시간 준수, 발표 진정성) (10, 9, 8, 7, 6)',
+          validScores: [10, 9, 8, 7, 6]
+        }
+      ];
+
+      const AWARD_TIERS = [
+        { rankMax: 1, label: '1등(최우수)', vouchers: 9, badgeClass: 'bg-amber-100 text-amber-900 border-amber-400' },
+        { rankMax: 4, label: '2등(우수)', vouchers: 6, badgeClass: 'bg-blue-100 text-blue-900 border-blue-300' },
+        { rankMax: 9, label: '3등(장려)', vouchers: 3, badgeClass: 'bg-emerald-100 text-emerald-900 border-emerald-300' },
+        { rankMax: 18, label: '노력상', vouchers: 2, badgeClass: 'bg-slate-100 text-slate-800 border-slate-300' }
+      ];
+
+      // ==================== 2. 애플리케이션 상태 ====================
+      const state = {
+        role: 'home',
+        currentJudgeId: null,
+        pendingJudgeAuthId: null,
+        activeCell: null,
+        recognizedNumber: null,
+        config: {
+          participantCount: 18,
+          adminPin: '0010',
+          participants: Array.from({ length: 24 }, function (_, i) {
+            return { num: i + 1, studentId: '', name: '', topic: '' };
+          })
+        },
+        judges: {
+          1: { id: 1, name: '', signature: '', submitted: false, submittedAt: null, scores: {} },
+          2: { id: 2, name: '', signature: '', submitted: false, submittedAt: null, scores: {} },
+          3: { id: 3, name: '', signature: '', submitted: false, submittedAt: null, scores: {} },
+          4: { id: 4, name: '', signature: '', submitted: false, submittedAt: null, scores: {} }
+        }
+      };
+
+      let pollIntervalId = null;
+
+      function getFirebaseRootUrl() {
+        return FIREBASE_DB_BASE.replace(/\/+$/, '') + '/contest2026';
       }
-    ];
 
-    // 시상 배정 기준 (총 18명 기준)
-    const AWARD_TIERS = [
-      { rankMax: 1, label: '1등 (최우수)', vouchers: 9, badgeClass: 'bg-amber-100 text-amber-900 border-amber-300' },
-      { rankMax: 4, label: '2등 (우수)', vouchers: 6, badgeClass: 'bg-blue-100 text-blue-900 border-blue-300' },
-      { rankMax: 9, label: '3등 (장려)', vouchers: 3, badgeClass: 'bg-emerald-100 text-emerald-900 border-emerald-300' },
-      { rankMax: 18, label: '장려상', vouchers: 2, badgeClass: 'bg-slate-100 text-slate-700 border-slate-300' }
-    ];
-
-    // ==================== 2. 전역 상태 및 Firebase REST 실시간 동기화 ====================
-    let isCloudConnected = false;
-    let pollIntervalId = null;
-
-    const state = {
-      role: 'home', // 'home' | 'judge' | 'admin'
-      currentJudgeId: null, // 1, 2, 3, 4
-      config: {
-        participantCount: 18,
-        adminPin: '1234',
-        participants: Array.from({ length: 24 }, (_, i) => ({
-          num: i + 1,
-          studentId: '',
-          name: '',
-          topic: ''
-        }))
-      },
-      judges: {
-        1: { id: 1, name: '', signature: '', submitted: false, submittedAt: null, scores: {} },
-        2: { id: 2, name: '', signature: '', submitted: false, submittedAt: null, scores: {} },
-        3: { id: 3, name: '', signature: '', submitted: false, submittedAt: null, scores: {} },
-        4: { id: 4, name: '', signature: '', submitted: false, submittedAt: null, scores: {} }
-      },
-      activeCell: null, // { pNum, cId }
-      recognizedNumber: null
-    };
-
-    // 로컬 백업 저장 및 복원 (새로고침 및 네트워크 일시 단절 대비)
-    function saveLocalBackup() {
-      try {
-        localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify({
-          config: state.config,
-          judges: state.judges
-        }));
-      } catch (e) {
-        console.warn('LocalStorage save warning:', e);
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
       }
-    }
 
-    function loadLocalBackup() {
-      try {
-        const raw = localStorage.getItem(LOCAL_CACHE_KEY);
-        if (!raw) return;
-        const parsed = JSON.parse(raw);
-        if (parsed.config) state.config = { ...state.config, ...parsed.config };
-        if (parsed.judges) {
-          for (let i = 1; i <= 4; i++) {
-            if (parsed.judges[i]) {
-              state.judges[i] = { ...state.judges[i], ...parsed.judges[i] };
+      // ==================== 3. 로컬 백업 및 Firebase REST API 동기화 ====================
+      function saveLocalBackup() {
+        try {
+          localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify({
+            config: state.config,
+            judges: state.judges
+          }));
+        } catch (e) {
+          console.warn('LocalStorage save failed:', e);
+        }
+      }
+
+      function loadLocalBackup() {
+        try {
+          const raw = localStorage.getItem(LOCAL_CACHE_KEY);
+          if (!raw) return;
+          const parsed = JSON.parse(raw);
+          if (parsed && parsed.config) {
+            state.config.participantCount = parsed.config.participantCount || 18;
+            state.config.adminPin = parsed.config.adminPin || '0010';
+            if (Array.isArray(parsed.config.participants)) {
+              state.config.participants = parsed.config.participants;
+            }
+          }
+          if (parsed && parsed.judges) {
+            for (let i = 1; i <= 4; i++) {
+              if (parsed.judges[i]) {
+                state.judges[i] = {
+                  id: i,
+                  name: parsed.judges[i].name || '',
+                  signature: parsed.judges[i].signature || '',
+                  submitted: Boolean(parsed.judges[i].submitted),
+                  submittedAt: parsed.judges[i].submittedAt || null,
+                  scores: parsed.judges[i].scores || {}
+                };
+              }
+            }
+          }
+        } catch (e) {
+          console.warn('LocalStorage load failed:', e);
+        }
+      }
+
+      function updateConnectionBadge(isConnected, customText) {
+        const badge = document.getElementById('connectionBadge');
+        if (!badge) return;
+        if (isConnected) {
+          badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-950 text-emerald-300 border border-emerald-700';
+          badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400"></span>' + (customText || '실시간 서버 연결됨');
+        } else {
+          badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-950 text-amber-300 border border-amber-700';
+          badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400"></span>로컬 백업 모드 (오프라인)';
+        }
+      }
+
+      async function fetchStateFromFirebase() {
+        try {
+          if (state.role === 'judge' && state.currentJudgeId) {
+            const jId = state.currentJudgeId;
+            const responses = await Promise.all([
+              fetch(getFirebaseRootUrl() + '/config.json'),
+              fetch(getFirebaseRootUrl() + '/judges/judge' + jId + '.json')
+            ]);
+            if (!responses[0].ok || !responses[1].ok) throw new Error('HTTP error');
+
+            const cfgData = await responses[0].json();
+            const myData = await responses[1].json();
+
+            if (cfgData) {
+              state.config.participantCount = cfgData.participantCount || 18;
+              state.config.adminPin = cfgData.adminPin || '0010';
+              if (Array.isArray(cfgData.participants)) {
+                state.config.participants = cfgData.participants;
+              }
+            }
+
+            if (myData) {
+              if (state.judges[jId].submitted && !myData.submitted) {
+                state.judges[jId].submitted = false;
+                state.judges[jId].submittedAt = null;
+              }
+            } else if (state.judges[jId].submitted) {
+              state.judges[jId] = { id: jId, name: '', signature: '', submitted: false, submittedAt: null, scores: {} };
+            }
+
+            updateConnectionBadge(true);
+            saveLocalBackup();
+            renderJudgeView();
+            return;
+          }
+
+          const res = await fetch(getFirebaseRootUrl() + '.json');
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const rootData = await res.json();
+          updateConnectionBadge(true);
+
+          if (rootData) {
+            if (rootData.config) {
+              state.config.participantCount = rootData.config.participantCount || 18;
+              state.config.adminPin = rootData.config.adminPin || '0010';
+              if (Array.isArray(rootData.config.participants)) {
+                state.config.participants = rootData.config.participants;
+              }
+            }
+            for (let i = 1; i <= 4; i++) {
+              const jRemote = rootData.judges && rootData.judges['judge' + i];
+              if (jRemote) {
+                state.judges[i] = {
+                  id: i,
+                  name: jRemote.name || '',
+                  signature: jRemote.signature || '',
+                  submitted: Boolean(jRemote.submitted),
+                  submittedAt: jRemote.submittedAt || null,
+                  scores: jRemote.scores || {}
+                };
+              } else {
+                state.judges[i] = { id: i, name: '', signature: '', submitted: false, submittedAt: null, scores: {} };
+              }
+            }
+            saveLocalBackup();
+          }
+          refreshCurrentView();
+        } catch (err) {
+          updateConnectionBadge(false);
+        }
+      }
+
+      async function persistConfigToCloud() {
+        saveLocalBackup();
+        try {
+          const res = await fetch(getFirebaseRootUrl() + '/config.json', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              participantCount: state.config.participantCount,
+              adminPin: state.config.adminPin,
+              participants: state.config.participants,
+              updatedAt: new Date().toISOString()
+            })
+          });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          updateConnectionBadge(true);
+          return true;
+        } catch (e) {
+          updateConnectionBadge(false);
+          return false;
+        }
+      }
+
+      async function persistJudgeToCloud(judgeId) {
+        saveLocalBackup();
+        try {
+          const j = state.judges[judgeId];
+          const res = await fetch(getFirebaseRootUrl() + '/judges/judge' + judgeId + '.json', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              id: judgeId,
+              name: j.name || '',
+              signature: j.signature || '',
+              submitted: Boolean(j.submitted),
+              submittedAt: j.submittedAt || null,
+              scores: j.scores || {}
+            })
+          });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          updateConnectionBadge(true);
+          return true;
+        } catch (e) {
+          updateConnectionBadge(false);
+          return false;
+        }
+      }
+
+      function startPollingLoop() {
+        if (pollIntervalId) clearInterval(pollIntervalId);
+        pollIntervalId = setInterval(function () {
+          fetchStateFromFirebase();
+        }, 3000);
+      }
+
+      // ==================== 4. 초기화면 및 인증 로직 ====================
+      function renderHomeJudgeButtons() {
+        const grid = document.getElementById('judgeSelectGrid');
+        grid.innerHTML = '';
+        for (let i = 1; i <= 4; i++) {
+          const j = state.judges[i];
+          const statusBadge = j.submitted
+            ? '<span class="text-[11px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">제출 완료</span>'
+            : '<span class="text-[11px] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">입장 가능</span>';
+
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'p-4 rounded-xl border-2 border-slate-200 hover:border-blue-600 hover:bg-blue-50/50 transition text-left flex flex-col justify-between gap-2 group';
+          btn.innerHTML =
+            '<div class="flex items-center justify-between w-full">' +
+              '<span class="text-base font-extrabold text-slate-900 group-hover:text-blue-700"><i class="fa-solid fa-lock text-xs text-slate-400 mr-1"></i>심사위원 ' + i + '</span>' +
+              statusBadge +
+            '</div>' +
+            '<div class="text-xs text-slate-500 truncate w-full">' +
+              (j.name ? '성명: <strong class="text-slate-700">' + escapeHtml(j.name) + '</strong>' : '비밀번호 입력 후 채점표 열기') +
+            '</div>';
+
+          btn.addEventListener('click', (function (judgeId) {
+            return function () {
+              openJudgeAuthModal(judgeId);
+            };
+          })(i));
+
+          grid.appendChild(btn);
+        }
+      }
+
+      function openJudgeAuthModal(judgeId) {
+        state.pendingJudgeAuthId = judgeId;
+        document.getElementById('judgeAuthModalTitle').textContent = '심사위원 ' + judgeId + ' 본인 확인';
+        const inputEl = document.getElementById('judgePinInput');
+        inputEl.value = '';
+        document.getElementById('judgePinError').classList.add('hidden');
+        const modal = document.getElementById('judgeAuthModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        setTimeout(function () { inputEl.focus(); }, 50);
+      }
+
+      function closeJudgeAuthModal() {
+        state.pendingJudgeAuthId = null;
+        const modal = document.getElementById('judgeAuthModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+
+      function verifyJudgePinAndEnter() {
+        if (!state.pendingJudgeAuthId) return;
+        const entered = document.getElementById('judgePinInput').value.trim();
+        const expected = JUDGE_PASSWORDS[state.pendingJudgeAuthId];
+        if (entered !== expected) {
+          document.getElementById('judgePinError').classList.remove('hidden');
+          document.getElementById('judgePinInput').select();
+          return;
+        }
+        const targetId = state.pendingJudgeAuthId;
+        closeJudgeAuthModal();
+        enterJudgeMode(targetId);
+      }
+
+      function enterJudgeMode(judgeId) {
+        state.role = 'judge';
+        state.currentJudgeId = judgeId;
+        document.getElementById('viewHome').classList.add('hidden');
+        document.getElementById('viewAdmin').classList.add('hidden');
+        document.getElementById('viewJudge').classList.remove('hidden');
+        document.getElementById('btnGoHome').classList.remove('hidden');
+        renderJudgeView();
+        fetchStateFromFirebase();
+      }
+
+      function enterAdminMode() {
+        const pin = document.getElementById('adminPinInput').value.trim();
+        const errEl = document.getElementById('adminPinError');
+        if (pin !== state.config.adminPin) {
+          errEl.classList.remove('hidden');
+          return;
+        }
+        errEl.classList.add('hidden');
+        document.getElementById('adminPinInput').value = '';
+        state.role = 'admin';
+        state.currentJudgeId = null;
+        document.getElementById('viewHome').classList.add('hidden');
+        document.getElementById('viewJudge').classList.add('hidden');
+        document.getElementById('viewAdmin').classList.remove('hidden');
+        document.getElementById('btnGoHome').classList.remove('hidden');
+        renderAdminView();
+        fetchStateFromFirebase();
+      }
+
+      function returnHome() {
+        state.role = 'home';
+        state.currentJudgeId = null;
+        document.getElementById('viewJudge').classList.add('hidden');
+        document.getElementById('viewAdmin').classList.add('hidden');
+        document.getElementById('viewHome').classList.remove('hidden');
+        document.getElementById('btnGoHome').classList.add('hidden');
+        renderHomeJudgeButtons();
+        fetchStateFromFirebase();
+      }
+
+      function refreshCurrentView() {
+        if (state.role === 'home') renderHomeJudgeButtons();
+        else if (state.role === 'judge') renderJudgeView();
+        else if (state.role === 'admin') renderAdminView();
+      }
+
+      // ==================== 5. 심사위원 채점표 렌더링 ====================
+      function getParticipantJudgeScore(scoresObj, pNum) {
+        const pScores = (scoresObj && scoresObj[pNum]) || {};
+        let sum = 0;
+        let filledCount = 0;
+        RUBRIC_ITEMS.forEach(function (item) {
+          const v = pScores[item.id];
+          if (typeof v === 'number' && item.validScores.indexOf(v) !== -1) {
+            sum += v;
+            filledCount++;
+          }
+        });
+        return { sum: sum, isComplete: filledCount === RUBRIC_ITEMS.length };
+      }
+
+      function renderJudgeView() {
+        const j = state.judges[state.currentJudgeId];
+        if (!j) return;
+        const pCount = state.config.participantCount;
+
+        document.getElementById('judgeBadgeTitle').textContent = '심사위원 ' + j.id;
+        document.getElementById('judgeNameInput').value = j.name || '';
+        document.getElementById('judgeNameInput').disabled = j.submitted;
+        document.getElementById('judgeTotalParticipants').textContent = pCount;
+
+        const sigThumb = document.getElementById('signaturePreviewThumb');
+        const sigLabel = document.getElementById('signatureBtnLabel');
+        if (j.signature) {
+          sigThumb.src = j.signature;
+          sigThumb.classList.remove('hidden');
+          sigLabel.textContent = '서명 완료';
+        } else {
+          sigThumb.classList.add('hidden');
+          sigLabel.textContent = '심사위원 서명하기';
+        }
+
+        const lockedBanner = document.getElementById('judgeLockedBanner');
+        const btnSubmit = document.getElementById('btnSubmitScores');
+        const btnSig = document.getElementById('btnOpenSignature');
+
+        if (j.submitted) {
+          lockedBanner.classList.remove('hidden');
+          btnSubmit.disabled = true;
+          btnSubmit.className = 'px-6 py-3.5 rounded-xl bg-slate-400 text-white font-extrabold text-sm sm:text-base cursor-not-allowed flex items-center gap-2 ml-auto';
+          btnSubmit.innerHTML = '<i class="fa-solid fa-lock"></i><span>제출 완료됨 (잠금)</span>';
+          btnSig.disabled = true;
+          btnSig.classList.add('opacity-60', 'cursor-not-allowed');
+        } else {
+          lockedBanner.classList.add('hidden');
+          btnSubmit.disabled = false;
+          btnSubmit.className = 'px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-extrabold text-sm sm:text-base shadow-md transition flex items-center gap-2 ml-auto';
+          btnSubmit.innerHTML = '<i class="fa-solid fa-paper-plane"></i><span>최종 점수 전송하기</span>';
+          btnSig.disabled = false;
+          btnSig.classList.remove('opacity-60', 'cursor-not-allowed');
+        }
+
+        // 헤더 렌더링
+        const theadRow = document.getElementById('rubricTableHeadRow');
+        theadRow.innerHTML =
+          '<th class="w-24 py-2.5 px-2 bg-slate-100">평가항목</th>' +
+          '<th class="w-12 py-2.5 px-1 bg-slate-100">배<br/>점</th>' +
+          '<th class="w-56 py-2.5 px-2 bg-slate-100">세부 평가 내용</th>';
+
+        for (let p = 1; p <= pCount; p++) {
+          const pInfo = state.config.participants[p - 1];
+          const subName = (pInfo && pInfo.name)
+            ? '<div class="text-[10px] font-normal text-slate-600 truncate max-w-[44px] mx-auto">' + escapeHtml(pInfo.name) + '</div>'
+            : '';
+          const th = document.createElement('th');
+          th.className = 'min-w-[46px] py-2 px-1 bg-slate-100 font-extrabold text-slate-900';
+          th.innerHTML = '<div>' + p + '</div>' + subName;
+          theadRow.appendChild(th);
+        }
+
+        // 바디 렌더링
+        const tbody = document.getElementById('rubricTableBody');
+        tbody.innerHTML = '';
+
+        RUBRIC_ITEMS.forEach(function (item) {
+          const tr = document.createElement('tr');
+          if (item.group) {
+            const tdGroup = document.createElement('td');
+            tdGroup.rowSpan = item.groupRowSpan;
+            tdGroup.className = 'font-bold text-slate-900 bg-slate-50/70 px-2 py-2 whitespace-pre-line leading-snug';
+            tdGroup.textContent = item.group;
+            tr.appendChild(tdGroup);
+          }
+
+          const tdMax = document.createElement('td');
+          tdMax.className = 'font-bold text-slate-800 bg-slate-50/40 py-2';
+          tdMax.textContent = item.maxScore;
+          tr.appendChild(tdMax);
+
+          const tdDesc = document.createElement('td');
+          tdDesc.className = 'px-2 py-2.5 leading-snug';
+          tdDesc.innerHTML =
+            '<div class="font-bold text-slate-900 whitespace-pre-line">' + escapeHtml(item.title) + '</div>' +
+            '<div class="text-[11px] text-slate-500 mt-0.5">' + escapeHtml(item.desc) + '</div>';
+          tr.appendChild(tdDesc);
+
+          for (let p = 1; p <= pCount; p++) {
+            const val = j.scores[p] && j.scores[p][item.id];
+            const hasVal = typeof val === 'number';
+            const tdCell = document.createElement('td');
+            tdCell.id = 'cell_' + p + '_' + item.id;
+            tdCell.className = 'score-cell font-extrabold text-base ' + (hasVal ? 'text-blue-700 bg-blue-50/30' : 'text-slate-300');
+            tdCell.textContent = hasVal ? String(val) : '';
+            tdCell.addEventListener('click', (function (pNum, cId) {
+              return function () {
+                handleCellClick(pNum, cId);
+              };
+            })(p, item.id));
+            tr.appendChild(tdCell);
+          }
+
+          tbody.appendChild(tr);
+        });
+
+        // 총점 행
+        const totalTr = document.createElement('tr');
+        totalTr.className = 'bg-slate-100 font-black text-slate-900 border-t-2 border-slate-700';
+        totalTr.innerHTML =
+          '<td class="py-3 px-2 leading-tight">합계<br/>(100)</td>' +
+          '<td class="py-3 px-1">100</td>' +
+          '<td class="py-3 px-2">총점</td>';
+
+        let completedParticipants = 0;
+        for (let p = 1; p <= pCount; p++) {
+          const res = getParticipantJudgeScore(j.scores, p);
+          if (res.isComplete) completedParticipants++;
+          const tdTotal = document.createElement('td');
+          tdTotal.className = 'py-3 px-1 text-sm sm:text-base ' + (res.isComplete ? 'text-emerald-700 bg-emerald-50/70' : 'text-slate-600');
+          tdTotal.textContent = res.sum > 0 ? String(res.sum) : '-';
+          totalTr.appendChild(tdTotal);
+        }
+        tbody.appendChild(totalTr);
+
+        document.getElementById('judgeCompletedCount').textContent = String(completedParticipants);
+      }
+
+      function handleCellClick(pNum, cId) {
+        const j = state.judges[state.currentJudgeId];
+        if (!j || j.submitted) {
+          showDialog('수정 불가', '이미 최종 전송이 완료되어 채점표를 수정할 수 없습니다.', 'warning');
+          return;
+        }
+        const cellEl = document.getElementById('cell_' + pNum + '_' + cId);
+        if (cellEl) cellEl.classList.remove('missing-highlight');
+        openScoreModal(pNum, cId);
+      }
+
+      // ==================== 6. 손글씨 필기 + 원터치 배점 모달 ====================
+      const hwCanvas = document.getElementById('handwritingCanvas');
+      const hwCtx = hwCanvas.getContext('2d');
+      let isDrawingHw = false;
+      let hwStrokes = [];
+      let currentStroke = [];
+      let hwRecognizeTimer = null;
+
+      function initHandwritingCanvasEvents() {
+        function getPos(e) {
+          const rect = hwCanvas.getBoundingClientRect();
+          const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+          const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+          return {
+            x: (clientX - rect.left) * (hwCanvas.width / rect.width),
+            y: (clientY - rect.top) * (hwCanvas.height / rect.height)
+          };
+        }
+
+        function startDraw(e) {
+          e.preventDefault();
+          if (hwRecognizeTimer) clearTimeout(hwRecognizeTimer);
+          isDrawingHw = true;
+          document.getElementById('canvasPlaceholder').classList.add('hidden');
+          const pos = getPos(e);
+          currentStroke = [pos];
+          hwCtx.lineWidth = 5;
+          hwCtx.lineCap = 'round';
+          hwCtx.lineJoin = 'round';
+          hwCtx.strokeStyle = '#1e3a8a';
+          hwCtx.beginPath();
+          hwCtx.moveTo(pos.x, pos.y);
+        }
+
+        function moveDraw(e) {
+          if (!isDrawingHw) return;
+          e.preventDefault();
+          const pos = getPos(e);
+          currentStroke.push(pos);
+          hwCtx.lineTo(pos.x, pos.y);
+          hwCtx.stroke();
+        }
+
+        function endDraw(e) {
+          if (!isDrawingHw) return;
+          e.preventDefault();
+          isDrawingHw = false;
+          if (currentStroke.length > 0) {
+            hwStrokes.push(currentStroke);
+          }
+          hwRecognizeTimer = setTimeout(function () {
+            runHandwritingRecognition();
+          }, 420);
+        }
+
+        hwCanvas.addEventListener('mousedown', startDraw);
+        hwCanvas.addEventListener('mousemove', moveDraw);
+        window.addEventListener('mouseup', endDraw);
+        hwCanvas.addEventListener('touchstart', startDraw, { passive: false });
+        hwCanvas.addEventListener('touchmove', moveDraw, { passive: false });
+        hwCanvas.addEventListener('touchend', endDraw, { passive: false });
+      }
+
+      function clearHandwritingCanvas() {
+        hwCtx.clearRect(0, 0, hwCanvas.width, hwCanvas.height);
+        hwStrokes = [];
+        currentStroke = [];
+        state.recognizedNumber = null;
+        document.getElementById('canvasPlaceholder').classList.remove('hidden');
+        document.getElementById('recognizedScoreDisplay').textContent = '-';
+        document.getElementById('btnApplyRecognized').disabled = true;
+        document.getElementById('handwritingFeedbackMsg').textContent = '';
+      }
+
+      function runHandwritingRecognition() {
+        if (hwStrokes.length === 0 || !state.activeCell) return;
+        const item = RUBRIC_ITEMS.find(function (x) { return x.id === state.activeCell.cId; });
+        if (!item) return;
+
+        const imgData = hwCtx.getImageData(0, 0, hwCanvas.width, hwCanvas.height);
+        const data = imgData.data;
+        const width = imgData.width;
+        const height = imgData.height;
+
+        const colCounts = new Array(width).fill(0);
+        let totalPixels = 0;
+
+        for (let y = 0; y < height; y++) {
+          for (let x = 0; x < width; x++) {
+            const alpha = data[(y * width + x) * 4 + 3];
+            if (alpha > 40) {
+              colCounts[x]++;
+              totalPixels++;
             }
           }
         }
-      } catch (e) {
-        console.warn('LocalStorage load warning:', e);
-      }
-    }
 
-    function updateConnectionBadge(online, customText = null) {
-      isCloudConnected = online;
-      const badge = document.getElementById('connectionBadge');
-      if (online) {
-        badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-950 text-emerald-300 border border-emerald-700';
-        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>${customText || 'Firebase 실시간 연결됨'}`;
-      } else {
-        badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-950 text-amber-200 border border-amber-700';
-        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span>${customText || '오프라인 백업 모드 (재연결 대기)'}`;
-      }
-    }
+        if (totalPixels < 15) return;
 
-    // Firebase에서 최신 상태 조회 (역할에 따라 심사위원 간 점수 비공개 철저 준수)
-    async function fetchStateFromFirebase() {
-      try {
-        if (state.role === 'judge' && state.currentJudgeId) {
-          // 심사위원 모드: 대회 설정(참가자 명단)과 본인 데이터 상태만 조회 (타 심사위원 점수 절대 미조회)
-          const jId = state.currentJudgeId;
-          const [cfgRes, myRes] = await Promise.all([
-            fetch(`${FIREBASE_DB_URL}/config.json`),
-            fetch(`${FIREBASE_DB_URL}/judges/judge${jId}.json`)
-          ]);
-          if (!cfgRes.ok || !myRes.ok) throw new Error('HTTP error');
-
-          const cfgData = await cfgRes.json();
-          const myData = await myRes.json();
-
-          if (cfgData) {
-            state.config.participantCount = cfgData.participantCount || 18;
-            state.config.adminPin = cfgData.adminPin || '1234';
-            if (Array.isArray(cfgData.participants)) {
-              state.config.participants = cfgData.participants;
+        const segments = [];
+        let inSeg = false;
+        let segStart = 0;
+        for (let x = 0; x < width; x++) {
+          if (colCounts[x] > 0 && !inSeg) {
+            inSeg = true;
+            segStart = x;
+          } else if (colCounts[x] === 0 && inSeg) {
+            inSeg = false;
+            if (x - segStart >= 3) {
+              segments.push({ x1: segStart, x2: x - 1 });
             }
           }
+        }
+        if (inSeg) segments.push({ x1: segStart, x2: width - 1 });
 
-          // 관리자가 잠금을 해제했거나 초기화한 경우 즉시 반영
-          if (myData) {
-            if (state.judges[jId].submitted && !myData.submitted) {
-              state.judges[jId].submitted = false;
-              state.judges[jId].submittedAt = null;
+        const mergedSegments = [];
+        for (let i = 0; i < segments.length; i++) {
+          const seg = segments[i];
+          if (mergedSegments.length === 0) {
+            mergedSegments.push({ x1: seg.x1, x2: seg.x2 });
+          } else {
+            const prev = mergedSegments[mergedSegments.length - 1];
+            const gap = seg.x1 - prev.x2;
+            const prevW = prev.x2 - prev.x1;
+            const curW = seg.x2 - seg.x1;
+            if (gap < 8 && (prevW < 18 || curW < 18)) {
+              prev.x2 = seg.x2;
+            } else {
+              mergedSegments.push({ x1: seg.x1, x2: seg.x2 });
             }
-          } else if (state.judges[jId].submitted) {
-            // 관리자가 전체 초기화를 실행한 경우
-            state.judges[jId] = { id: jId, name: '', signature: '', submitted: false, submittedAt: null, scores: {} };
           }
+        }
 
-          updateConnectionBadge(true);
-          saveLocalBackup();
-          renderJudgeView();
+        const digits = mergedSegments.map(function (seg) {
+          return classifySingleDigit(data, width, height, seg.x1, seg.x2);
+        });
+        const parsedNum = parseInt(digits.join(''), 10);
+
+        let matchedScore = null;
+        const msgEl = document.getElementById('handwritingFeedbackMsg');
+
+        if (!isNaN(parsedNum) && item.validScores.indexOf(parsedNum) !== -1) {
+          matchedScore = parsedNum;
+          msgEl.className = 'text-[11px] text-emerald-700 font-semibold mt-1.5';
+          msgEl.textContent = "인식 완료: '" + matchedScore + "점'으로 판독되었습니다. [적용하기]를 누르세요.";
+        } else if (!isNaN(parsedNum)) {
+          matchedScore = item.validScores.reduce(function (prev, curr) {
+            return Math.abs(curr - parsedNum) < Math.abs(prev - parsedNum) ? curr : prev;
+          });
+          msgEl.className = 'text-[11px] text-amber-700 font-semibold mt-1.5';
+          msgEl.textContent = "인식값(" + parsedNum + ")을 가장 가까운 유효 배점 '" + matchedScore + "점'으로 보정했습니다.";
+        } else {
+          msgEl.className = 'text-[11px] text-rose-600 font-semibold mt-1.5';
+          msgEl.textContent = '숫자를 명확히 인식하지 못했습니다. 다시 쓰거나 위 버튼을 터치하세요.';
+        }
+
+        state.recognizedNumber = matchedScore;
+        document.getElementById('recognizedScoreDisplay').textContent = matchedScore !== null ? String(matchedScore) : '?';
+        document.getElementById('btnApplyRecognized').disabled = matchedScore === null;
+      }
+
+      function classifySingleDigit(data, width, height, x1, x2) {
+        let y1 = height;
+        let y2 = 0;
+        for (let y = 0; y < height; y++) {
+          for (let x = x1; x <= x2; x++) {
+            if (data[(y * width + x) * 4 + 3] > 40) {
+              if (y < y1) y1 = y;
+              if (y > y2) y2 = y;
+            }
+          }
+        }
+        const boxW = Math.max(1, x2 - x1 + 1);
+        const boxH = Math.max(1, y2 - y1 + 1);
+        if (boxW / boxH < 0.34) return 1;
+
+        const G = 16;
+        const grid = [];
+        for (let r = 0; r < G; r++) {
+          grid.push(new Array(G).fill(0));
+        }
+
+        for (let gy = 0; gy < G; gy++) {
+          for (let gx = 0; gx < G; gx++) {
+            const sx = Math.min(width - 1, Math.floor(x1 + (gx + 0.5) * (boxW / G)));
+            const sy = Math.min(height - 1, Math.floor(y1 + (gy + 0.5) * (boxH / G)));
+            let hit = 0;
+            for (let dy = -1; dy <= 1; dy++) {
+              for (let dx = -1; dx <= 1; dx++) {
+                const nx = Math.min(width - 1, Math.max(0, sx + dx));
+                const ny = Math.min(height - 1, Math.max(0, sy + dy));
+                if (data[(ny * width + nx) * 4 + 3] > 40) hit++;
+              }
+            }
+            grid[gy][gx] = hit > 0 ? 1 : 0;
+          }
+        }
+
+        const templates = {
+          0: ['0000111111110000','0001110000111000','0011000000001100','0011000000001100','0110000000000110','0110000000000110','0110000000000110','0110000000000110','0110000000000110','0110000000000110','0110000000000110','0110000000000110','0011000000001100','0011000000001100','0001110000111000','0000111111110000'],
+          1: ['0000001110000000','0000011110000000','0000110110000000','0000000110000000','0000000110000000','0000000110000000','0000000110000000','0000000110000000','0000000110000000','0000000110000000','0000000110000000','0000000110000000','0000000110000000','0000000110000000','0000000110000000','0000111111110000'],
+          2: ['0001111111110000','0011100000111000','0110000000001100','0000000000001100','0000000000011000','0000000000110000','0000000011100000','0000001110000000','0000111000000000','0001100000000000','0011000000000000','0110000000000000','0110000000000000','0110000000000000','0111111111111100','0111111111111100'],
+          4: ['0000000001110000','0000000011110000','0000000110110000','0000001100110000','0000011000110000','0000110000110000','0001100000110000','0011000000110000','0110000000110000','0111111111111110','0111111111111110','0000000000110000','0000000000110000','0000000000110000','0000000000110000','0000000000110000'],
+          6: ['0000011111110000','0001110000000000','0011000000000000','0110000000000000','0110000000000000','0110000000000000','0110111111100000','0111100000111000','0110000000001100','0110000000001100','0110000000001100','0110000000001100','0110000000001100','0011000000011000','0001110000110000','0000111111100000'],
+          7: ['0111111111111100','0111111111111100','0000000000011000','0000000000110000','0000000000110000','0000000001100000','0000000001100000','0000000011000000','0000000011000000','0000000110000000','0000000110000000','0000001100000000','0000001100000000','0000011000000000','0000011000000000','0000011000000000'],
+          8: ['0000111111110000','0001100000011000','0011000000001100','0011000000001100','0011000000001100','0001100000011000','0000111111110000','0001100000011000','0011000000001100','0110000000000110','0110000000000110','0110000000000110','0011000000001100','0011000000001100','0001100000011000','0000111111110000'],
+          9: ['0000111111100000','0001100000110000','0011000000011000','0110000000001100','0110000000001100','0110000000001100','0110000000001100','0011100000111100','0000111111101100','0000000000001100','0000000000001100','0000000000011000','0000000000011000','0000000000110000','0000000011100000','0000111110000000']
+        };
+
+        const candidates = [0, 1, 2, 4, 6, 7, 8, 9];
+        let bestDigit = 8;
+        let bestScore = -Infinity;
+
+        for (let idx = 0; idx < candidates.length; idx++) {
+          const d = candidates[idx];
+          const tmpl = templates[d];
+          let match = 0;
+          for (let r = 0; r < G; r++) {
+            for (let c = 0; c < G; c++) {
+              const tVal = Number(tmpl[r][c]);
+              if (grid[r][c] === tVal) {
+                match += grid[r][c] === 1 ? 2.2 : 1.0;
+              } else {
+                match -= 0.8;
+              }
+            }
+          }
+          if (match > bestScore) {
+            bestScore = match;
+            bestDigit = d;
+          }
+        }
+        return bestDigit;
+      }
+
+      function openScoreModal(pNum, cId) {
+        state.activeCell = { pNum: pNum, cId: cId };
+        const item = RUBRIC_ITEMS.find(function (x) { return x.id === cId; });
+        const pInfo = state.config.participants[pNum - 1];
+        const currentVal = state.judges[state.currentJudgeId].scores[pNum] && state.judges[state.currentJudgeId].scores[pNum][cId];
+
+        document.getElementById('modalParticipantTag').textContent =
+          '발표자 ' + pNum + '번' + (pInfo && pInfo.name ? ' (' + pInfo.name + ')' : '');
+        document.getElementById('modalCriterionTitle').textContent = item.title.replace(/\n/g, ' ');
+        document.getElementById('modalValidScoresHint').textContent = '유효 배점: ' + item.validScores.join(', ') + '점';
+
+        const btnWrap = document.getElementById('modalQuickButtons');
+        btnWrap.innerHTML = '';
+        const labels = ['최상', '상', '중', '하', '미흡'];
+
+        item.validScores.forEach(function (sc, idx) {
+          const isSelected = currentVal === sc;
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'py-2.5 px-1 rounded-xl border-2 font-extrabold transition flex flex-col items-center justify-center ' + (
+            isSelected
+              ? 'border-blue-600 bg-blue-600 text-white shadow-sm'
+              : 'border-slate-200 hover:border-blue-500 hover:bg-blue-50 text-slate-900'
+          );
+          btn.innerHTML =
+            '<span class="text-lg leading-none">' + sc + '</span>' +
+            '<span class="text-[10px] mt-1 ' + (isSelected ? 'text-blue-100' : 'text-slate-400') + '">' + labels[idx] + '</span>';
+
+          btn.addEventListener('click', function () {
+            selectScoreAndClose(sc);
+          });
+          btnWrap.appendChild(btn);
+        });
+
+        clearHandwritingCanvas();
+        const modal = document.getElementById('scoreInputModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+
+      function closeScoreModal() {
+        const modal = document.getElementById('scoreInputModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        state.activeCell = null;
+      }
+
+      function selectScoreAndClose(scoreVal) {
+        if (!state.activeCell) return;
+        const pNum = state.activeCell.pNum;
+        const cId = state.activeCell.cId;
+        const j = state.judges[state.currentJudgeId];
+        if (!j.scores[pNum]) j.scores[pNum] = {};
+        j.scores[pNum][cId] = scoreVal;
+
+        persistJudgeToCloud(j.id);
+        renderJudgeView();
+        closeScoreModal();
+      }
+
+      // ==================== 7. 심사위원 서명 패드 ====================
+      const sigCanvas = document.getElementById('signatureCanvas');
+      const sigCtx = sigCanvas.getContext('2d');
+      let isDrawingSig = false;
+      let hasSigStroke = false;
+
+      function initSignatureCanvasEvents() {
+        function getPos(e) {
+          const rect = sigCanvas.getBoundingClientRect();
+          const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+          const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+          return {
+            x: (clientX - rect.left) * (sigCanvas.width / rect.width),
+            y: (clientY - rect.top) * (sigCanvas.height / rect.height)
+          };
+        }
+
+        function start(e) {
+          e.preventDefault();
+          isDrawingSig = true;
+          hasSigStroke = true;
+          const pos = getPos(e);
+          sigCtx.lineWidth = 3.5;
+          sigCtx.lineCap = 'round';
+          sigCtx.lineJoin = 'round';
+          sigCtx.strokeStyle = '#0f172a';
+          sigCtx.beginPath();
+          sigCtx.moveTo(pos.x, pos.y);
+        }
+
+        function move(e) {
+          if (!isDrawingSig) return;
+          e.preventDefault();
+          const pos = getPos(e);
+          sigCtx.lineTo(pos.x, pos.y);
+          sigCtx.stroke();
+        }
+
+        function end() {
+          isDrawingSig = false;
+        }
+
+        sigCanvas.addEventListener('mousedown', start);
+        sigCanvas.addEventListener('mousemove', move);
+        window.addEventListener('mouseup', end);
+        sigCanvas.addEventListener('touchstart', start, { passive: false });
+        sigCanvas.addEventListener('touchmove', move, { passive: false });
+        sigCanvas.addEventListener('touchend', end, { passive: false });
+      }
+
+      function clearSignatureCanvas() {
+        sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
+        hasSigStroke = false;
+      }
+
+      function openSignatureModal() {
+        const j = state.judges[state.currentJudgeId];
+        if (!j || j.submitted) return;
+        clearSignatureCanvas();
+        const m = document.getElementById('signatureModal');
+        m.classList.remove('hidden');
+        m.classList.add('flex');
+      }
+
+      function closeSignatureModal() {
+        const m = document.getElementById('signatureModal');
+        m.classList.add('hidden');
+        m.classList.remove('flex');
+      }
+
+      function saveSignatureData() {
+        if (!hasSigStroke) {
+          showDialog('서명 확인', '서명란에 자필 서명을 먼저 입력해 주세요.', 'warning');
+          return;
+        }
+        const j = state.judges[state.currentJudgeId];
+        j.signature = sigCanvas.toDataURL('image/png');
+        persistJudgeToCloud(j.id);
+        renderJudgeView();
+        closeSignatureModal();
+      }
+
+      // ==================== 8. 전체 유효성 검증 및 최종 전송 ====================
+      function validateAndPromptSubmit() {
+        const j = state.judges[state.currentJudgeId];
+        if (!j || j.submitted) return;
+
+        document.querySelectorAll('.missing-highlight').forEach(function (el) {
+          el.classList.remove('missing-highlight');
+        });
+
+        if (!j.name || j.name.trim() === '') {
+          document.getElementById('judgeNameInput').focus();
+          showDialog('심사위원 성명 누락', '상단의 [심사위원 성명]을 먼저 입력해 주세요.', 'warning');
           return;
         }
 
-        // 초기화면 또는 관리자 집계실 모드
-        const res = await fetch(`${FIREBASE_DB_URL}.json`);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const rootData = await res.json();
-        updateConnectionBadge(true);
-
-        if (rootData) {
-          if (rootData.config) {
-            state.config.participantCount = rootData.config.participantCount || 18;
-            state.config.adminPin = rootData.config.adminPin || '1234';
-            if (Array.isArray(rootData.config.participants)) {
-              state.config.participants = rootData.config.participants;
-            }
-          }
-          for (let i = 1; i <= 4; i++) {
-            const jRemote = rootData.judges?.[`judge${i}`];
-            if (jRemote) {
-              state.judges[i] = {
-                id: i,
-                name: jRemote.name || '',
-                signature: jRemote.signature || '',
-                submitted: !!jRemote.submitted,
-                submittedAt: jRemote.submittedAt || null,
-                scores: jRemote.scores || {}
-              };
-            } else {
-              state.judges[i] = { id: i, name: '', signature: '', submitted: false, submittedAt: null, scores: {} };
-            }
-          }
-          saveLocalBackup();
-        }
-        refreshCurrentView();
-      } catch (err) {
-        console.warn('Firebase fetch warning:', err);
-        updateConnectionBadge(false);
-      }
-    }
-
-    async function persistConfigToCloud() {
-      saveLocalBackup();
-      try {
-        const res = await fetch(`${FIREBASE_DB_URL}/config.json`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            participantCount: state.config.participantCount,
-            adminPin: state.config.adminPin,
-            participants: state.config.participants,
-            updatedAt: new Date().toISOString()
-          })
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        updateConnectionBadge(true);
-        return true;
-      } catch (e) {
-        console.error('Failed to save config to Firebase:', e);
-        updateConnectionBadge(false);
-        return false;
-      }
-    }
-
-    async function persistJudgeToCloud(judgeId) {
-      saveLocalBackup();
-      try {
-        const j = state.judges[judgeId];
-        const res = await fetch(`${FIREBASE_DB_URL}/judges/judge${judgeId}.json`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id: judgeId,
-            name: j.name || '',
-            signature: j.signature || '',
-            submitted: !!j.submitted,
-            submittedAt: j.submittedAt || null,
-            scores: j.scores || {}
-          })
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        updateConnectionBadge(true);
-        return true;
-      } catch (e) {
-        console.error('Failed to save judge data to Firebase:', e);
-        updateConnectionBadge(false);
-        return false;
-      }
-    }
-
-    window.manualSyncNow = async function () {
-      updateConnectionBadge(true, '동기화 확인 중...');
-      await fetchStateFromFirebase();
-    };
-
-    function startPollingLoop() {
-      if (pollIntervalId) clearInterval(pollIntervalId);
-      // 2.5초 간격으로 실시간 데이터 동기화
-      pollIntervalId = setInterval(() => {
-        fetchStateFromFirebase();
-      }, 2500);
-    }
-
-    // ==================== 3. 화면 전환 및 초기화면 렌더링 ====================
-    function renderHomeJudgeButtons() {
-      const grid = document.getElementById('judgeSelectGrid');
-      grid.innerHTML = '';
-      for (let i = 1; i <= 4; i++) {
-        const j = state.judges[i];
-        const statusBadge = j.submitted
-          ? '<span class="text-[11px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">제출 완료</span>'
-          : '<span class="text-[11px] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">미제출 (입장 가능)</span>';
-
-        const btn = document.createElement('button');
-        btn.className = 'p-4 rounded-xl border-2 border-slate-200 hover:border-blue-600 hover:bg-blue-50/50 transition text-left flex flex-col justify-between gap-2 group';
-        btn.onclick = () => enterJudgeMode(i);
-        btn.innerHTML = `
-          <div class="flex items-center justify-between w-full">
-            <span class="text-base font-extrabold text-slate-900 group-hover:text-blue-700">심사위원 ${i}</span>
-            ${statusBadge}
-          </div>
-          <div class="text-xs text-slate-500 truncate w-full">
-            ${j.name ? `성명: <strong class="text-slate-700">${escapeHtml(j.name)}</strong>` : '클릭하여 채점표 열기'}
-          </div>
-        `;
-        grid.appendChild(btn);
-      }
-    }
-
-    window.enterJudgeMode = function (judgeId) {
-      state.role = 'judge';
-      state.currentJudgeId = judgeId;
-      document.getElementById('viewHome').classList.add('hidden');
-      document.getElementById('viewAdmin').classList.add('hidden');
-      document.getElementById('viewJudge').classList.remove('hidden');
-      document.getElementById('btnGoHome').classList.remove('hidden');
-      renderJudgeView();
-      fetchStateFromFirebase();
-    };
-
-    window.enterAdminMode = function () {
-      const pin = document.getElementById('adminPinInput').value.trim();
-      const errEl = document.getElementById('adminPinError');
-      if (pin !== state.config.adminPin) {
-        errEl.classList.remove('hidden');
-        return;
-      }
-      errEl.classList.add('hidden');
-      document.getElementById('adminPinInput').value = '';
-      state.role = 'admin';
-      state.currentJudgeId = null;
-      document.getElementById('viewHome').classList.add('hidden');
-      document.getElementById('viewJudge').classList.add('hidden');
-      document.getElementById('viewAdmin').classList.remove('hidden');
-      document.getElementById('btnGoHome').classList.remove('hidden');
-      renderAdminView();
-      fetchStateFromFirebase();
-    };
-
-    window.confirmReturnHome = function () {
-      state.role = 'home';
-      state.currentJudgeId = null;
-      document.getElementById('viewJudge').classList.add('hidden');
-      document.getElementById('viewAdmin').classList.add('hidden');
-      document.getElementById('viewHome').classList.remove('hidden');
-      document.getElementById('btnGoHome').classList.add('hidden');
-      renderHomeJudgeButtons();
-      fetchStateFromFirebase();
-    };
-
-    function refreshCurrentView() {
-      if (state.role === 'home') renderHomeJudgeButtons();
-      else if (state.role === 'judge') renderJudgeView();
-      else if (state.role === 'admin') renderAdminView();
-    }
-
-    // ==================== 4. 심사위원 채점표 렌더링 및 로직 ====================
-    function renderJudgeView() {
-      const j = state.judges[state.currentJudgeId];
-      const pCount = state.config.participantCount;
-
-      document.getElementById('judgeBadgeTitle').textContent = `심사위원 ${j.id}`;
-      document.getElementById('judgeNameInput').value = j.name || '';
-      document.getElementById('judgeNameInput').disabled = j.submitted;
-      document.getElementById('judgeTotalParticipants').textContent = pCount;
-
-      // 서명 썸네일 업데이트
-      const sigThumb = document.getElementById('signaturePreviewThumb');
-      const sigLabel = document.getElementById('signatureBtnLabel');
-      if (j.signature) {
-        sigThumb.src = j.signature;
-        sigThumb.classList.remove('hidden');
-        sigLabel.textContent = '서명 완료';
-      } else {
-        sigThumb.classList.add('hidden');
-        sigLabel.textContent = '심사위원 서명하기';
-      }
-
-      // 잠금 상태 UI 처리
-      const lockedBanner = document.getElementById('judgeLockedBanner');
-      const btnSubmit = document.getElementById('btnSubmitScores');
-      const btnSig = document.getElementById('btnOpenSignature');
-      if (j.submitted) {
-        lockedBanner.classList.remove('hidden');
-        btnSubmit.disabled = true;
-        btnSubmit.className = 'px-6 py-3.5 rounded-xl bg-slate-400 text-white font-extrabold text-sm sm:text-base cursor-not-allowed flex items-center gap-2';
-        btnSubmit.innerHTML = '<i class="fa-solid fa-lock"></i><span>제출 완료됨 (잠금)</span>';
-        btnSig.disabled = true;
-        btnSig.classList.add('opacity-60', 'cursor-not-allowed');
-      } else {
-        lockedBanner.classList.add('hidden');
-        btnSubmit.disabled = false;
-        btnSubmit.className = 'px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-extrabold text-sm sm:text-base shadow-md transition flex items-center gap-2';
-        btnSubmit.innerHTML = '<i class="fa-solid fa-paper-plane"></i><span>최종 점수 전송하기</span>';
-        btnSig.disabled = false;
-        btnSig.classList.remove('opacity-60', 'cursor-not-allowed');
-      }
-
-      // 테이블 헤더 동적 생성 (1 ~ pCount)
-      const theadRow = document.querySelector('#rubricTable thead tr');
-      theadRow.innerHTML = `
-        <th class="w-24 py-2.5 px-2 bg-slate-100">평가항목</th>
-        <th class="w-12 py-2.5 px-1 bg-slate-100">배<br/>점</th>
-        <th class="w-56 py-2.5 px-2 bg-slate-100">세부 평가 내용</th>
-      `;
-      for (let p = 1; p <= pCount; p++) {
-        const pInfo = state.config.participants[p - 1];
-        const subName = pInfo?.name ? `<div class="text-[10px] font-normal text-slate-600 truncate max-w-[44px] mx-auto">${escapeHtml(pInfo.name)}</div>` : '';
-        const th = document.createElement('th');
-        th.className = 'min-w-[46px] py-2 px-1 bg-slate-100 font-extrabold text-slate-900';
-        th.innerHTML = `<div>${p}</div>${subName}`;
-        theadRow.appendChild(th);
-      }
-
-      // 테이블 바디 (7개 항목 + 총점 행)
-      const tbody = document.getElementById('rubricTableBody');
-      tbody.innerHTML = '';
-
-      RUBRIC_ITEMS.forEach((item) => {
-        const tr = document.createElement('tr');
-        let rowHtml = '';
-
-        if (item.group) {
-          rowHtml += `<td rowspan="${item.groupRowSpan}" class="font-bold text-slate-900 bg-slate-50/70 px-2 py-2 whitespace-pre-line leading-snug">${item.group}</td>`;
-        }
-        rowHtml += `<td class="font-bold text-slate-800 bg-slate-50/40 py-2">${item.maxScore}</td>`;
-        rowHtml += `
-          <td class="px-2 py-2.5 leading-snug">
-            <div class="font-bold text-slate-900 whitespace-pre-line">${item.title}</div>
-            <div class="text-[11px] text-slate-500 mt-0.5">${item.desc}</div>
-          </td>
-        `;
+        const pCount = state.config.participantCount;
+        const missingList = [];
 
         for (let p = 1; p <= pCount; p++) {
-          const val = j.scores[p]?.[item.id];
-          const hasVal = val !== undefined && val !== null && val !== '';
-          rowHtml += `
-            <td id="cell_${p}_${item.id}"
-                onclick="handleCellClick(${p}, '${item.id}')"
-                class="score-cell font-extrabold text-base ${hasVal ? 'text-blue-700 bg-blue-50/30' : 'text-slate-300'}">
-              ${hasVal ? val : ''}
-            </td>
-          `;
-        }
-
-        tr.innerHTML = rowHtml;
-        tbody.appendChild(tr);
-      });
-
-      // 하단 총점(100점) 행
-      const totalTr = document.createElement('tr');
-      totalTr.className = 'bg-slate-100 font-black text-slate-900 border-t-2 border-slate-700';
-      let totalHtml = `
-        <td class="py-3 px-2 leading-tight">합계<br/>(100)</td>
-        <td class="py-3 px-1">100</td>
-        <td class="py-3 px-2">총점</td>
-      `;
-
-      let completedParticipants = 0;
-      for (let p = 1; p <= pCount; p++) {
-        const { sum, isComplete } = getParticipantJudgeScore(j.scores, p);
-        if (isComplete) completedParticipants++;
-        totalHtml += `
-          <td id="total_cell_${p}" class="py-3 px-1 text-sm sm:text-base ${isComplete ? 'text-emerald-700 bg-emerald-50/70' : 'text-slate-600'}">
-            ${sum > 0 ? sum : '-'}
-          </td>
-        `;
-      }
-      totalTr.innerHTML = totalHtml;
-      tbody.appendChild(totalTr);
-
-      document.getElementById('judgeCompletedCount').textContent = completedParticipants;
-    }
-
-    function getParticipantJudgeScore(scoresObj, pNum) {
-      const pScores = scoresObj?.[pNum] || {};
-      let sum = 0;
-      let filledCount = 0;
-      RUBRIC_ITEMS.forEach((item) => {
-        const v = pScores[item.id];
-        if (typeof v === 'number' && item.validScores.includes(v)) {
-          sum += v;
-          filledCount++;
-        }
-      });
-      return { sum, isComplete: filledCount === RUBRIC_ITEMS.length };
-    }
-
-    window.saveJudgeMeta = function () {
-      const j = state.judges[state.currentJudgeId];
-      if (!j || j.submitted) return;
-      j.name = document.getElementById('judgeNameInput').value.trim();
-      persistJudgeToCloud(j.id);
-    };
-
-    window.handleCellClick = function (pNum, cId) {
-      const j = state.judges[state.currentJudgeId];
-      if (!j || j.submitted) {
-        showDialog('수정 불가', '이미 최종 전송이 완료되어 채점표를 수정할 수 없습니다.', 'warning');
-        return;
-      }
-      // 강조 표시 제거
-      const cellEl = document.getElementById(`cell_${pNum}_${cId}`);
-      if (cellEl) cellEl.classList.remove('missing-highlight');
-
-      openScoreModal(pNum, cId);
-    };
-
-    // ==================== 5. 손글씨 필기 + 원터치 배점 모달 로직 ====================
-    const hwCanvas = document.getElementById('handwritingCanvas');
-    const hwCtx = hwCanvas.getContext('2d');
-    let isDrawingHw = false;
-    let hwStrokes = [];
-    let currentStroke = [];
-    let hwRecognizeTimer = null;
-
-    function initHandwritingCanvasEvents() {
-      const getPos = (e) => {
-        const rect = hwCanvas.getBoundingClientRect();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        return {
-          x: (clientX - rect.left) * (hwCanvas.width / rect.width),
-          y: (clientY - rect.top) * (hwCanvas.height / rect.height)
-        };
-      };
-
-      const startDraw = (e) => {
-        e.preventDefault();
-        if (hwRecognizeTimer) clearTimeout(hwRecognizeTimer);
-        isDrawingHw = true;
-        document.getElementById('canvasPlaceholder').classList.add('hidden');
-        const pos = getPos(e);
-        currentStroke = [pos];
-        hwCtx.lineWidth = 5;
-        hwCtx.lineCap = 'round';
-        hwCtx.lineJoin = 'round';
-        hwCtx.strokeStyle = '#1e3a8a';
-        hwCtx.beginPath();
-        hwCtx.moveTo(pos.x, pos.y);
-      };
-
-      const moveDraw = (e) => {
-        if (!isDrawingHw) return;
-        e.preventDefault();
-        const pos = getPos(e);
-        currentStroke.push(pos);
-        hwCtx.lineTo(pos.x, pos.y);
-        hwCtx.stroke();
-      };
-
-      const endDraw = (e) => {
-        if (!isDrawingHw) return;
-        e.preventDefault();
-        isDrawingHw = false;
-        if (currentStroke.length > 0) {
-          hwStrokes.push(currentStroke);
-        }
-        // 획 종료 후 450ms 뒤 자동 숫자 판독 실행 (두 자리 숫자 입력 여유 확보)
-        hwRecognizeTimer = setTimeout(() => {
-          runHandwritingRecognition();
-        }, 450);
-      };
-
-      hwCanvas.addEventListener('mousedown', startDraw);
-      hwCanvas.addEventListener('mousemove', moveDraw);
-      window.addEventListener('mouseup', endDraw);
-
-      hwCanvas.addEventListener('touchstart', startDraw, { passive: false });
-      hwCanvas.addEventListener('touchmove', moveDraw, { passive: false });
-      hwCanvas.addEventListener('touchend', endDraw, { passive: false });
-    }
-
-    window.clearHandwritingCanvas = function () {
-      hwCtx.clearRect(0, 0, hwCanvas.width, hwCanvas.height);
-      hwStrokes = [];
-      currentStroke = [];
-      state.recognizedNumber = null;
-      document.getElementById('canvasPlaceholder').classList.remove('hidden');
-      document.getElementById('recognizedScoreDisplay').textContent = '-';
-      document.getElementById('btnApplyRecognized').disabled = true;
-      document.getElementById('handwritingFeedbackMsg').textContent = '';
-    };
-
-    /**
-     * 내장 필기 숫자 인식기:
-     * 캔버스 픽셀의 연결 요소(좌/우 자릿수 분리)를 분석하여 각 자릿수를 28x28 정규화 비트맵으로 변환 후
-     * 표준 숫자 템플릿(0~9) 및 기하학적 특징(루프, 가로/세로 비율, 획 방향)과 매칭하여 유효 배점 중 가장 가까운 숫자를 판별합니다.
-     */
-    function runHandwritingRecognition() {
-      if (hwStrokes.length === 0 || !state.activeCell) return;
-      const item = RUBRIC_ITEMS.find((x) => x.id === state.activeCell.cId);
-      if (!item) return;
-
-      const imgData = hwCtx.getImageData(0, 0, hwCanvas.width, hwCanvas.height);
-      const { data, width, height } = imgData;
-
-      // X축 투영(수직 히스토그램)으로 두 자리 숫자 분리
-      const colCounts = new Array(width).fill(0);
-      let minY = height, maxY = 0, totalPixels = 0;
-
-      for (let y = 0; y < height; y++) {
-        for (let x = 0; x < width; x++) {
-          const alpha = data[(y * width + x) * 4 + 3];
-          if (alpha > 40) {
-            colCounts[x]++;
-            if (y < minY) minY = y;
-            if (y > maxY) maxY = y;
-            totalPixels++;
-          }
-        }
-      }
-
-      if (totalPixels < 15) return;
-
-      // 연속된 X 구간(글자 블록) 추출
-      const segments = [];
-      let inSeg = false;
-      let segStart = 0;
-      for (let x = 0; x < width; x++) {
-        if (colCounts[x] > 0 && !inSeg) {
-          inSeg = true;
-          segStart = x;
-        } else if (colCounts[x] === 0 && inSeg) {
-          inSeg = false;
-          if (x - segStart >= 3) {
-            segments.push({ x1: segStart, x2: x - 1 });
-          }
-        }
-      }
-      if (inSeg) segments.push({ x1: segStart, x2: width - 1 });
-
-      // 가까운 획(예: '4'의 두 획) 병합
-      const mergedSegments = [];
-      for (const seg of segments) {
-        if (mergedSegments.length === 0) {
-          mergedSegments.push({ ...seg });
-        } else {
-          const prev = mergedSegments[mergedSegments.length - 1];
-          const gap = seg.x1 - prev.x2;
-          const prevW = prev.x2 - prev.x1;
-          const curW = seg.x2 - seg.x1;
-          // 간격이 매우 좁고 둘 다 좁은 획이면 하나의 숫자로 병합
-          if (gap < 8 && (prevW < 18 || curW < 18)) {
-            prev.x2 = seg.x2;
-          } else {
-            mergedSegments.push({ ...seg });
-          }
-        }
-      }
-
-      // 각 분리된 숫자 블록 판독
-      const recognizedDigits = mergedSegments.map((seg) => classifySingleDigit(data, width, height, seg.x1, seg.x2));
-      const rawStr = recognizedDigits.join('');
-      const parsedNum = parseInt(rawStr, 10);
-
-      // 해당 문항의 유효 배점(validScores) 중 가장 일치하는 점수 매칭
-      let matchedScore = null;
-      const msgEl = document.getElementById('handwritingFeedbackMsg');
-
-      if (!isNaN(parsedNum) && item.validScores.includes(parsedNum)) {
-        matchedScore = parsedNum;
-        msgEl.className = 'text-[11px] text-emerald-700 font-semibold mt-1.5';
-        msgEl.textContent = `인식 완료: '${matchedScore}점'으로 판독되었습니다. [적용하기]를 누르세요.`;
-      } else if (!isNaN(parsedNum)) {
-        // 유효 배점 중 가장 가까운 값 추천
-        matchedScore = item.validScores.reduce((prev, curr) =>
-          Math.abs(curr - parsedNum) < Math.abs(prev - parsedNum) ? curr : prev
-        );
-        msgEl.className = 'text-[11px] text-amber-700 font-semibold mt-1.5';
-        msgEl.textContent = `인식값(${parsedNum})을 가장 가까운 유효 배점 '${matchedScore}점'으로 보정했습니다.`;
-      } else {
-        msgEl.className = 'text-[11px] text-rose-600 font-semibold mt-1.5';
-        msgEl.textContent = '숫자를 명확히 인식하지 못했습니다. 다시 쓰거나 위 버튼을 터치하세요.';
-      }
-
-      state.recognizedNumber = matchedScore;
-      document.getElementById('recognizedScoreDisplay').textContent = matchedScore !== null ? matchedScore : '?';
-      document.getElementById('btnApplyRecognized').disabled = matchedScore === null;
-    }
-
-    // 단일 자릿수(0~9) 기하학적 특징 + 템플릿 매칭 분류기
-    function classifySingleDigit(data, width, height, x1, x2) {
-      let y1 = height, y2 = 0;
-      for (let y = 0; y < height; y++) {
-        for (let x = x1; x <= x2; x++) {
-          if (data[(y * width + x) * 4 + 3] > 40) {
-            if (y < y1) y1 = y;
-            if (y > y2) y2 = y;
-          }
-        }
-      }
-      const boxW = Math.max(1, x2 - x1 + 1);
-      const boxH = Math.max(1, y2 - y1 + 1);
-      const aspect = boxW / boxH;
-
-      // 매우 홀쭉한 세로선은 숫자 '1'
-      if (aspect < 0.34) return 1;
-
-      // 16x16 정규화 그리드 생성
-      const G = 16;
-      const grid = Array.from({ length: G }, () => new Array(G).fill(0));
-      for (let gy = 0; gy < G; gy++) {
-        for (let gx = 0; gx < G; gx++) {
-          const sx = Math.min(width - 1, Math.floor(x1 + (gx + 0.5) * (boxW / G)));
-          const sy = Math.min(height - 1, Math.floor(y1 + (gy + 0.5) * (boxH / G)));
-          // 주변 3x3 샘플링으로 선 굵기 보정
-          let hit = 0;
-          for (let dy = -1; dy <= 1; dy++) {
-            for (let dx = -1; dx <= 1; dx++) {
-              const nx = Math.min(width - 1, Math.max(0, sx + dx));
-              const ny = Math.min(height - 1, Math.max(0, sy + dy));
-              if (data[(ny * width + nx) * 4 + 3] > 40) hit++;
+          RUBRIC_ITEMS.forEach(function (item) {
+            const val = j.scores[p] && j.scores[p][item.id];
+            if (typeof val !== 'number' || item.validScores.indexOf(val) === -1) {
+              missingList.push({ p: p, item: item });
+              const cell = document.getElementById('cell_' + p + '_' + item.id);
+              if (cell) cell.classList.add('missing-highlight');
             }
-          }
-          grid[gy][gx] = hit > 0 ? 1 : 0;
+          });
         }
-      }
 
-      // 디지털 세그먼트 유사 템플릿과 코사인 유사도 비교 (0, 2, 4, 6, 7, 8, 9 중심)
-      const candidates = [0, 1, 2, 4, 6, 7, 8, 9];
-      let bestDigit = 8;
-      let bestScore = -Infinity;
+        if (missingList.length > 0) {
+          const previewItems = missingList
+            .slice(0, 5)
+            .map(function (m) { return '• 발표자 ' + m.p + '번 - ' + m.item.title.replace(/\n/g, ' '); })
+            .join('\n');
+          const extraCount = missingList.length > 5 ? '\n...외 ' + (missingList.length - 5) + '개 칸 누락' : '';
+          showDialog(
+            '미입력 점수 발견 (총 ' + missingList.length + '칸 누락)',
+            '빨간색으로 표시된 빈칸을 모두 입력해야 전송할 수 있습니다.\n\n' + previewItems + extraCount,
+            'error'
+          );
+          return;
+        }
 
-      for (const d of candidates) {
-        const tmpl = getDigitTemplate16(d);
-        let match = 0;
-        for (let r = 0; r < G; r++) {
-          for (let c = 0; c < G; c++) {
-            if (grid[r][c] === tmpl[r][c]) {
-              match += grid[r][c] === 1 ? 2.2 : 1.0;
+        if (!j.signature) {
+          showDialog(
+            '심사위원 서명 필요',
+            '모든 점수가 정확히 입력되었습니다.\n우측 상단의 [심사위원 서명하기] 버튼을 눌러 서명을 완료한 뒤 전송해 주세요.',
+            'warning'
+          );
+          return;
+        }
+
+        showConfirmDialog(
+          '점수 검증 완료 및 최종 전송 확인',
+          '모든 참가자의 점수가 오류없이 입력되었습니다.\n집계실로 최종 점수를 전송할까요?\n\n(전송 후에는 심사위원 화면에서 임의 수정이 잠금 처리됩니다.)',
+          async function () {
+            j.submitted = true;
+            j.submittedAt = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const ok = await persistJudgeToCloud(j.id);
+            renderJudgeView();
+            if (ok) {
+              showDialog(
+                '전송 완료',
+                '심사위원 ' + j.id + '(' + j.name + ')님의 채점 결과가 집계실 서버로 안전하게 전송되었습니다.',
+                'success'
+              );
             } else {
-              match -= 0.8;
+              showDialog(
+                '로컬 저장 완료 (오프라인)',
+                '인터넷 연결이 불안정하여 기기에 우선 저장되었습니다. 연결 복구 후 재전송하거나 담당자에게 알려주세요.',
+                'warning'
+              );
             }
           }
-        }
-        if (match > bestScore) {
-          bestScore = match;
-          bestDigit = d;
-        }
-      }
-      return bestDigit;
-    }
-
-    function getDigitTemplate16(digit) {
-      const patterns = {
-        0: [
-          '0000111111110000',
-          '0001110000111000',
-          '0011000000001100',
-          '0011000000001100',
-          '0110000000000110',
-          '0110000000000110',
-          '0110000000000110',
-          '0110000000000110',
-          '0110000000000110',
-          '0110000000000110',
-          '0110000000000110',
-          '0110000000000110',
-          '0011000000001100',
-          '0011000000001100',
-          '0001110000111000',
-          '0000111111110000'
-        ],
-        1: [
-          '0000001110000000',
-          '0000011110000000',
-          '0000110110000000',
-          '0000000110000000',
-          '0000000110000000',
-          '0000000110000000',
-          '0000000110000000',
-          '0000000110000000',
-          '0000000110000000',
-          '0000000110000000',
-          '0000000110000000',
-          '0000000110000000',
-          '0000000110000000',
-          '0000000110000000',
-          '0000000110000000',
-          '0000111111110000'
-        ],
-        2: [
-          '0001111111110000',
-          '0011100000111000',
-          '0110000000001100',
-          '0000000000001100',
-          '0000000000011000',
-          '0000000000110000',
-          '0000000011100000',
-          '0000001110000000',
-          '0000111000000000',
-          '0001100000000000',
-          '0011000000000000',
-          '0110000000000000',
-          '0110000000000000',
-          '0110000000000000',
-          '0111111111111100',
-          '0111111111111100'
-        ],
-        4: [
-          '0000000001110000',
-          '0000000011110000',
-          '0000000110110000',
-          '0000001100110000',
-          '0000011000110000',
-          '0000110000110000',
-          '0001100000110000',
-          '0011000000110000',
-          '0110000000110000',
-          '0111111111111110',
-          '0111111111111110',
-          '0000000000110000',
-          '0000000000110000',
-          '0000000000110000',
-          '0000000000110000',
-          '0000000000110000'
-        ],
-        6: [
-          '0000011111110000',
-          '0001110000000000',
-          '0011000000000000',
-          '0110000000000000',
-          '0110000000000000',
-          '0110000000000000',
-          '0110111111100000',
-          '0111100000111000',
-          '0110000000001100',
-          '0110000000001100',
-          '0110000000001100',
-          '0110000000001100',
-          '0110000000001100',
-          '0011000000011000',
-          '0001110000110000',
-          '0000111111100000'
-        ],
-        7: [
-          '0111111111111100',
-          '0111111111111100',
-          '0000000000011000',
-          '0000000000110000',
-          '0000000000110000',
-          '0000000001100000',
-          '0000000001100000',
-          '0000000011000000',
-          '0000000011000000',
-          '0000000110000000',
-          '0000000110000000',
-          '0000001100000000',
-          '0000001100000000',
-          '0000011000000000',
-          '0000011000000000',
-          '0000011000000000'
-        ],
-        8: [
-          '0000111111110000',
-          '0001100000011000',
-          '0011000000001100',
-          '0011000000001100',
-          '0011000000001100',
-          '0001100000011000',
-          '0000111111110000',
-          '0001100000011000',
-          '0011000000001100',
-          '0110000000000110',
-          '0110000000000110',
-          '0110000000000110',
-          '0011000000001100',
-          '0011000000001100',
-          '0001100000011000',
-          '0000111111110000'
-        ],
-        9: [
-          '0000111111100000',
-          '0001100000110000',
-          '0011000000011000',
-          '0110000000001100',
-          '0110000000001100',
-          '0110000000001100',
-          '0110000000001100',
-          '0011100000111100',
-          '0000111111101100',
-          '0000000000001100',
-          '0000000000001100',
-          '0000000000011000',
-          '0000000000011000',
-          '0000000000110000',
-          '0000000011100000',
-          '0000111110000000'
-        ]
-      };
-      return patterns[digit].map((row) => row.split('').map(Number));
-    }
-
-    function openScoreModal(pNum, cId) {
-      state.activeCell = { pNum, cId };
-      const item = RUBRIC_ITEMS.find((x) => x.id === cId);
-      const pInfo = state.config.participants[pNum - 1];
-      const currentVal = state.judges[state.currentJudgeId].scores[pNum]?.[cId];
-
-      document.getElementById('modalParticipantTag').textContent =
-        `발표자 ${pNum}번${pInfo?.name ? ` (${pInfo.name})` : ''}`;
-      document.getElementById('modalCriterionTitle').textContent = item.title.replace(/\n/g, ' ');
-      document.getElementById('modalValidScoresHint').textContent = `유효 배점: ${item.validScores.join(', ')}점`;
-
-      // 원터치 버튼 생성
-      const btnWrap = document.getElementById('modalQuickButtons');
-      btnWrap.innerHTML = '';
-      item.validScores.forEach((sc, idx) => {
-        const labels = ['최상', '상', '중', '하', '미흡'];
-        const isSelected = currentVal === sc;
-        const btn = document.createElement('button');
-        btn.className = `py-2.5 px-1 rounded-xl border-2 font-extrabold transition flex flex-col items-center justify-center ${
-          isSelected
-            ? 'border-blue-600 bg-blue-600 text-white shadow-sm'
-            : 'border-slate-200 hover:border-blue-500 hover:bg-blue-50 text-slate-900'
-        }`;
-        btn.innerHTML = `
-          <span class="text-lg leading-none">${sc}</span>
-          <span class="text-[10px] mt-1 ${isSelected ? 'text-blue-100' : 'text-slate-400'}">${labels[idx]}</span>
-        `;
-        btn.onclick = () => selectScoreAndClose(sc);
-        btnWrap.appendChild(btn);
-      });
-
-      clearHandwritingCanvas();
-      const modal = document.getElementById('scoreInputModal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
-
-    window.closeScoreModal = function () {
-      const modal = document.getElementById('scoreInputModal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-      state.activeCell = null;
-    };
-
-    window.applyRecognizedScore = function () {
-      if (state.recognizedNumber !== null) {
-        selectScoreAndClose(state.recognizedNumber);
-      }
-    };
-
-    window.clearCurrentCellScore = function () {
-      if (!state.activeCell) return;
-      const { pNum, cId } = state.activeCell;
-      const j = state.judges[state.currentJudgeId];
-      if (j.scores[pNum]) {
-        delete j.scores[pNum][cId];
-      }
-      persistJudgeToCloud(j.id);
-      renderJudgeView();
-      closeScoreModal();
-    };
-
-    function selectScoreAndClose(scoreVal) {
-      if (!state.activeCell) return;
-      const { pNum, cId } = state.activeCell;
-      const j = state.judges[state.currentJudgeId];
-      if (!j.scores[pNum]) j.scores[pNum] = {};
-      j.scores[pNum][cId] = scoreVal;
-
-      persistJudgeToCloud(j.id);
-      renderJudgeView();
-      closeScoreModal();
-    }
-
-    // ==================== 6. 심사위원 서명 패드 로직 ====================
-    const sigCanvas = document.getElementById('signatureCanvas');
-    const sigCtx = sigCanvas.getContext('2d');
-    let isDrawingSig = false;
-    let hasSigStroke = false;
-
-    function initSignatureCanvasEvents() {
-      const getPos = (e) => {
-        const rect = sigCanvas.getBoundingClientRect();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        return {
-          x: (clientX - rect.left) * (sigCanvas.width / rect.width),
-          y: (clientY - rect.top) * (sigCanvas.height / rect.height)
-        };
-      };
-
-      const start = (e) => {
-        e.preventDefault();
-        isDrawingSig = true;
-        hasSigStroke = true;
-        const pos = getPos(e);
-        sigCtx.lineWidth = 3.5;
-        sigCtx.lineCap = 'round';
-        sigCtx.lineJoin = 'round';
-        sigCtx.strokeStyle = '#0f172a';
-        sigCtx.beginPath();
-        sigCtx.moveTo(pos.x, pos.y);
-      };
-
-      const move = (e) => {
-        if (!isDrawingSig) return;
-        e.preventDefault();
-        const pos = getPos(e);
-        sigCtx.lineTo(pos.x, pos.y);
-        sigCtx.stroke();
-      };
-
-      const end = () => {
-        isDrawingSig = false;
-      };
-
-      sigCanvas.addEventListener('mousedown', start);
-      sigCanvas.addEventListener('mousemove', move);
-      window.addEventListener('mouseup', end);
-      sigCanvas.addEventListener('touchstart', start, { passive: false });
-      sigCanvas.addEventListener('touchmove', move, { passive: false });
-      sigCanvas.addEventListener('touchend', end, { passive: false });
-    }
-
-    window.openSignatureModal = function () {
-      const j = state.judges[state.currentJudgeId];
-      if (j.submitted) return;
-      clearSignatureCanvas();
-      const m = document.getElementById('signatureModal');
-      m.classList.remove('hidden');
-      m.classList.add('flex');
-    };
-
-    window.closeSignatureModal = function () {
-      const m = document.getElementById('signatureModal');
-      m.classList.add('hidden');
-      m.classList.remove('flex');
-    };
-
-    window.clearSignatureCanvas = function () {
-      sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
-      hasSigStroke = false;
-    };
-
-    window.saveSignatureData = function () {
-      if (!hasSigStroke) {
-        showDialog('서명 확인', '서명란에 자필 서명을 먼저 입력해 주세요.', 'warning');
-        return;
-      }
-      const j = state.judges[state.currentJudgeId];
-      j.signature = sigCanvas.toDataURL('image/png');
-      persistJudgeToCloud(j.id);
-      renderJudgeView();
-      closeSignatureModal();
-    };
-
-    // ==================== 7. 전체 유효성 검증 및 최종 전송 흐름 ====================
-    window.validateAndPromptSubmit = function () {
-      const j = state.judges[state.currentJudgeId];
-      if (j.submitted) return;
-
-      // 이전 강조 표시 초기화
-      document.querySelectorAll('.missing-highlight').forEach((el) => el.classList.remove('missing-highlight'));
-
-      // 1) 심사위원 성명 확인
-      if (!j.name || j.name.trim() === '') {
-        document.getElementById('judgeNameInput').focus();
-        showDialog('심사위원 성명 누락', '상단의 [심사위원 성명]을 먼저 입력해 주세요.', 'warning');
-        return;
-      }
-
-      // 2) 모든 참가자(1 ~ participantCount)의 모든 항목 누락 및 유효성 전수 검사
-      const pCount = state.config.participantCount;
-      const missingList = [];
-
-      for (let p = 1; p <= pCount; p++) {
-        RUBRIC_ITEMS.forEach((item) => {
-          const val = j.scores[p]?.[item.id];
-          if (typeof val !== 'number' || !item.validScores.includes(val)) {
-            missingList.push({ p, item });
-            const cell = document.getElementById(`cell_${p}_${item.id}`);
-            if (cell) cell.classList.add('missing-highlight');
-          }
-        });
-      }
-
-      if (missingList.length > 0) {
-        const previewItems = missingList
-          .slice(0, 5)
-          .map((m) => `• 발표자 ${m.p}번 - ${m.item.title.replace(/\n/g, ' ')}`)
-          .join('\n');
-        const extraCount = missingList.length > 5 ? `\n...외 ${missingList.length - 5}개 칸 누락` : '';
-        showDialog(
-          `미입력 점수 발견 (총 ${missingList.length}칸 누락)`,
-          `빨간색으로 표시된 빈칸을 모두 입력해야 전송할 수 있습니다.\n\n${previewItems}${extraCount}`,
-          'error'
         );
-        return;
       }
 
-      // 3) 심사위원 서명 확인
-      if (!j.signature) {
-        showDialog(
-          '심사위원 서명 필요',
-          '모든 점수가 정확히 입력되었습니다.\n우측 상단의 [심사위원 서명하기] 버튼을 눌러 서명을 완료한 뒤 전송해 주세요.',
-          'warning'
-        );
-        return;
+      // ==================== 9. 관리자 집계실 렌더링 ====================
+      function getAwardTier(rank) {
+        if (typeof rank !== 'number') return null;
+        return AWARD_TIERS.find(function (t) { return rank <= t.rankMax; }) || null;
       }
 
-      // 4) 모든 검증 통과 -> 사용자 요청 확인 메시지 출력
-      showConfirmDialog(
-        '점수 검증 완료 및 최종 전송 확인',
-        '모든 참가자의 점수가 오류없이 입력되었습니다.\n집계실로 최종 점수를 전송할까요?\n\n(전송 후에는 심사위원 화면에서 임의 수정이 잠금 처리됩니다.)',
-        async () => {
-          j.submitted = true;
-          j.submittedAt = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-          const ok = await persistJudgeToCloud(j.id);
-          renderJudgeView();
-          if (ok) {
-            showDialog(
-              '전송 완료',
-              `심사위원 ${j.id}(${j.name})님의 채점 결과가 집계실 서버로 안전하게 전송되었습니다.`,
-              'success'
-            );
-          } else {
-            showDialog(
-              '전송 지연 알림 (로컬 임시저장됨)',
-              '현재 인터넷 연결이 불안정하여 기기에 우선 안전하게 저장되었습니다. 인터넷 연결이 복구되면 자동으로 서버에 전송됩니다.',
-              'warning'
-            );
-          }
-        }
-      );
-    };
-
-    // ==================== 8. 담당자(관리자) 집계실 렌더링 및 순위 산출 ====================
-    function renderAdminView() {
-      const pCount = state.config.participantCount;
-
-      // 1) 심사위원 1~4 제출 현황 카드 렌더링
-      const statusGrid = document.getElementById('adminJudgeStatusGrid');
-      statusGrid.innerHTML = '';
-
-      for (let i = 1; i <= 4; i++) {
-        const j = state.judges[i];
-        let completedCnt = 0;
-        for (let p = 1; p <= pCount; p++) {
-          if (getParticipantJudgeScore(j.scores, p).isComplete) completedCnt++;
-        }
-
-        let badgeHtml = '';
-        let cardBorder = 'border-slate-200';
-        if (j.submitted) {
-          badgeHtml = '<span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-extrabold"><i class="fa-solid fa-check mr-1"></i>전송 완료</span>';
-          cardBorder = 'border-emerald-400 bg-emerald-50/20';
-        } else if (completedCnt > 0 || j.name) {
-          badgeHtml = `<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold">작성 중 (${completedCnt}/${pCount})</span>`;
-          cardBorder = 'border-amber-300';
-        } else {
-          badgeHtml = '<span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-500 text-xs font-bold">미접속/대기</span>';
-        }
-
-        const card = document.createElement('div');
-        card.className = `rounded-xl border-2 ${cardBorder} p-3.5 flex flex-col justify-between gap-2`;
-        card.innerHTML = `
-          <div class="flex items-center justify-between">
-            <span class="font-extrabold text-slate-900">심사위원 ${i}</span>
-            ${badgeHtml}
-          </div>
-          <div class="flex items-center justify-between text-xs text-slate-600">
-            <span>성명: <strong>${j.name ? escapeHtml(j.name) : '미입력'}</strong></span>
-            ${j.signature ? `<img src="${j.signature}" class="h-6 border border-slate-200 rounded bg-white px-1" alt="서명" />` : '<span class="text-slate-400">서명 없음</span>'}
-          </div>
-          <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-[11px] no-print">
-            <span class="text-slate-400">${j.submittedAt ? `전송: ${j.submittedAt}` : '미전송 상태'}</span>
-            ${
-              j.submitted
-                ? `<button onclick="unlockJudgeSubmission(${i})" class="text-rose-600 hover:underline font-bold">잠금 해제(재수정 허용)</button>`
-                : `<span></span>`
-            }
-          </div>
-        `;
-        statusGrid.appendChild(card);
-
-        // 순위표 헤더 심사위원 이름 갱신
-        const thEl = document.getElementById(`thJudge${i}`);
-        if (thEl) {
-          thEl.innerHTML = `심사위원${i}<br/><span class="text-[10px] font-normal text-slate-300">${j.name ? escapeHtml(j.name) : '(미정)'}</span>`;
-        }
-      }
-
-      // 2) 참가자별 점수 집계 (전송 완료된 심사위원 점수 기준 합산)
-      const results = [];
-      for (let p = 1; p <= pCount; p++) {
-        const pInfo = state.config.participants[p - 1] || { num: p, studentId: '', name: '', topic: '' };
-        const jTotals = {};
-        let grandTotal = 0;
-        let submittedJudgesCount = 0;
+      function renderAdminView() {
+        const pCount = state.config.participantCount;
+        const statusGrid = document.getElementById('adminJudgeStatusGrid');
+        statusGrid.innerHTML = '';
 
         for (let i = 1; i <= 4; i++) {
           const j = state.judges[i];
+          let completedCnt = 0;
+          for (let p = 1; p <= pCount; p++) {
+            if (getParticipantJudgeScore(j.scores, p).isComplete) completedCnt++;
+          }
+
+          let badgeHtml = '';
+          let cardBorder = 'border-slate-200';
           if (j.submitted) {
-            const { sum } = getParticipantJudgeScore(j.scores, p);
-            jTotals[i] = sum;
-            grandTotal += sum;
-            submittedJudgesCount++;
+            badgeHtml = '<span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-extrabold"><i class="fa-solid fa-check mr-1"></i>전송 완료</span>';
+            cardBorder = 'border-emerald-400 bg-emerald-50/20';
+          } else if (completedCnt > 0 || j.name) {
+            badgeHtml = '<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold">작성 중 (' + completedCnt + '/' + pCount + ')</span>';
+            cardBorder = 'border-amber-300';
           } else {
-            jTotals[i] = null;
+            badgeHtml = '<span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-500 text-xs font-bold">미접속/대기</span>';
+          }
+
+          const card = document.createElement('div');
+          card.className = 'rounded-xl border-2 ' + cardBorder + ' p-3.5 flex flex-col justify-between gap-2';
+          card.innerHTML =
+            '<div class="flex items-center justify-between">' +
+              '<span class="font-extrabold text-slate-900">심사위원 ' + i + ' <span class="text-[11px] font-mono text-slate-400">(PW: ' + JUDGE_PASSWORDS[i] + ')</span></span>' +
+              badgeHtml +
+            '</div>' +
+            '<div class="flex items-center justify-between text-xs text-slate-600">' +
+              '<span>성명: <strong>' + (j.name ? escapeHtml(j.name) : '미입력') + '</strong></span>' +
+              (j.signature ? '<img src="' + j.signature + '" class="h-6 border border-slate-200 rounded bg-white px-1" alt="서명" />' : '<span class="text-slate-400">서명 없음</span>') +
+            '</div>' +
+            '<div class="flex items-center justify-between pt-2 border-t border-slate-100 text-[11px] no-print">' +
+              '<span class="text-slate-400">' + (j.submittedAt ? '전송: ' + j.submittedAt : '미전송 상태') + '</span>' +
+              (j.submitted ? '<button type="button" data-unlock-id="' + i + '" class="btn-unlock-judge text-rose-600 hover:underline font-bold">잠금 해제(재수정 허용)</button>' : '<span></span>') +
+            '</div>';
+          statusGrid.appendChild(card);
+
+          const thEl = document.getElementById('thJudge' + i);
+          if (thEl) {
+            thEl.innerHTML = '심사위원' + i + '<br/><span class="text-[10px] font-normal text-slate-300">' + (j.name ? escapeHtml(j.name) : '(미정)') + '</span>';
           }
         }
 
-        const avgScore = submittedJudgesCount > 0 ? (grandTotal / submittedJudgesCount).toFixed(2) : '-';
-        results.push({
-          num: p,
-          studentId: pInfo.studentId,
-          name: pInfo.name,
-          topic: pInfo.topic,
-          jTotals,
-          grandTotal,
-          submittedJudgesCount,
-          avgScore
+        document.querySelectorAll('.btn-unlock-judge').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            const jId = Number(btn.getAttribute('data-unlock-id'));
+            showConfirmDialog(
+              '심사위원 ' + jId + ' 잠금 해제',
+              '심사위원 ' + jId + '번의 제출 잠금을 해제하여 점수를 수정할 수 있도록 허용하시겠습니까?',
+              function () {
+                state.judges[jId].submitted = false;
+                persistJudgeToCloud(jId);
+                renderAdminView();
+              }
+            );
+          });
         });
-      }
 
-      // 합산 총점 내림차순 정렬 (동점 시 발표 번호순)
-      results.sort((a, b) => {
-        if (b.grandTotal !== a.grandTotal) return b.grandTotal - a.grandTotal;
-        return a.num - b.num;
-      });
-
-      // 공동 순위 계산 (Standard Competition Ranking: 1, 2, 2, 4)
-      const tieScores = new Set();
-      for (let idx = 0; idx < results.length; idx++) {
-        if (results[idx].submittedJudgesCount === 0) {
-          results[idx].rank = '-';
-        } else if (idx > 0 && results[idx].grandTotal === results[idx - 1].grandTotal) {
-          results[idx].rank = results[idx - 1].rank;
-          tieScores.add(results[idx].grandTotal);
-        } else {
-          results[idx].rank = idx + 1;
-        }
-      }
-
-      // 동점자 경고 표시
-      const tieBanner = document.getElementById('tieAlertBanner');
-      if (tieScores.size > 0) {
-        const tieDetailText = Array.from(tieScores)
-          .map((sc) => {
-            const tiedNames = results
-              .filter((r) => r.grandTotal === sc)
-              .map((r) => `발표자 ${r.num}번${r.name ? `(${r.name})` : ''}`)
-              .join(', ');
-            return `• 합산 ${sc}점 동점: ${tiedNames}`;
-          })
-          .join('\n');
-        document.getElementById('tieAlertDetail').textContent = tieDetailText;
-        tieBanner.classList.remove('hidden');
-      } else {
-        tieBanner.classList.add('hidden');
-      }
-
-      // 3) 순위표 테이블 렌더링
-      const tbody = document.getElementById('adminRankingBody');
-      tbody.innerHTML = '';
-
-      results.forEach((row) => {
-        const award = getAwardTier(row.rank);
-        const isTied = row.rank !== '-' && tieScores.has(row.grandTotal);
-        const tr = document.createElement('tr');
-        tr.className = row.rank === 1 ? 'bg-amber-50/40 font-semibold' : 'hover:bg-slate-50';
-
-        tr.innerHTML = `
-          <td class="py-3 px-2 border border-slate-200 font-black text-base ${row.rank === 1 ? 'text-amber-600' : 'text-slate-900'}">
-            ${row.rank !== '-' ? `${row.rank}위` : '-'}
-            ${isTied ? '<span class="block text-[10px] text-rose-600 font-bold">(동점)</span>' : ''}
-          </td>
-          <td class="py-3 px-2 border border-slate-200">
-            ${
-              award
-                ? `<span class="inline-block px-2 py-0.5 rounded-md border text-[11px] font-bold ${award.badgeClass}">${award.label} · ${award.vouchers}매</span>`
-                : '<span class="text-slate-400 text-xs">-</span>'
-            }
-          </td>
-          <td class="py-3 px-2 border border-slate-200 font-extrabold text-slate-800">${row.num}번</td>
-          <td class="py-3 px-2 border border-slate-200">
-            ${
-              row.name || row.studentId
-                ? `<span class="text-slate-500 text-xs">${escapeHtml(row.studentId)}</span> <strong class="text-slate-900">${escapeHtml(row.name)}</strong>`
-                : `<span class="text-slate-400">발표자 ${row.num}</span>`
-            }
-          </td>
-          <td class="py-3 px-3 border border-slate-200 text-left text-slate-700">
-            ${row.topic ? escapeHtml(row.topic) : '<span class="text-slate-300">-</span>'}
-          </td>
-          <td class="py-3 px-2 border border-slate-200 font-bold ${row.jTotals[1] !== null ? 'text-slate-800' : 'text-slate-300'}">${row.jTotals[1] ?? '미전송'}</td>
-          <td class="py-3 px-2 border border-slate-200 font-bold ${row.jTotals[2] !== null ? 'text-slate-800' : 'text-slate-300'}">${row.jTotals[2] ?? '미전송'}</td>
-          <td class="py-3 px-2 border border-slate-200 font-bold ${row.jTotals[3] !== null ? 'text-slate-800' : 'text-slate-300'}">${row.jTotals[3] ?? '미전송'}</td>
-          <td class="py-3 px-2 border border-slate-200 font-bold ${row.jTotals[4] !== null ? 'text-slate-800' : 'text-slate-300'}">${row.jTotals[4] ?? '미전송'}</td>
-          <td class="py-3 px-2 border border-slate-200 font-black text-base text-blue-800 bg-blue-50/40">
-            ${row.submittedJudgesCount > 0 ? `${row.grandTotal}점` : '-'}
-          </td>
-          <td class="py-3 px-2 border border-slate-200 font-bold text-slate-700 bg-slate-50">
-            ${row.avgScore !== '-' ? `${row.avgScore}점` : '-'}
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function getAwardTier(rank) {
-      if (typeof rank !== 'number') return null;
-      return AWARD_TIERS.find((t) => rank <= t.rankMax) || null;
-    }
-
-    window.unlockJudgeSubmission = function (judgeId) {
-      showConfirmDialog(
-        `심사위원 ${judgeId} 잠금 해제`,
-        `심사위원 ${judgeId}번의 제출 잠금을 해제하여 점수를 수정할 수 있도록 허용하시겠습니까?`,
-        () => {
-          state.judges[judgeId].submitted = false;
-          persistJudgeToCloud(judgeId);
-          renderAdminView();
-        }
-      );
-    };
-
-    // ==================== 9. 관리자 설정·명단·테스트·엑셀 내보내기 ====================
-    window.openAdminSettingsModal = function () {
-      document.getElementById('settingParticipantCount').value = state.config.participantCount;
-      document.getElementById('settingAdminPin').value = state.config.adminPin;
-      renderParticipantEditList();
-      const m = document.getElementById('adminSettingsModal');
-      m.classList.remove('hidden');
-      m.classList.add('flex');
-    };
-
-    window.closeAdminSettingsModal = function () {
-      const m = document.getElementById('adminSettingsModal');
-      m.classList.add('hidden');
-      m.classList.remove('flex');
-    };
-
-    function renderParticipantEditList() {
-      const tbody = document.getElementById('participantEditList');
-      tbody.innerHTML = '';
-      const count = state.config.participantCount;
-      for (let i = 0; i < count; i++) {
-        const p = state.config.participants[i] || { num: i + 1, studentId: '', name: '', topic: '' };
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td class="py-1.5 px-3 text-center font-bold text-slate-700">${i + 1}</td>
-          <td class="py-1.5 px-2">
-            <input type="text" id="pEditId_${i}" value="${escapeHtml(p.studentId || '')}" placeholder="예: 10101"
-              class="w-full px-2 py-1 rounded border border-slate-300 text-xs" />
-          </td>
-          <td class="py-1.5 px-2">
-            <input type="text" id="pEditName_${i}" value="${escapeHtml(p.name || '')}" placeholder="성명"
-              class="w-full px-2 py-1 rounded border border-slate-300 text-xs" />
-          </td>
-          <td class="py-1.5 px-2">
-            <input type="text" id="pEditTopic_${i}" value="${escapeHtml(p.topic || '')}" placeholder="발표 주제 입력"
-              class="w-full px-2 py-1 rounded border border-slate-300 text-xs" />
-          </td>
-        `;
-        tbody.appendChild(tr);
-      }
-    }
-
-    window.applyParticipantCountChange = function () {
-      const val = parseInt(document.getElementById('settingParticipantCount').value, 10);
-      if (isNaN(val) || val < 1 || val > 24) {
-        showDialog('입력 오류', '참가 인원수는 1명~24명 사이로 입력해 주세요.', 'warning');
-        return;
-      }
-      state.config.participantCount = val;
-      persistConfigToCloud();
-      renderParticipantEditList();
-      renderAdminView();
-    };
-
-    window.updateAdminPin = function () {
-      const newPin = document.getElementById('settingAdminPin').value.trim();
-      if (newPin.length < 4) {
-        showDialog('PIN 설정 오류', '비밀번호는 최소 4자리 이상으로 설정해 주세요.', 'warning');
-        return;
-      }
-      state.config.adminPin = newPin;
-      persistConfigToCloud();
-      showDialog('변경 완료', `관리자 비밀번호가 '${newPin}'으로 변경되었습니다.`, 'success');
-    };
-
-    window.saveParticipantList = function () {
-      const count = state.config.participantCount;
-      for (let i = 0; i < count; i++) {
-        state.config.participants[i] = {
-          num: i + 1,
-          studentId: document.getElementById(`pEditId_${i}`)?.value.trim() || '',
-          name: document.getElementById(`pEditName_${i}`)?.value.trim() || '',
-          topic: document.getElementById(`pEditTopic_${i}`)?.value.trim() || ''
-        };
-      }
-      persistConfigToCloud();
-      renderAdminView();
-      closeAdminSettingsModal();
-    };
-
-    window.fillDemoTestData = function () {
-      const sampleNames = ['김민준', '이서연', '박지훈', '최수빈', '정도윤', '강하은', '조현우', '윤지민', '장서준', '임채원', '한시우', '오유진', '서준서', '신예은', '권태윤', '황지아', '안건우', '송다인'];
-      const pCount = state.config.participantCount;
-      for (let i = 0; i < pCount; i++) {
-        if (!state.config.participants[i].name) {
-          state.config.participants[i].studentId = `10${(i % 6) + 1}${String(i + 1).padStart(2, '0')}`;
-          state.config.participants[i].name = sampleNames[i % sampleNames.length];
-          state.config.participants[i].topic = '의료기기 품질관리 전문가 로드맵';
-        }
-      }
-
-      const judgeNames = ['김의료', '이바이오', '박진로', '최마이스터'];
-      for (let jId = 1; jId <= 4; jId++) {
-        const scores = {};
+        // 순위 산출
+        const results = [];
         for (let p = 1; p <= pCount; p++) {
-          scores[p] = {};
-          RUBRIC_ITEMS.forEach((item) => {
-            const randIdx = Math.floor(Math.random() * item.validScores.length);
-            scores[p][item.id] = item.validScores[randIdx];
+          const pInfo = state.config.participants[p - 1] || { num: p, studentId: '', name: '', topic: '' };
+          const jTotals = {};
+          let grandTotal = 0;
+          let submittedJudgesCount = 0;
+
+          for (let i = 1; i <= 4; i++) {
+            const j = state.judges[i];
+            if (j.submitted) {
+              const s = getParticipantJudgeScore(j.scores, p).sum;
+              jTotals[i] = s;
+              grandTotal += s;
+              submittedJudgesCount++;
+            } else {
+              jTotals[i] = null;
+            }
+          }
+
+          results.push({
+            num: p,
+            studentId: pInfo.studentId,
+            name: pInfo.name,
+            topic: pInfo.topic,
+            jTotals: jTotals,
+            grandTotal: grandTotal,
+            submittedJudgesCount: submittedJudgesCount,
+            avgScore: submittedJudgesCount > 0 ? (grandTotal / submittedJudgesCount).toFixed(2) : '-',
+            rank: '-'
           });
         }
-        state.judges[jId] = {
-          id: jId,
-          name: judgeNames[jId - 1],
-          signature: '',
-          submitted: true,
-          submittedAt: '모의테스트',
-          scores
-        };
-        persistJudgeToCloud(jId);
-      }
-      persistConfigToCloud();
-      renderAdminView();
-      closeAdminSettingsModal();
-      showDialog('모의 테스트 데이터 생성 완료', '심사위원 1~4번의 가상 채점 데이터와 참가자 명단이 생성되어 실시간 순위표에 반영되었습니다.', 'success');
-    };
 
-    window.confirmResetAllData = function () {
-      showConfirmDialog(
-        '전체 점수 및 상태 초기화',
-        '모든 심사위원의 채점 데이터와 제출 상태가 영구 삭제됩니다.\n본 대회 시작 전 초기화하시겠습니까?',
-        () => {
-          for (let jId = 1; jId <= 4; jId++) {
-            state.judges[jId] = {
-              id: jId,
-              name: '',
-              signature: '',
-              submitted: false,
-              submittedAt: null,
-              scores: {}
-            };
-            persistJudgeToCloud(jId);
-          }
-          renderAdminView();
-          closeAdminSettingsModal();
-          showDialog('초기화 완료', '모든 심사 데이터가 깨끗하게 초기화되었습니다.', 'success');
-        }
-      );
-    };
+        results.sort(function (a, b) {
+          if (b.grandTotal !== a.grandTotal) return b.grandTotal - a.grandTotal;
+          return a.num - b.num;
+        });
 
-    window.exportResultsCSV = function () {
-      const pCount = state.config.participantCount;
-      const rows = [
-        ['순위', '시상구분', '상품권(매)', '발표번호', '학번', '성명', '발표주제', '심사위원1', '심사위원2', '심사위원3', '심사위원4', '합산총점(400)', '평균(100)']
-      ];
-
-      const computed = [];
-      for (let p = 1; p <= pCount; p++) {
-        const pInfo = state.config.participants[p - 1] || {};
-        let total = 0, cnt = 0;
-        const jVals = [];
-        for (let i = 1; i <= 4; i++) {
-          if (state.judges[i].submitted) {
-            const s = getParticipantJudgeScore(state.judges[i].scores, p).sum;
-            jVals.push(s);
-            total += s;
-            cnt++;
+        const tieScores = new Set();
+        for (let idx = 0; idx < results.length; idx++) {
+          if (results[idx].submittedJudgesCount === 0) {
+            results[idx].rank = '-';
+          } else if (idx > 0 && results[idx].grandTotal === results[idx - 1].grandTotal) {
+            results[idx].rank = results[idx - 1].rank;
+            tieScores.add(results[idx].grandTotal);
           } else {
-            jVals.push('');
+            results[idx].rank = idx + 1;
           }
         }
-        computed.push({
-          num: p,
-          studentId: pInfo.studentId || '',
-          name: pInfo.name || `발표자${p}`,
-          topic: pInfo.topic || '',
-          jVals,
-          total,
-          cnt,
-          avg: cnt > 0 ? (total / cnt).toFixed(2) : ''
+
+        const tieBanner = document.getElementById('tieAlertBanner');
+        if (tieScores.size > 0) {
+          const tieDetailText = Array.from(tieScores).map(function (sc) {
+            const tiedNames = results
+              .filter(function (r) { return r.grandTotal === sc; })
+              .map(function (r) { return '발표자 ' + r.num + '번' + (r.name ? '(' + r.name + ')' : ''); })
+              .join(', ');
+            return '• 합산 ' + sc + '점 동점: ' + tiedNames;
+          }).join('\n');
+          document.getElementById('tieAlertDetail').textContent = tieDetailText;
+          tieBanner.classList.remove('hidden');
+        } else {
+          tieBanner.classList.add('hidden');
+        }
+
+        const tbody = document.getElementById('adminRankingBody');
+        tbody.innerHTML = '';
+
+        results.forEach(function (row) {
+          const award = getAwardTier(row.rank);
+          const isTied = row.rank !== '-' && tieScores.has(row.grandTotal);
+          const tr = document.createElement('tr');
+          tr.className = (row.rank === 1 ? 'bg-amber-50/40 font-semibold' : 'hover:bg-slate-50') + ' cursor-pointer';
+          tr.title = '클릭하여 심사위원별 세부 항목 점수를 비교합니다';
+
+          tr.innerHTML =
+            '<td class="py-3 px-2 border border-slate-200 font-black text-base ' + (row.rank === 1 ? 'text-amber-600' : 'text-slate-900') + '">' +
+              (row.rank !== '-' ? row.rank + '위' : '-') +
+              (isTied ? '<span class="block text-[10px] text-rose-600 font-bold">(동점)</span>' : '') +
+            '</td>' +
+            '<td class="py-3 px-2 border border-slate-200">' +
+              (award
+                ? '<span class="inline-block px-2 py-0.5 rounded-md border text-[11px] font-bold ' + award.badgeClass + '">' + award.label + ' · ' + award.vouchers + '매</span>'
+                : '<span class="text-slate-400 text-xs">-</span>') +
+            '</td>' +
+            '<td class="py-3 px-2 border border-slate-200 font-extrabold text-slate-800">' + row.num + '번</td>' +
+            '<td class="py-3 px-2 border border-slate-200">' +
+              (row.name || row.studentId
+                ? '<span class="text-slate-500 text-xs">' + escapeHtml(row.studentId) + '</span> <strong class="text-slate-900">' + escapeHtml(row.name) + '</strong>'
+                : '<span class="text-slate-400">발표자 ' + row.num + '</span>') +
+            '</td>' +
+            '<td class="py-3 px-3 border border-slate-200 text-left text-slate-700">' +
+              (row.topic ? escapeHtml(row.topic) : '<span class="text-slate-300">-</span>') +
+            '</td>' +
+            '<td class="py-3 px-2 border border-slate-200 font-bold ' + (row.jTotals[1] !== null ? 'text-slate-800' : 'text-slate-300') + '">' + (row.jTotals[1] !== null ? row.jTotals[1] : '미전송') + '</td>' +
+            '<td class="py-3 px-2 border border-slate-200 font-bold ' + (row.jTotals[2] !== null ? 'text-slate-800' : 'text-slate-300') + '">' + (row.jTotals[2] !== null ? row.jTotals[2] : '미전송') + '</td>' +
+            '<td class="py-3 px-2 border border-slate-200 font-bold ' + (row.jTotals[3] !== null ? 'text-slate-800' : 'text-slate-300') + '">' + (row.jTotals[3] !== null ? row.jTotals[3] : '미전송') + '</td>' +
+            '<td class="py-3 px-2 border border-slate-200 font-bold ' + (row.jTotals[4] !== null ? 'text-slate-800' : 'text-slate-300') + '">' + (row.jTotals[4] !== null ? row.jTotals[4] : '미전송') + '</td>' +
+            '<td class="py-3 px-2 border border-slate-200 font-black text-base text-blue-800 bg-blue-50/40">' +
+              (row.submittedJudgesCount > 0 ? row.grandTotal + '점' : '-') +
+            '</td>' +
+            '<td class="py-3 px-2 border border-slate-200 font-bold text-slate-700 bg-slate-50">' +
+              (row.avgScore !== '-' ? row.avgScore + '점' : '-') +
+            '</td>';
+
+          tr.addEventListener('click', (function (pNum) {
+            return function () {
+              openParticipantDetailModal(pNum);
+            };
+          })(row.num));
+
+          tbody.appendChild(tr);
         });
       }
 
-      computed.sort((a, b) => b.total - a.total || a.num - b.num);
-      computed.forEach((r, idx) => {
-        const rank = r.cnt === 0 ? '' : (idx > 0 && r.total === computed[idx - 1].total ? computed[idx - 1]._rank : idx + 1);
-        r._rank = rank;
-        const award = getAwardTier(rank);
-        rows.push([
-          rank,
-          award ? award.label : '',
-          award ? award.vouchers : 0,
-          r.num,
-          r.studentId,
-          r.name,
-          r.topic,
-          ...r.jVals,
-          r.cnt > 0 ? r.total : '',
-          r.avg
-        ]);
-      });
-
-      const csvContent = '\uFEFF' + rows.map((e) => e.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `2026학년도_1학년_프레젠테이션_발표대회_심사결과.csv`;
-      a.click();
-      URL.revokeObjectURL(url);
-    };
-
-    // ==================== 10. 커스텀 다이얼로그 유틸리티 ====================
-    function showDialog(title, message, type = 'info') {
-      const modal = document.getElementById('customDialogModal');
-      const iconWrap = document.getElementById('dialogIconWrap');
-      const icon = document.getElementById('dialogIcon');
-      document.getElementById('dialogTitle').textContent = title;
-      document.getElementById('dialogMessage').textContent = message;
-
-      if (type === 'success') {
-        iconWrap.className = 'w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-lg shrink-0';
-        icon.className = 'fa-solid fa-circle-check';
-      } else if (type === 'error') {
-        iconWrap.className = 'w-10 h-10 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center text-lg shrink-0';
-        icon.className = 'fa-solid fa-circle-xmark';
-      } else if (type === 'warning') {
-        iconWrap.className = 'w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-lg shrink-0';
-        icon.className = 'fa-solid fa-triangle-exclamation';
-      } else {
-        iconWrap.className = 'w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-lg shrink-0';
-        icon.className = 'fa-solid fa-circle-info';
+      // ==================== 10. 관리자 설정·명단·상세 비교 모달 ====================
+      function openAdminSettingsModal() {
+        document.getElementById('settingParticipantCount').value = state.config.participantCount;
+        document.getElementById('settingAdminPin').value = state.config.adminPin;
+        document.getElementById('settingFirebaseUrl').value = FIREBASE_DB_BASE;
+        renderParticipantEditList();
+        const m = document.getElementById('adminSettingsModal');
+        m.classList.remove('hidden');
+        m.classList.add('flex');
       }
 
-      const btnContainer = document.getElementById('dialogButtons');
-      btnContainer.innerHTML = `
-        <button onclick="closeCustomDialog()" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold">
-          확인
-        </button>
-      `;
+      function closeAdminSettingsModal() {
+        const m = document.getElementById('adminSettingsModal');
+        m.classList.add('hidden');
+        m.classList.remove('flex');
+      }
 
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
+      function renderParticipantEditList() {
+        const tbody = document.getElementById('participantEditList');
+        tbody.innerHTML = '';
+        const count = state.config.participantCount;
+        for (let i = 0; i < count; i++) {
+          const p = state.config.participants[i] || { num: i + 1, studentId: '', name: '', topic: '' };
+          const tr = document.createElement('tr');
+          tr.innerHTML =
+            '<td class="py-1.5 px-3 text-center font-bold text-slate-700">' + (i + 1) + '</td>' +
+            '<td class="py-1.5 px-2"><input type="text" id="pEditId_' + i + '" value="' + escapeHtml(p.studentId || '') + '" placeholder="예: 10101" class="w-full px-2 py-1 rounded border border-slate-300 text-xs" /></td>' +
+            '<td class="py-1.5 px-2"><input type="text" id="pEditName_' + i + '" value="' + escapeHtml(p.name || '') + '" placeholder="성명" class="w-full px-2 py-1 rounded border border-slate-300 text-xs" /></td>' +
+            '<td class="py-1.5 px-2"><input type="text" id="pEditTopic_' + i + '" value="' + escapeHtml(p.topic || '') + '" placeholder="발표 주제 입력" class="w-full px-2 py-1 rounded border border-slate-300 text-xs" /></td>';
+          tbody.appendChild(tr);
+        }
+      }
 
-    function showConfirmDialog(title, message, onConfirm) {
-      const modal = document.getElementById('customDialogModal');
-      const iconWrap = document.getElementById('dialogIconWrap');
-      const icon = document.getElementById('dialogIcon');
-      document.getElementById('dialogTitle').textContent = title;
-      document.getElementById('dialogMessage').textContent = message;
+      function saveParticipantList() {
+        const count = state.config.participantCount;
+        for (let i = 0; i < count; i++) {
+          const idEl = document.getElementById('pEditId_' + i);
+          const nameEl = document.getElementById('pEditName_' + i);
+          const topicEl = document.getElementById('pEditTopic_' + i);
+          state.config.participants[i] = {
+            num: i + 1,
+            studentId: idEl ? idEl.value.trim() : '',
+            name: nameEl ? nameEl.value.trim() : '',
+            topic: topicEl ? topicEl.value.trim() : ''
+          };
+        }
+        persistConfigToCloud();
+        renderAdminView();
+        closeAdminSettingsModal();
+      }
 
-      iconWrap.className = 'w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-lg shrink-0';
-      icon.className = 'fa-solid fa-paper-plane';
+      function openParticipantDetailModal(pNum) {
+        const pInfo = state.config.participants[pNum - 1] || {};
+        document.getElementById('detailModalTitle').textContent =
+          '발표자 ' + pNum + '번' + (pInfo.name ? ' (' + pInfo.studentId + ' ' + pInfo.name + ')' : '') + ' 세부 채점 내역';
+        const tbody = document.getElementById('detailModalBody');
+        tbody.innerHTML = '';
 
-      const btnContainer = document.getElementById('dialogButtons');
-      btnContainer.innerHTML = '';
+        RUBRIC_ITEMS.forEach(function (item) {
+          const tr = document.createElement('tr');
+          let cellsHtml = '';
+          for (let jId = 1; jId <= 4; jId++) {
+            const j = state.judges[jId];
+            if (!j.submitted) {
+              cellsHtml += '<td class="py-2 px-2 border border-slate-300 text-slate-400">미전송</td>';
+            } else {
+              const v = j.scores[pNum] && j.scores[pNum][item.id];
+              cellsHtml += '<td class="py-2 px-2 border border-slate-300 font-bold text-slate-800">' + (v !== undefined ? v : '-') + '</td>';
+            }
+          }
+          tr.innerHTML =
+            '<td class="py-2 px-2 border border-slate-300 text-left font-medium text-slate-800">' + item.title.replace(/\n/g, ' ') + ' (' + item.maxScore + '점)</td>' +
+            cellsHtml;
+          tbody.appendChild(tr);
+        });
 
-      const cancelBtn = document.createElement('button');
-      cancelBtn.className = 'px-4 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-bold';
-      cancelBtn.textContent = '취소';
-      cancelBtn.onclick = closeCustomDialog;
+        const totalTr = document.createElement('tr');
+        totalTr.className = 'bg-blue-50 font-black text-blue-900';
+        let totalCellsHtml = '';
+        for (let jId = 1; jId <= 4; jId++) {
+          const j = state.judges[jId];
+          if (!j.submitted) {
+            totalCellsHtml += '<td class="py-2 px-2 border border-slate-300 text-slate-400">-</td>';
+          } else {
+            totalCellsHtml += '<td class="py-2 px-2 border border-slate-300">' + getParticipantJudgeScore(j.scores, pNum).sum + '점</td>';
+          }
+        }
+        totalTr.innerHTML = '<td class="py-2 px-2 border border-slate-300 text-left">총점 (100점 만점)</td>' + totalCellsHtml;
+        tbody.appendChild(totalTr);
 
-      const confirmBtn = document.createElement('button');
-      confirmBtn.className = 'px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-bold shadow';
-      confirmBtn.textContent = '전송하기';
-      confirmBtn.onclick = () => {
-        closeCustomDialog();
-        onConfirm();
-      };
+        const m = document.getElementById('participantDetailModal');
+        m.classList.remove('hidden');
+        m.classList.add('flex');
+      }
 
-      btnContainer.appendChild(cancelBtn);
-      btnContainer.appendChild(confirmBtn);
+      function closeParticipantDetailModal() {
+        const m = document.getElementById('participantDetailModal');
+        m.classList.add('hidden');
+        m.classList.remove('flex');
+      }
 
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
+      function fillDemoTestData() {
+        const sampleNames = ['김민준', '이서연', '박지훈', '최수빈', '정도윤', '강하은', '조현우', '윤지민', '장서준', '임채원', '한시우', '오유진', '서준서', '신예은', '권태윤', '황지아', '안건우', '송다인'];
+        const pCount = state.config.participantCount;
+        for (let i = 0; i < pCount; i++) {
+          if (!state.config.participants[i].name) {
+            state.config.participants[i].studentId = '10' + ((i % 6) + 1) + String(i + 1).padStart(2, '0');
+            state.config.participants[i].name = sampleNames[i % sampleNames.length];
+            state.config.participants[i].topic = '의료기기 품질관리 전문가 로드맵';
+          }
+        }
 
-    window.closeCustomDialog = function () {
-      const modal = document.getElementById('customDialogModal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-    };
+        const judgeNames = ['김의료', '이바이오', '박진로', '최마이스터'];
+        for (let jId = 1; jId <= 4; jId++) {
+          const scores = {};
+          for (let p = 1; p <= pCount; p++) {
+            scores[p] = {};
+            RUBRIC_ITEMS.forEach(function (item) {
+              const randIdx = Math.floor(Math.random() * item.validScores.length);
+              scores[p][item.id] = item.validScores[randIdx];
+            });
+          }
+          state.judges[jId] = {
+            id: jId,
+            name: judgeNames[jId - 1],
+            signature: '',
+            submitted: true,
+            submittedAt: '모의테스트',
+            scores: scores
+          };
+          persistJudgeToCloud(jId);
+        }
+        persistConfigToCloud();
+        renderAdminView();
+        closeAdminSettingsModal();
+        showDialog('모의 테스트 데이터 생성 완료', '심사위원 1~4번의 가상 채점 데이터와 참가자 명단이 생성되어 실시간 순위표에 반영되었습니다.', 'success');
+      }
 
-    function escapeHtml(str) {
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-    }
+      function exportResultsCSV() {
+        const pCount = state.config.participantCount;
+        const rows = [
+          ['순위', '시상구분', '상품권(매)', '발표번호', '학번', '성명', '발표주제', '심사위원1', '심사위원2', '심사위원3', '심사위원4', '합산총점(400)', '평균(100)']
+        ];
 
-    // ==================== 앱 부팅 ====================
-    window.addEventListener('DOMContentLoaded', () => {
-      loadLocalBackup();
-      initHandwritingCanvasEvents();
-      initSignatureCanvasEvents();
-      renderHomeJudgeButtons();
-      fetchStateFromFirebase();
-      startPollingLoop();
-    });
+        const computed = [];
+        for (let p = 1; p <= pCount; p++) {
+          const pInfo = state.config.participants[p - 1] || {};
+          let total = 0;
+          let cnt = 0;
+          const jVals = [];
+          for (let i = 1; i <= 4; i++) {
+            if (state.judges[i].submitted) {
+              const s = getParticipantJudgeScore(state.judges[i].scores, p).sum;
+              jVals.push(s);
+              total += s;
+              cnt++;
+            } else {
+              jVals.push('');
+            }
+          }
+          computed.push({
+            num: p,
+            studentId: pInfo.studentId || '',
+            name: pInfo.name || '발표자' + p,
+            topic: pInfo.topic || '',
+            jVals: jVals,
+            total: total,
+            cnt: cnt,
+            avg: cnt > 0 ? (total / cnt).toFixed(2) : '',
+            _rank: ''
+          });
+        }
+
+        computed.sort(function (a, b) {
+          return b.total - a.total || a.num - b.num;
+        });
+
+        computed.forEach(function (r, idx) {
+          const rank = r.cnt === 0 ? '' : (idx > 0 && r.total === computed[idx - 1].total ? computed[idx - 1]._rank : idx + 1);
+          r._rank = rank;
+          const award = getAwardTier(rank);
+          rows.push([
+            rank,
+            award ? award.label : '',
+            award ? award.vouchers : 0,
+            r.num,
+            r.studentId,
+            r.name,
+            r.topic,
+            r.jVals[0],
+            r.jVals[1],
+            r.jVals[2],
+            r.jVals[3],
+            r.cnt > 0 ? r.total : '',
+            r.avg
+          ]);
+        });
+
+        const csvContent = '\uFEFF' + rows.map(function (e) {
+          return e.map(function (v) {
+            return '"' + String(v).replace(/"/g, '""') + '"';
+          }).join(',');
+        }).join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = '2026학년도_1학년_프레젠테이션_발표대회_심사결과.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      // ==================== 11. 커스텀 다이얼로그 ====================
+      function showDialog(title, message, type) {
+        const modal = document.getElementById('customDialogModal');
+        const iconWrap = document.getElementById('dialogIconWrap');
+        const icon = document.getElementById('dialogIcon');
+        document.getElementById('dialogTitle').textContent = title;
+        document.getElementById('dialogMessage').textContent = message;
+
+        if (type === 'success') {
+          iconWrap.className = 'w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-lg shrink-0';
+          icon.className = 'fa-solid fa-circle-check';
+        } else if (type === 'error') {
+          iconWrap.className = 'w-10 h-10 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center text-lg shrink-0';
+          icon.className = 'fa-solid fa-circle-xmark';
+        } else if (type === 'warning') {
+          iconWrap.className = 'w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-lg shrink-0';
+          icon.className = 'fa-solid fa-triangle-exclamation';
+        } else {
+          iconWrap.className = 'w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-lg shrink-0';
+          icon.className = 'fa-solid fa-circle-info';
+        }
+
+        const btnContainer = document.getElementById('dialogButtons');
+        btnContainer.innerHTML = '';
+        const okBtn = document.createElement('button');
+        okBtn.type = 'button';
+        okBtn.className = 'px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold';
+        okBtn.textContent = '확인';
+        okBtn.addEventListener('click', closeCustomDialog);
+        btnContainer.appendChild(okBtn);
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+
+      function showConfirmDialog(title, message, onConfirm) {
+        const modal = document.getElementById('customDialogModal');
+        const iconWrap = document.getElementById('dialogIconWrap');
+        const icon = document.getElementById('dialogIcon');
+        document.getElementById('dialogTitle').textContent = title;
+        document.getElementById('dialogMessage').textContent = message;
+
+        iconWrap.className = 'w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-lg shrink-0';
+        icon.className = 'fa-solid fa-paper-plane';
+
+        const btnContainer = document.getElementById('dialogButtons');
+        btnContainer.innerHTML = '';
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.type = 'button';
+        cancelBtn.className = 'px-4 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-bold';
+        cancelBtn.textContent = '취소';
+        cancelBtn.addEventListener('click', closeCustomDialog);
+
+        const confirmBtn = document.createElement('button');
+        confirmBtn.type = 'button';
+        confirmBtn.className = 'px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-bold shadow';
+        confirmBtn.textContent = '확인 및 진행';
+        confirmBtn.addEventListener('click', function () {
+          closeCustomDialog();
+          onConfirm();
+        });
+
+        btnContainer.appendChild(cancelBtn);
+        btnContainer.appendChild(confirmBtn);
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+
+      function closeCustomDialog() {
+        const modal = document.getElementById('customDialogModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+
+      // ==================== 12. 모든 DOM 이벤트 일괄 바인딩 ====================
+      function bindAllUIEvents() {
+        document.getElementById('btnGoHome').addEventListener('click', returnHome);
+
+        // 관리자 로그인
+        document.getElementById('btnEnterAdmin').addEventListener('click', enterAdminMode);
+        document.getElementById('adminPinInput').addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') enterAdminMode();
+        });
+
+        // 심사위원 인증 모달
+        document.getElementById('btnCancelJudgeAuth').addEventListener('click', closeJudgeAuthModal);
+        document.getElementById('btnVerifyJudgeAuth').addEventListener('click', verifyJudgePinAndEnter);
+        document.getElementById('judgePinInput').addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') verifyJudgePinAndEnter();
+        });
+
+        // 심사위원 채점표 컨트롤
+        document.getElementById('judgeNameInput').addEventListener('change', function () {
+          const j = state.judges[state.currentJudgeId];
+          if (!j || j.submitted) return;
+          j.name = document.getElementById('judgeNameInput').value.trim();
+          persistJudgeToCloud(j.id);
+        });
+        document.getElementById('btnOpenSignature').addEventListener('click', openSignatureModal);
+        document.getElementById('btnSubmitScores').addEventListener('click', validateAndPromptSubmit);
+
+        // 점수 입력 모달 컨트롤
+        document.getElementById('btnCloseScoreModalTop').addEventListener('click', closeScoreModal);
+        document.getElementById('btnCloseScoreModalBottom').addEventListener('click', closeScoreModal);
+        document.getElementById('btnClearHwCanvas').addEventListener('click', clearHandwritingCanvas);
+        document.getElementById('btnApplyRecognized').addEventListener('click', function () {
+          if (state.recognizedNumber !== null) {
+            selectScoreAndClose(state.recognizedNumber);
+          }
+        });
+        document.getElementById('btnClearCellScore').addEventListener('click', function () {
+          if (!state.activeCell) return;
+          const pNum = state.activeCell.pNum;
+          const cId = state.activeCell.cId;
+          const j = state.judges[state.currentJudgeId];
+          if (j && j.scores[pNum]) {
+            delete j.scores[pNum][cId];
+          }
+          persistJudgeToCloud(j.id);
+          renderJudgeView();
+          closeScoreModal();
+        });
+
+        // 서명 모달 컨트롤
+        document.getElementById('btnCloseSigModalTop').addEventListener('click', closeSignatureModal);
+        document.getElementById('btnCancelSigModal').addEventListener('click', closeSignatureModal);
+        document.getElementById('btnClearSigCanvas').addEventListener('click', clearSignatureCanvas);
+        document.getElementById('btnSaveSigData').addEventListener('click', saveSignatureData);
+
+        // 관리자 집계실 버튼
+        document.getElementById('btnManualSync').addEventListener('click', function () {
+          updateConnectionBadge(true, '동기화 확인 중...');
+          fetchStateFromFirebase();
+        });
+        document.getElementById('btnOpenSettings').addEventListener('click', openAdminSettingsModal);
+        document.getElementById('btnExportCsv').addEventListener('click', exportResultsCSV);
+        document.getElementById('btnPrintResult').addEventListener('click', function () {
+          window.print();
+        });
+
+        // 관리자 설정 모달 버튼
+        document.getElementById('btnCloseSettingsTop').addEventListener('click', closeAdminSettingsModal);
+        document.getElementById('btnApplyCount').addEventListener('click', function () {
+          const val = parseInt(document.getElementById('settingParticipantCount').value, 10);
+          if (isNaN(val) || val < 1 || val > 24) {
+            showDialog('입력 오류', '참가 인원수는 1명~24명 사이로 입력해 주세요.', 'warning');
+            return;
+          }
+          state.config.participantCount = val;
+          persistConfigToCloud();
+          renderParticipantEditList();
+          renderAdminView();
+        });
+        document.getElementById('btnUpdateAdminPin').addEventListener('click', function () {
+          const newPin = document.getElementById('settingAdminPin').value.trim();
+          if (newPin.length < 4) {
+            showDialog('PIN 설정 오류', '비밀번호는 최소 4자리 이상으로 설정해 주세요.', 'warning');
+            return;
+          }
+          state.config.adminPin = newPin;
+          persistConfigToCloud();
+          showDialog('변경 완료', "관리자 비밀번호가 '" + newPin + "'으로 변경되었습니다.", 'success');
+        });
+        document.getElementById('btnUpdateFbUrl').addEventListener('click', function () {
+          const rawUrl = document.getElementById('settingFirebaseUrl').value.trim();
+          if (rawUrl.indexOf('https://') !== 0) {
+            showDialog('URL 형식 오류', 'https:// 로 시작하는 올바른 Firebase Realtime Database 주소를 입력해 주세요.', 'warning');
+            return;
+          }
+          FIREBASE_DB_BASE = rawUrl.replace(/\/+$/, '');
+          localStorage.setItem(DB_URL_STORAGE_KEY, FIREBASE_DB_BASE);
+          fetchStateFromFirebase();
+          showDialog('DB 주소 저장 완료', '새 Firebase 데이터베이스 주소가 저장되었습니다.', 'success');
+        });
+        document.getElementById('btnFillDemo').addEventListener('click', fillDemoTestData);
+        document.getElementById('btnResetAll').addEventListener('click', function () {
+          showConfirmDialog(
+            '전체 점수 및 상태 초기화',
+            '모든 심사위원의 채점 데이터와 제출 상태가 영구 삭제됩니다.\n본 대회 시작 전 초기화하시겠습니까?',
+            function () {
+              for (let jId = 1; jId <= 4; jId++) {
+                state.judges[jId] = {
+                  id: jId,
+                  name: '',
+                  signature: '',
+                  submitted: false,
+                  submittedAt: null,
+                  scores: {}
+                };
+                persistJudgeToCloud(jId);
+              }
+              renderAdminView();
+              closeAdminSettingsModal();
+              showDialog('초기화 완료', '모든 심사 데이터가 깨끗하게 초기화되었습니다.', 'success');
+            }
+          );
+        });
+        document.getElementById('btnSaveParticipantsTop').addEventListener('click', saveParticipantList);
+        document.getElementById('btnSaveParticipantsBottom').addEventListener('click', saveParticipantList);
+
+        // 세부 점수 비교 모달 닫기
+        document.getElementById('btnCloseDetailTop').addEventListener('click', closeParticipantDetailModal);
+        document.getElementById('btnCloseDetailBottom').addEventListener('click', closeParticipantDetailModal);
+      }
+
+      // ==================== 13. 초기 부팅 ====================
+      window.addEventListener('DOMContentLoaded', function () {
+        loadLocalBackup();
+        bindAllUIEvents();
+        initHandwritingCanvasEvents();
+        initSignatureCanvasEvents();
+        renderHomeJudgeButtons();
+        fetchStateFromFirebase();
+        startPollingLoop();
+      });
+    })();
   </script>
 </body>
 </html>
