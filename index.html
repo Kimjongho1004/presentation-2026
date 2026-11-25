@@ -2,97 +2,173 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>2026학년도 1학년 프레젠테이션 발표대회 실시간 심사 시스템</title>
-  <!-- Tailwind CSS & Pretendard Font & Font Awesome -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="발표심사" />
+  <meta name="theme-color" content="#1e3a8a" />
+  <title>2026 발표대회 심사 | 한국의료마이스터고등학교</title>
+
+  <!-- 인라인 SVG 파비콘 및 PWA 앱 아이콘 -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='40' fill='%231e3a8a'/%3E%3Ccircle cx='96' cy='78' r='36' fill='none' stroke='%23ffffff' stroke-width='12'/%3E%3Cpath d='M78 78 l12 12 l26 -26' fill='none' stroke='%23fbbf24' stroke-width='12' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M74 114 l-10 42 l32 -14 l32 14 l-10 -42' fill='none' stroke='%23ffffff' stroke-width='10' stroke-linejoin='round'/%3E%3C/svg%3E" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='40' fill='%231e3a8a'/%3E%3Ccircle cx='96' cy='78' r='36' fill='none' stroke='%23ffffff' stroke-width='12'/%3E%3Cpath d='M78 78 l12 12 l26 -26' fill='none' stroke='%23fbbf24' stroke-width='12' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M74 114 l-10 42 l32 -14 l32 14 l-10 -42' fill='none' stroke='%23ffffff' stroke-width='10' stroke-linejoin='round'/%3E%3C/svg%3E" />
+
+  <!-- 인라인 Data-URI PWA Manifest (갤럭시탭 홈 화면 앱 설치 및 가로모드 풀스크린 지원) -->
+  <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%222026%20%EB%B0%9C%ED%91%9C%EB%8C%80%ED%9A%8C%20%EC%8B%AC%EC%82%AC%22%2C%22short_name%22%3A%22%EB%B0%9C%ED%91%9C%EC%8B%AC%EC%82%AC%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22orientation%22%3A%22landscape%22%2C%22background_color%22%3A%22%23f1f5f9%22%2C%22theme_color%22%3A%22%231e3a8a%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%2520viewBox%3D'0%25200%2520512%2520512'%253E%253Crect%2520width%3D'512'%2520height%3D'512'%2520rx%3D'104'%2520fill%3D'%25231e3a8a'%2F%253E%253Ccircle%2520cx%3D'256'%2520cy%3D'208'%2520r%3D'96'%2520fill%3D'none'%2520stroke%3D'%2523ffffff'%2520stroke-width%3D'32'%2F%253E%253Cpath%2520d%3D'M208%2520208%2520l32%252032%2520l70%2520-70'%2520fill%3D'none'%2520stroke%3D'%2523fbbf24'%2520stroke-width%3D'32'%2520stroke-linecap%3D'round'%2520stroke-linejoin%3D'round'%2F%253E%253Cpath%2520d%3D'M196%2520304%2520l-26%2520112%2520l86%2520-36%2520l86%252036%2520l-26%2520-112'%2520fill%3D'none'%2520stroke%3D'%2523ffffff'%2520stroke-width%3D'26'%2520stroke-linejoin%3D'round'%2F%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D" />
+
+  <!-- Tailwind CSS & Pretendard & Font Awesome -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
   <style>
-    body {
+    /* 전역 터치 최적화: 더블탭 줌 지연 제거 및 하이라이트 억제 */
+    * {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
       font-family: 'Pretendard', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
       background-color: #f1f5f9;
       color: #0f172a;
-      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+      overscroll-behavior-y: contain;
+    }
+
+    input, textarea {
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    /* 세로모드일 때만 가로 회전 안내 배너 표시 */
+    #portraitHintBanner {
+      display: none;
+    }
+    @media (orientation: portrait) {
+      #portraitHintBanner:not(.dismissed) {
+        display: flex;
+      }
+    }
+
+    /* 심사위원 채점 화면: 갤럭시탭 가로 1화면(100dvh) 꽉 채우기 */
+    #viewJudge.judge-fullscreen-layout {
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* 부드러운 가로 터치 스크롤 */
+    .rubric-scroll-wrap {
+      -webkit-overflow-scrolling: touch;
+      overflow-x: auto;
+      overflow-y: auto;
+      flex: 1 1 0%;
+      min-height: 0;
     }
 
     /* 채점표 테이블 스타일 (sticky 열 테두리 유지를 위해 separate 사용) */
     .rubric-table {
       border-collapse: separate;
       border-spacing: 0;
-      width: 100%;
+      width: max-content;
+      min-width: 100%;
+      height: 100%;
     }
     .rubric-table th,
     .rubric-table td {
-      border-right: 1px solid #64748b;
-      border-bottom: 1px solid #64748b;
+      border-right: 1px solid #cbd5e1;
+      border-bottom: 1px solid #cbd5e1;
     }
     .rubric-table thead th {
-      border-top: 2px solid #1e293b;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-top: 2px solid #1e3a8a;
+      border-bottom: 2px solid #1e3a8a;
     }
     .rubric-table th:first-child,
     .rubric-table td.first-col {
-      border-left: 2px solid #1e293b;
+      border-left: 2px solid #1e3a8a;
     }
     .rubric-table th:last-child,
     .rubric-table td:last-child {
-      border-right: 2px solid #1e293b;
+      border-right: 2px solid #1e3a8a;
     }
     .rubric-table tr.total-row td {
-      border-top: 2px solid #1e293b;
-      border-bottom: 2px solid #1e293b;
+      position: sticky;
+      bottom: 0;
+      z-index: 18;
+      border-top: 2px solid #1e3a8a;
+      border-bottom: 2px solid #1e3a8a;
     }
 
-    /* 태블릿·PC 가로 스크롤 시 좌측 평가항목 열 고정 */
-    @media (min-width: 768px) {
-      .sticky-col-1 {
-        position: sticky;
-        left: 0;
-        z-index: 15;
-        width: 88px;
-        min-width: 88px;
-        max-width: 88px;
-      }
-      .sticky-col-2 {
-        position: sticky;
-        left: 88px;
-        z-index: 15;
-        width: 48px;
-        min-width: 48px;
-        max-width: 48px;
-      }
-      .sticky-col-3 {
-        position: sticky;
-        left: 136px;
-        z-index: 15;
-        width: 210px;
-        min-width: 210px;
-        max-width: 210px;
-        box-shadow: 4px 0 6px -2px rgba(15, 23, 42, 0.12);
-      }
-      .rubric-table thead .sticky-col-1,
-      .rubric-table thead .sticky-col-2,
-      .rubric-table thead .sticky-col-3 {
-        z-index: 20;
-      }
+    /* 좌측 3개 열 고정 (총 너비 274px로 컴팩트하게 최적화 -> 가로모드에서 10명 이상 동시 노출) */
+    .sticky-col-1 {
+      position: sticky;
+      left: 0;
+      z-index: 15;
+      width: 68px;
+      min-width: 68px;
+      max-width: 68px;
+    }
+    .sticky-col-2 {
+      position: sticky;
+      left: 68px;
+      z-index: 15;
+      width: 40px;
+      min-width: 40px;
+      max-width: 40px;
+    }
+    .sticky-col-3 {
+      position: sticky;
+      left: 108px;
+      z-index: 15;
+      width: 166px;
+      min-width: 166px;
+      max-width: 166px;
+      box-shadow: 4px 0 8px -2px rgba(15, 23, 42, 0.14);
+    }
+    .rubric-table thead .sticky-col-1,
+    .rubric-table thead .sticky-col-2,
+    .rubric-table thead .sticky-col-3 {
+      z-index: 30;
+    }
+    .rubric-table tr.total-row .sticky-col-1,
+    .rubric-table tr.total-row .sticky-col-2,
+    .rubric-table tr.total-row .sticky-col-3 {
+      z-index: 25;
     }
 
-    /* 점수 셀 인터랙션 */
+    /* 손가락·S펜 터치에 최적화된 점수 셀 */
     .score-cell {
-      transition: background-color 0.12s ease, transform 0.08s ease;
+      min-width: 76px;
+      width: 76px;
       cursor: pointer;
-      user-select: none;
+      transition: background-color 0.12s ease, transform 0.08s ease;
     }
     .score-cell:hover {
       background-color: #eff6ff;
     }
     .score-cell:active {
-      background-color: #dbeafe;
+      background-color: #bfdbfe;
       transform: scale(0.95);
+    }
+    .score-cell.filled-cell {
+      background-color: #eff6ff;
+      color: #1d4ed8;
+    }
+    .score-cell.empty-cell {
+      background-color: #ffffff;
+      color: #cbd5e1;
     }
     .score-cell.missing-highlight {
       background-color: #fee2e2 !important;
-      box-shadow: inset 0 0 0 2.5px #ef4444;
+      color: #dc2626 !important;
+      box-shadow: inset 0 0 0 3px #ef4444;
       animation: pulseRed 1.1s infinite;
     }
     @keyframes pulseRed {
@@ -100,7 +176,7 @@
       50% { background-color: #fecaca; }
     }
 
-    /* 자필 서명 캔버스 터치 스크롤 방지 */
+    /* 자필 서명 캔버스 터치 스크롤 완전 차단 */
     .signature-canvas {
       touch-action: none;
     }
@@ -119,93 +195,110 @@
 </head>
 <body class="min-h-screen flex flex-col">
 
-  <!-- ==================== 상단 헤더 네비게이션 ==================== -->
-  <header class="bg-slate-900 text-white shadow-md no-print sticky top-0 z-30 border-b border-blue-900">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-2">
+  <!-- ==================== 세로모드 회전 안내 배너 (세로일 때만 표시) ==================== -->
+  <div id="portraitHintBanner" class="no-print bg-blue-900 text-white px-4 py-2 text-xs font-semibold items-center justify-between gap-2 z-50">
+    <div class="flex items-center gap-2">
+      <i class="fa-solid fa-tablet-screen-button fa-rotate-90 text-amber-300 text-sm"></i>
+      <span>태블릿을 가로로 돌리면 채점표가 한눈에 보입니다.</span>
+    </div>
+    <button type="button" id="btnDismissPortraitHint" class="px-2 py-0.5 rounded bg-blue-800 hover:bg-blue-700 text-blue-100 text-[11px] font-bold shrink-0">
+      닫기
+    </button>
+  </div>
+
+  <!-- ==================== 일반 상단 헤더 (로비 & 관리자 화면용) ==================== -->
+  <header id="globalHeader" class="bg-blue-950 text-white shadow-md no-print sticky top-0 z-30 border-b border-blue-900">
+    <div class="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-2">
       <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center font-bold text-lg shadow">
-          <i class="fa-solid fa-award"></i>
+        <div class="w-9 h-9 rounded-xl bg-blue-700 flex items-center justify-center font-bold text-lg shadow">
+          <i class="fa-solid fa-award text-amber-300"></i>
         </div>
         <div>
-          <div class="text-xs text-blue-300 font-medium">한국의료마이스터고등학교 1학년부</div>
-          <h1 class="text-sm sm:text-lg font-bold tracking-tight">2026학년도 1학년 프레젠테이션 발표대회 심사시스템</h1>
+          <div class="text-[11px] text-blue-300 font-medium leading-tight">한국의료마이스터고등학교 1학년부</div>
+          <h1 class="text-sm sm:text-base font-extrabold tracking-tight leading-tight">2026학년도 1학년 프레젠테이션 발표대회 심사시스템</h1>
         </div>
       </div>
 
       <div class="flex items-center gap-2">
-        <span id="connectionBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-800 text-slate-300 border border-slate-700">
+        <span id="connectionBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700">
           <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-          서버 연결 확인 중...
+          연결 확인 중...
         </span>
+        <button id="btnGlobalFullscreen" type="button" class="px-2.5 py-1.5 rounded-lg bg-blue-900 hover:bg-blue-800 text-xs font-bold transition border border-blue-800 flex items-center gap-1.5" title="전체화면 전환">
+          <i class="fa-solid fa-expand"></i><span class="hidden sm:inline">전체화면</span>
+        </button>
         <button id="btnHeaderSync" type="button" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium transition border border-slate-700" title="수동 새로고침">
           <i class="fa-solid fa-arrows-rotate"></i>
         </button>
-        <button id="btnGoHome" type="button" class="hidden px-3 py-1.5 rounded-lg bg-blue-700 hover:bg-blue-600 text-xs sm:text-sm font-bold transition flex items-center gap-1.5">
+        <button id="btnGoHome" type="button" class="hidden px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-bold transition flex items-center gap-1.5">
           <i class="fa-solid fa-house"></i> 초기화면
         </button>
       </div>
     </div>
   </header>
 
-  <!-- ==================== 메인 콘텐츠 영역 ==================== -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-6">
-
-    <!-- 1. 초기화면 (로비) -->
-    <section id="viewHome" class="max-w-4xl mx-auto mt-2 sm:mt-6">
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 mb-6 text-center">
-        <span class="inline-block px-3 py-1 rounded-full bg-blue-50 text-blue-800 text-xs font-bold mb-3 border border-blue-200">
-          2026. 12. 18.(금) 1~3교시 | 성실관 1층 마이스터룸
-        </span>
-        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2">『My Dream &amp; Career Roadmap』 발표대회</h2>
-        <p class="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-          심사위원은 본인 성함(번호)을 선택하고 부여받은 비밀번호(PIN)를 입력해 독립적으로 채점합니다.<br class="hidden sm:inline" />
-          심사위원 간 점수는 철저히 비공개되며, 전송 완료 시 담당자 집계실에서 실시간 순위가 자동 산출됩니다.
-        </p>
+  <!-- ==================== 1. 초기화면 (로비) ==================== -->
+  <main id="mainContainer" class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-5">
+    <section id="viewHome" class="max-w-5xl mx-auto">
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6 mb-5 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <span class="inline-block px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 text-xs font-bold mb-2 border border-blue-200">
+            2026. 12. 18.(금) 1~3교시 · 성실관 1층 마이스터룸
+          </span>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">『My Dream &amp; Career Roadmap』 발표대회</h2>
+          <p class="text-slate-600 text-xs sm:text-sm mt-1">
+            심사위원별 개별 PIN으로 독립 채점하며, 최종 전송 시 담당자 집계실에서 실시간 순위가 자동 산출됩니다.
+          </p>
+        </div>
+        <div class="bg-blue-50 border border-blue-200 rounded-xl px-4 py-2.5 text-xs text-blue-950 shrink-0">
+          <div class="font-bold text-blue-800 mb-0.5"><i class="fa-solid fa-tablet-screen-button mr-1"></i>갤럭시탭 앱처럼 쓰기</div>
+          <p class="text-[11px] text-blue-900">브라우저 메뉴(⋮) → <strong>[홈 화면에 추가]</strong> 또는 상단 <strong>[전체화면]</strong> 클릭</p>
+        </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
         <!-- 심사위원 입장 카드 -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 flex flex-col justify-between">
           <div>
-            <div class="flex items-center gap-3 mb-4">
-              <div class="w-11 h-11 rounded-xl bg-blue-700 text-white flex items-center justify-center text-xl shadow-sm">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 rounded-xl bg-blue-800 text-white flex items-center justify-center text-lg shadow-sm">
                 <i class="fa-solid fa-user-check"></i>
               </div>
               <div>
-                <h3 class="text-lg font-bold text-slate-900">심사위원 입장</h3>
-                <p class="text-xs text-slate-500">본인 성함(번호) 선택 후 개별 PIN 4자리 입력</p>
+                <h3 class="text-base sm:text-lg font-extrabold text-slate-900">심사위원 입장</h3>
+                <p class="text-xs text-slate-500">본인 성함(번호) 터치 후 배정된 PIN 4자리 입력</p>
               </div>
             </div>
 
             <div class="grid grid-cols-2 gap-3 my-4" id="judgeSelectGrid"></div>
           </div>
 
-          <div class="bg-slate-50 rounded-xl p-3.5 text-xs text-slate-600 border border-slate-200 space-y-1">
-            <div class="font-semibold text-slate-800"><i class="fa-solid fa-circle-info text-blue-600 mr-1"></i> 채점 방법 안내</div>
-            <p>• 채점표 빈칸 터치 시 <strong>원터치 배점 선택 창</strong>으로 빠르고 정확하게 입력</p>
-            <p>• 모든 참가자 채점 및 자필 서명 후 하단 <strong>[최종 점수 전송하기]</strong> 클릭</p>
+          <div class="bg-slate-50 rounded-xl p-3 text-xs text-slate-600 border border-slate-200 space-y-1">
+            <div class="font-bold text-slate-800"><i class="fa-solid fa-circle-info text-blue-700 mr-1"></i>원터치 채점 안내</div>
+            <p>• 빈칸을 터치해 5개 배점 버튼 중 하나를 누르면 즉시 저장됩니다.</p>
+            <p>• 모든 참가자 채점 및 서명 후 상단 <strong>[최종 점수 전송]</strong>을 눌러주세요.</p>
           </div>
         </div>
 
         <!-- 담당자(관리자) 집계실 입장 카드 -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 flex flex-col justify-between">
           <div>
-            <div class="flex items-center gap-3 mb-4">
-              <div class="w-11 h-11 rounded-xl bg-slate-800 text-white flex items-center justify-center text-xl shadow-sm">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center text-lg shadow-sm">
                 <i class="fa-solid fa-chart-line"></i>
               </div>
               <div>
-                <h3 class="text-lg font-bold text-slate-900">담당자(관리자) 집계실</h3>
-                <p class="text-xs text-slate-500">실시간 합산·순위 산출, 학생 명단 및 심사위원 성함 관리</p>
+                <h3 class="text-base sm:text-lg font-extrabold text-slate-900">담당자(관리자) 집계실</h3>
+                <p class="text-xs text-slate-500">실시간 합산·순위 확인, 학생 명단 및 심사위원 성함 관리</p>
               </div>
             </div>
 
             <div class="my-5 space-y-3">
-              <label for="adminPinInput" class="block text-xs font-semibold text-slate-700">관리자 비밀번호 (PIN 4자리)</label>
+              <label for="adminPinInput" class="block text-xs font-bold text-slate-700">관리자 비밀번호 (PIN 4자리)</label>
               <div class="flex gap-2">
                 <input type="password" id="adminPinInput" maxlength="8" inputmode="numeric" placeholder="PIN 입력"
-                  class="flex-1 px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-800 text-base tracking-widest" />
-                <button type="button" id="btnEnterAdmin" class="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm transition shadow-sm whitespace-nowrap">
+                  class="flex-1 px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-800 text-base font-bold tracking-widest" />
+                <button type="button" id="btnEnterAdmin" class="px-5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm transition shadow-sm whitespace-nowrap">
                   집계실 입장 <i class="fa-solid fa-arrow-right ml-1"></i>
                 </button>
               </div>
@@ -213,121 +306,30 @@
             </div>
           </div>
 
-          <div class="bg-blue-50 rounded-xl p-3.5 text-xs text-blue-950 border border-blue-200 space-y-1">
-            <div class="font-semibold"><i class="fa-solid fa-shield-halved text-blue-700 mr-1"></i> 시상 기준 및 실시간 동기화</div>
+          <div class="bg-blue-50 rounded-xl p-3 text-xs text-blue-950 border border-blue-200 space-y-1">
+            <div class="font-bold"><i class="fa-solid fa-shield-halved text-blue-700 mr-1"></i>자동 시상 등급 및 동기화</div>
             <p>• 1등(1명·9매), 2등(3명·6매), 3등(5명·3매), 장려(9명·2매) 자동 배정</p>
-            <p>• 관리자 설정에서 학생 명단과 심사위원 성함을 저장하면 모든 기기에 즉시 동기화됩니다.</p>
+            <p>• 명단·심사위원 성함 저장 시 모든 태블릿에 실시간 반영됩니다.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 2. 심사위원 채점표 화면 -->
-    <section id="viewJudge" class="hidden space-y-4">
-      <!-- 심사위원 상단 정보 및 서명 바 -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-5">
-        <div class="flex flex-wrap items-center justify-between gap-4">
-          <div class="flex items-center gap-3">
-            <span id="judgeBadgeTitle" class="px-3.5 py-2 rounded-xl bg-blue-700 text-white font-extrabold text-sm sm:text-base shadow-sm">
-              심사위원 1
-            </span>
-            <div>
-              <div class="text-sm font-bold text-slate-900" id="judgeHeaderSubName">채점 진행 중</div>
-              <p class="text-xs text-slate-500 mt-0.5">
-                <i class="fa-solid fa-lock text-slate-400 mr-1"></i>타 심사위원 점수는 비공개되며, 입력 시 자동 저장됩니다.
-              </p>
-            </div>
-          </div>
-
-          <!-- 자필 서명 영역 + 완료 현황 -->
-          <div class="flex flex-wrap items-center gap-2 sm:gap-3">
-            <div class="flex flex-wrap items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2">
-              <span class="text-xs font-bold text-slate-600">심사위원 서명:</span>
-              <img id="signaturePreviewThumb" class="hidden h-8 max-w-[100px] bg-white border border-slate-300 rounded px-1 object-contain" alt="서명 미리보기" />
-              <span id="signatureEmptyLabel" class="text-xs text-rose-500 font-semibold">미서명</span>
-              <button type="button" id="btnOpenSignature" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition flex items-center gap-1">
-                <i class="fa-solid fa-signature"></i>
-                <span id="signatureBtnLabel">서명하기</span>
-              </button>
-              <button type="button" id="btnClearSavedSignature" class="hidden px-2.5 py-1.5 rounded-lg border border-rose-300 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold transition">
-                <i class="fa-solid fa-eraser mr-1"></i>서명 지우기
-              </button>
-            </div>
-
-            <div class="bg-blue-50 border border-blue-200 px-3.5 py-2 rounded-xl text-right">
-              <div class="text-[11px] text-blue-700 font-semibold">채점 완료</div>
-              <div class="text-sm font-extrabold text-blue-900">
-                <span id="judgeCompletedCount">0</span> / <span id="judgeTotalParticipants">18</span>명
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 전송 완료 잠금 안내 배너 -->
-        <div id="judgeLockedBanner" class="hidden mt-4 p-3.5 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-900 flex flex-wrap items-center justify-between gap-2">
-          <div class="flex items-center gap-2 text-sm font-bold">
-            <i class="fa-solid fa-circle-check text-emerald-600 text-lg"></i>
-            <span>최종 점수가 집계실로 전송 완료되었습니다. (읽기 전용 잠금 상태)</span>
-          </div>
-          <span class="text-xs text-emerald-700">수정이 필요한 경우 대회 담당자에게 잠금 해제를 요청하세요.</span>
-        </div>
-      </div>
-
-      <!-- 채점표 본체 -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
-        <div class="flex flex-wrap items-end justify-between mb-3 gap-2">
-          <div>
-            <h2 class="text-xl sm:text-2xl font-black text-slate-900 underline decoration-2 underline-offset-4">
-              프레젠테이션 발표대회 채점표
-            </h2>
-            <p class="text-xs text-slate-500 mt-1.5">
-              ※ 각 빈칸을 터치하면 <strong>원터치 배점 선택 창</strong>이 열립니다. (태블릿·PC에서는 좌측 평가항목 열이 고정되어 가로 스크롤이 편리합니다.)
-            </p>
-          </div>
-          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-50 text-blue-800 text-xs font-bold border border-blue-200">
-            <i class="fa-solid fa-hand-pointer"></i> 원터치 간편 채점
-          </span>
-        </div>
-
-        <div class="overflow-x-auto pb-2 rounded-lg">
-          <table class="rubric-table text-center text-xs sm:text-sm min-w-[1180px]" id="rubricTable">
-            <thead>
-              <tr class="bg-slate-100 text-slate-900 font-bold" id="rubricTableHeadRow"></tr>
-            </thead>
-            <tbody id="rubricTableBody"></tbody>
-          </table>
-        </div>
-
-        <div class="mt-6 pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
-          <div class="text-xs sm:text-sm text-slate-600">
-            <i class="fa-solid fa-circle-exclamation text-amber-500 mr-1"></i>
-            전송 버튼 클릭 시 <strong>전체 참가자의 7개 항목 누락 여부 및 서명 완료 여부를 자동 검증</strong>합니다.
-          </div>
-
-          <button type="button" id="btnSubmitScores"
-            class="px-6 py-3.5 rounded-xl bg-blue-700 hover:bg-blue-800 active:bg-blue-900 text-white font-extrabold text-sm sm:text-base shadow-md transition flex items-center gap-2 ml-auto">
-            <i class="fa-solid fa-paper-plane"></i>
-            <span>최종 점수 전송하기</span>
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- 3. 담당자(관리자) 집계실 화면 -->
+    <!-- ==================== 3. 담당자(관리자) 집계실 화면 ==================== -->
     <section id="viewAdmin" class="hidden space-y-5">
       <!-- 상단 타이틀 및 탭 전환 -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-5 no-print">
-        <div class="flex flex-wrap items-center justify-between gap-4">
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 no-print">
+        <div class="flex flex-wrap items-center justify-between gap-3">
           <div>
             <div class="flex items-center gap-2">
               <span class="px-2.5 py-0.5 rounded-md bg-slate-900 text-white text-xs font-bold">관리자 전용</span>
-              <h2 class="text-lg sm:text-xl font-extrabold text-slate-900">집계실 실시간 대시보드</h2>
+              <h2 class="text-lg font-extrabold text-slate-900">집계실 실시간 대시보드</h2>
             </div>
-            <p class="text-xs text-slate-500 mt-1">4초마다 Firebase 서버와 자동 동기화됩니다.</p>
+            <p class="text-xs text-slate-500 mt-0.5">4초마다 Firebase 서버와 자동 동기화됩니다.</p>
           </div>
 
           <div class="flex flex-wrap items-center gap-2">
-            <button type="button" id="tabBtnRanking" class="px-4 py-2 rounded-xl bg-blue-700 text-white font-bold text-xs sm:text-sm shadow-sm transition">
+            <button type="button" id="tabBtnRanking" class="px-4 py-2 rounded-xl bg-blue-800 text-white font-bold text-xs sm:text-sm shadow-sm transition">
               <i class="fa-solid fa-ranking-star mr-1.5"></i>실시간 집계 및 순위표
             </button>
             <button type="button" id="tabBtnSettings" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm transition">
@@ -343,7 +345,7 @@
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
           <div class="flex flex-wrap items-center justify-between gap-3 mb-4 no-print">
             <h3 class="text-base font-extrabold text-slate-900">
-              <i class="fa-solid fa-clipboard-check text-blue-700 mr-1.5"></i>심사위원 1~4 제출 현황
+              <i class="fa-solid fa-clipboard-check text-blue-800 mr-1.5"></i>심사위원 1~4 제출 현황
             </h3>
             <div class="flex flex-wrap items-center gap-2">
               <button type="button" id="btnAdminRefresh" class="px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 font-bold text-xs transition flex items-center gap-1.5">
@@ -377,7 +379,7 @@
               <i class="fa-solid fa-trophy text-amber-500 mr-1.5"></i>참가자별 실시간 합산 및 최종 순위표
             </h3>
             <div class="text-xs text-slate-500 no-print">
-              * 참가자 행을 클릭하면 <strong>심사위원별 7개 항목 세부 점수</strong>를 비교할 수 있습니다.
+              * 참가자 행을 터치하면 <strong>심사위원별 7개 항목 세부 점수</strong>를 비교할 수 있습니다.
             </div>
           </div>
 
@@ -410,9 +412,9 @@
           <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
             <div>
               <h3 class="text-base font-extrabold text-slate-900">1. 심사위원 1~4 성함 설정</h3>
-              <p class="text-xs text-slate-500 mt-0.5">성함을 입력하고 저장하면 초기화면 카드, PIN 인증창, 채점표 상단에 실시간 반영됩니다.</p>
+              <p class="text-xs text-slate-500 mt-0.5">성함을 저장하면 초기화면 카드, PIN 인증창, 채점표 상단에 실시간 반영됩니다.</p>
             </div>
-            <button type="button" id="btnSaveAllSettingsTop" class="px-4 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold shadow-sm transition">
+            <button type="button" id="btnSaveAllSettingsTop" class="px-4 py-2 rounded-xl bg-blue-800 hover:bg-blue-900 text-white text-xs font-bold shadow-sm transition">
               <i class="fa-solid fa-floppy-disk mr-1"></i>설정 저장 및 동기화
             </button>
           </div>
@@ -442,7 +444,7 @@
           <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
             <div>
               <h3 class="text-base font-extrabold text-slate-900">2. 발표자 명단 및 인원수 설정 (기본 18명)</h3>
-              <p class="text-xs text-slate-500 mt-0.5">이름을 입력·저장하면 모든 심사위원 채점표 열 헤더에 <strong>'1. 홍길동'</strong> 형태로 즉시 동기화됩니다.</p>
+              <p class="text-xs text-slate-500 mt-0.5">이름을 저장하면 모든 심사위원 채점표 헤더에 <strong>'1. 홍길동'</strong> 형태로 즉시 동기화됩니다.</p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
               <label for="settingParticipantCount" class="text-xs font-bold text-slate-700">참가 인원:</label>
@@ -461,9 +463,9 @@
           <div class="bg-blue-50/70 border border-blue-200 rounded-xl p-4 space-y-2">
             <div class="flex flex-wrap items-center justify-between gap-2">
               <label for="bulkPasteTextarea" class="text-xs font-bold text-blue-950">
-                <i class="fa-solid fa-paste text-blue-700 mr-1"></i>명단 일괄 붙여넣기 (엑셀·한글에서 복사 후 줄바꿈 구분으로 붙여넣기)
+                <i class="fa-solid fa-paste text-blue-700 mr-1"></i>명단 일괄 붙여넣기 (줄바꿈 구분으로 한 번에 입력)
               </label>
-              <button type="button" id="btnApplyBulkPaste" class="px-3.5 py-1.5 rounded-lg bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold transition">
+              <button type="button" id="btnApplyBulkPaste" class="px-3.5 py-1.5 rounded-lg bg-blue-800 hover:bg-blue-900 text-white text-xs font-bold transition">
                 아래 표에 일괄 채우기
               </button>
             </div>
@@ -510,37 +512,103 @@
         </div>
       </div>
     </section>
-
   </main>
 
-  <!-- ==================== 모달 1: 원터치 배점 선택 모달 ==================== -->
+  <!-- ==================== 2. 심사위원 전용 1화면 가로모드 채점 뷰 ==================== -->
+  <section id="viewJudge" class="hidden w-full bg-slate-100">
+    <!-- 초슬림 단일 행 상단 컨트롤 바 (~52px) -->
+    <div class="h-[52px] shrink-0 bg-blue-950 text-white px-2.5 sm:px-4 flex items-center justify-between gap-2 shadow-md z-30 border-b border-blue-900">
+      <!-- 좌측: 심사위원명 + 실시간 연결 상태 + 진행률 -->
+      <div class="flex items-center gap-2 min-w-0">
+        <span id="judgeSyncDot" class="w-2.5 h-2.5 rounded-full bg-emerald-400 shrink-0" title="실시간 동기화 상태"></span>
+        <span id="judgeBadgeTitle" class="px-2.5 py-1 rounded-lg bg-blue-800 text-white font-extrabold text-xs sm:text-sm truncate max-w-[140px] sm:max-w-[200px]">
+          심사위원 1
+        </span>
+        <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 border border-slate-700 text-xs font-bold text-blue-200 whitespace-nowrap">
+          입력완료 <strong id="judgeCompletedCount" class="text-amber-300">0</strong>/<span id="judgeTotalParticipants">18</span>명
+        </span>
+      </div>
+
+      <!-- 우측: 인라인 서명 영역 + 전체화면 + 최종 점수 전송 + 나가기 -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <!-- 인라인 서명 컨트롤 -->
+        <div class="flex items-center gap-1.5 bg-blue-900/70 border border-blue-800 rounded-lg px-2 py-1">
+          <img id="signaturePreviewThumb" class="hidden h-7 max-w-[74px] bg-white rounded px-1 object-contain" alt="서명" />
+          <span id="signatureEmptyLabel" class="text-[11px] text-amber-300 font-bold hidden sm:inline">미서명</span>
+          <button type="button" id="btnOpenSignature" class="px-2.5 py-1 rounded-md bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition whitespace-nowrap flex items-center gap-1">
+            <i class="fa-solid fa-signature"></i>
+            <span id="signatureBtnLabel">서명하기</span>
+          </button>
+          <button type="button" id="btnClearSavedSignature" class="hidden px-2 py-1 rounded-md bg-rose-600/90 hover:bg-rose-500 text-white text-[11px] font-bold transition whitespace-nowrap" title="저장된 서명 지우기">
+            <i class="fa-solid fa-eraser mr-0.5"></i>서명 지우기
+          </button>
+        </div>
+
+        <!-- 전체화면 토글 버튼 -->
+        <button type="button" id="btnJudgeFullscreen" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold text-slate-100 transition whitespace-nowrap flex items-center gap-1" title="전체화면 전환">
+          <i class="fa-solid fa-expand"></i>
+          <span class="hidden md:inline">전체화면</span>
+        </button>
+
+        <!-- 최종 점수 전송 버튼 -->
+        <button type="button" id="btnSubmitScores" class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-extrabold text-xs sm:text-sm shadow transition whitespace-nowrap flex items-center gap-1.5">
+          <i class="fa-solid fa-paper-plane"></i>
+          <span>최종 점수 전송</span>
+        </button>
+
+        <!-- 나가기 버튼 -->
+        <button type="button" id="btnJudgeExit" class="px-2.5 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-bold transition whitespace-nowrap flex items-center gap-1">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span class="hidden sm:inline">나가기</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 전송 완료 잠금 안내 슬림 배너 (제출 완료 시에만 노출) -->
+    <div id="judgeLockedBanner" class="hidden shrink-0 px-4 py-1.5 bg-emerald-600 text-white text-xs font-bold flex items-center justify-between gap-2">
+      <span><i class="fa-solid fa-lock mr-1.5"></i>최종 점수가 집계실로 전송 완료되었습니다. (읽기 전용 잠금 상태)</span>
+      <span class="text-emerald-100 font-medium hidden sm:inline">수정이 필요하면 대회 담당자에게 잠금 해제를 요청하세요.</span>
+    </div>
+
+    <!-- 채점표 1화면 꽉 채움 스크롤 컨테이너 -->
+    <div class="rubric-scroll-wrap bg-white p-1.5 sm:p-2">
+      <table class="rubric-table text-center text-xs" id="rubricTable">
+        <thead>
+          <tr class="bg-slate-100 text-slate-900 font-bold" id="rubricTableHeadRow"></tr>
+        </thead>
+        <tbody id="rubricTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ==================== 모달 1: 원터치 배점 선택 모달 (필기인식 없음) ==================== -->
   <div id="scoreInputModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200">
-      <div class="bg-slate-900 text-white px-5 py-4 flex items-center justify-between">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-200">
+      <div class="bg-blue-950 text-white px-5 py-3.5 flex items-center justify-between">
         <div>
-          <span id="modalParticipantTag" class="text-xs font-bold text-blue-300">발표자 1번</span>
+          <span id="modalParticipantTag" class="text-xs font-bold text-amber-300">발표자 1번</span>
           <h4 id="modalCriterionTitle" class="text-base sm:text-lg font-extrabold mt-0.5">발표 내용 숙지 여부</h4>
         </div>
-        <button type="button" id="btnCloseScoreModalTop" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center" title="닫기 (ESC)">
-          <i class="fa-solid fa-xmark"></i>
+        <button type="button" id="btnCloseScoreModalTop" class="w-9 h-9 rounded-xl bg-blue-900 hover:bg-blue-800 text-blue-100 flex items-center justify-center" title="닫기 (ESC)">
+          <i class="fa-solid fa-xmark text-base"></i>
         </button>
       </div>
 
       <div class="p-5 space-y-5">
         <div>
           <div class="flex items-center justify-between mb-3">
-            <span class="text-xs font-bold text-slate-700"><i class="fa-solid fa-hand-pointer text-blue-600 mr-1"></i>점수를 터치하여 선택하세요</span>
-            <span id="modalValidScoresHint" class="text-[11px] font-semibold text-blue-700">배점: 20, 18, 16, 14, 12점</span>
+            <span class="text-xs font-bold text-slate-700"><i class="fa-solid fa-hand-pointer text-blue-700 mr-1"></i>부여할 점수를 터치하세요 (즉시 저장)</span>
+            <span id="modalValidScoresHint" class="text-xs font-bold text-blue-800">배점: 20, 18, 16, 14, 12점</span>
           </div>
-          <div class="grid grid-cols-5 gap-2.5" id="modalQuickButtons"></div>
+          <div class="grid grid-cols-5 gap-2.5 sm:gap-3" id="modalQuickButtons"></div>
         </div>
 
         <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-          <button type="button" id="btnClearCellScore" class="px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition">
+          <button type="button" id="btnClearCellScore" class="px-4 py-2.5 rounded-xl text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 transition">
             <i class="fa-solid fa-trash-can mr-1"></i>이 칸 점수 비우기
           </button>
           <button type="button" id="btnCloseScoreModalBottom" class="px-5 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold transition">
-            닫기 (ESC)
+            닫기
           </button>
         </div>
       </div>
@@ -550,14 +618,14 @@
   <!-- ==================== 모달 2: 심사위원 자필 서명 모달 ==================== -->
   <div id="signatureModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200">
-      <div class="bg-slate-900 text-white px-5 py-3.5 flex items-center justify-between">
-        <h4 class="text-base font-extrabold"><i class="fa-solid fa-signature mr-1.5 text-blue-400"></i>심사위원 자필 서명</h4>
+      <div class="bg-blue-950 text-white px-5 py-3.5 flex items-center justify-between">
+        <h4 class="text-base font-extrabold"><i class="fa-solid fa-signature mr-1.5 text-amber-300"></i>심사위원 자필 서명</h4>
         <button type="button" id="btnCloseSigModalTop" class="text-slate-300 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="p-5 space-y-4">
-        <p class="text-xs text-slate-600">아래 서명란에 마우스·손가락·터치펜으로 서명해 주세요.</p>
+        <p class="text-xs text-slate-600">아래 서명란에 손가락 또는 S펜으로 서명해 주세요.</p>
         <div class="border-2 border-slate-300 rounded-xl bg-slate-50 overflow-hidden">
-          <canvas id="signatureCanvas" width="380" height="160" class="signature-canvas w-full h-40 cursor-crosshair"></canvas>
+          <canvas id="signatureCanvas" width="400" height="170" class="signature-canvas w-full h-44 cursor-crosshair"></canvas>
         </div>
         <div class="flex justify-between gap-2">
           <button type="button" id="btnClearSigCanvas" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">
@@ -565,7 +633,7 @@
           </button>
           <div class="flex gap-2">
             <button type="button" id="btnCancelSigModal" class="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-xs font-bold">취소</button>
-            <button type="button" id="btnSaveSigData" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow">서명 저장</button>
+            <button type="button" id="btnSaveSigData" class="px-5 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold shadow">서명 저장</button>
           </div>
         </div>
       </div>
@@ -576,7 +644,7 @@
   <div id="judgeAuthModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 border border-slate-200">
       <div class="flex items-center gap-3 mb-4">
-        <div class="w-10 h-10 rounded-xl bg-blue-700 text-white flex items-center justify-center text-lg">
+        <div class="w-10 h-10 rounded-xl bg-blue-800 text-white flex items-center justify-center text-lg">
           <i class="fa-solid fa-key"></i>
         </div>
         <div>
@@ -586,12 +654,12 @@
       </div>
       <div class="space-y-3">
         <input type="password" id="judgePinInput" maxlength="8" inputmode="numeric" placeholder="PIN 4자리"
-          class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600 text-center text-lg font-bold tracking-widest" />
+          class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-700 text-center text-lg font-bold tracking-widest" />
         <p id="judgePinError" class="text-xs text-rose-600 font-bold text-center hidden">비밀번호가 일치하지 않습니다. 다시 확인해 주세요.</p>
       </div>
       <div class="mt-5 flex justify-end gap-2">
         <button type="button" id="btnCancelJudgeAuth" class="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-xs font-bold">취소</button>
-        <button type="button" id="btnVerifyJudgeAuth" class="px-5 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold shadow">입장하기</button>
+        <button type="button" id="btnVerifyJudgeAuth" class="px-5 py-2.5 rounded-xl bg-blue-800 hover:bg-blue-900 text-white text-xs font-bold shadow">입장하기</button>
       </div>
     </div>
   </div>
@@ -600,7 +668,7 @@
   <div id="customDialogModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 border border-slate-200">
       <div class="flex items-start gap-3.5">
-        <div id="dialogIconWrap" class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-lg shrink-0">
+        <div id="dialogIconWrap" class="w-10 h-10 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-lg shrink-0">
           <i id="dialogIcon" class="fa-solid fa-circle-info"></i>
         </div>
         <div class="flex-1 min-w-0">
@@ -615,7 +683,7 @@
   <!-- ==================== 모달 5: 참가자별 세부 점수 비교 모달 ==================== -->
   <div id="participantDetailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden border border-slate-200">
-      <div class="bg-slate-900 text-white px-5 py-3.5 flex items-center justify-between">
+      <div class="bg-blue-950 text-white px-5 py-3.5 flex items-center justify-between">
         <h4 id="detailModalTitle" class="text-base font-extrabold">참가자 세부 항목별 채점 내역</h4>
         <button type="button" id="btnCloseDetailTop" class="text-slate-300 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
       </div>
@@ -641,7 +709,7 @@
       // ==================== 1. 상수 및 기본 설정 ====================
       const DEFAULT_FIREBASE_BASE = 'https://presentation-2026-default-rtdb.asia-southeast1.firebasedatabase.app';
       const DB_URL_STORAGE_KEY = 'kmmhs_pt_2026_db_url';
-      const LOCAL_CACHE_KEY = 'kmmhs_pt_2026_local_cache_v5';
+      const LOCAL_CACHE_KEY = 'kmmhs_pt_2026_local_cache_v6';
       const ADMIN_PASSWORD = '0010';
 
       const JUDGE_PASSWORDS = {
@@ -659,7 +727,7 @@
           maxScore: 20,
           title: '발표 내용 숙지 여부',
           shortTitle: '발표 내용 숙지',
-          desc: '(20, 18, 16, 14, 12)',
+          desc: '20 · 18 · 16 · 14 · 12',
           validScores: [20, 18, 16, 14, 12]
         },
         {
@@ -667,9 +735,9 @@
           group: null,
           groupRowSpan: 0,
           maxScore: 20,
-          title: '자신감\n(목소리, 톤)',
+          title: '자신감 (목소리, 톤)',
           shortTitle: '자신감(목소리·톤)',
-          desc: '(20, 18, 16, 14, 12)',
+          desc: '20 · 18 · 16 · 14 · 12',
           validScores: [20, 18, 16, 14, 12]
         },
         {
@@ -677,19 +745,19 @@
           group: null,
           groupRowSpan: 0,
           maxScore: 10,
-          title: '표현력\n(몸짓, 동작, 시선)',
+          title: '표현력 (몸짓, 동작, 시선)',
           shortTitle: '표현력',
-          desc: '(10, 9, 8, 7, 6)',
+          desc: '10 · 9 · 8 · 7 · 6',
           validScores: [10, 9, 8, 7, 6]
         },
         {
           id: 'c4',
-          group: 'PPT\n주제 선정\n및\n내용구성\n(40)',
+          group: 'PPT\n주제선정\n내용구성\n(40)',
           groupRowSpan: 3,
           maxScore: 20,
-          title: '주제 선정\n(PPT 디자인, 내용 전달)',
+          title: '주제 선정 (PPT 디자인·전달)',
           shortTitle: '주제 선정(PPT 디자인)',
-          desc: '(20, 18, 16, 14, 12)',
+          desc: '20 · 18 · 16 · 14 · 12',
           validScores: [20, 18, 16, 14, 12]
         },
         {
@@ -699,7 +767,7 @@
           maxScore: 10,
           title: '내용구성',
           shortTitle: '내용구성',
-          desc: '(10, 9, 8, 7, 6)',
+          desc: '10 · 9 · 8 · 7 · 6',
           validScores: [10, 9, 8, 7, 6]
         },
         {
@@ -707,9 +775,9 @@
           group: null,
           groupRowSpan: 0,
           maxScore: 10,
-          title: '도구의 활용도',
+          title: '도구의 활용도 (그래프·Data)',
           shortTitle: '도구의 활용도',
-          desc: '(그래프, 동영상, 신뢰성 있는 Data 등) (10, 9, 8, 7, 6)',
+          desc: '10 · 9 · 8 · 7 · 6',
           validScores: [10, 9, 8, 7, 6]
         },
         {
@@ -719,7 +787,7 @@
           maxScore: 10,
           title: '복장, 시간 준수, 진정성',
           shortTitle: '태도(복장·시간·진정성)',
-          desc: '(10, 9, 8, 7, 6)',
+          desc: '10 · 9 · 8 · 7 · 6',
           validScores: [10, 9, 8, 7, 6]
         }
       ];
@@ -756,7 +824,7 @@
         }
       };
 
-      // ==================== 3. 유틸리티 함수 ====================
+      // ==================== 3. 유틸리티 및 Fullscreen API ====================
       function escapeHtml(str) {
         return String(str || '')
           .replace(/&/g, '&amp;')
@@ -800,6 +868,43 @@
           return pObj.name.trim();
         }
         return pNum + '번 참가자';
+      }
+
+      function toggleFullscreen() {
+        const docEl = document.documentElement;
+        const isFs = document.fullscreenElement || document.webkitFullscreenElement;
+        try {
+          if (!isFs) {
+            if (docEl.requestFullscreen) {
+              docEl.requestFullscreen().catch(function () {});
+            } else if (docEl.webkitRequestFullscreen) {
+              docEl.webkitRequestFullscreen();
+            }
+          } else {
+            if (document.exitFullscreen) {
+              document.exitFullscreen().catch(function () {});
+            } else if (document.webkitExitFullscreen) {
+              document.webkitExitFullscreen();
+            }
+          }
+        } catch (e) {
+          console.warn('Fullscreen toggle not supported:', e);
+        }
+      }
+
+      function updateFullscreenButtons() {
+        const isFs = Boolean(document.fullscreenElement || document.webkitFullscreenElement);
+        const iconClass = isFs ? 'fa-compress' : 'fa-expand';
+        const labelText = isFs ? '화면축소' : '전체화면';
+
+        const btnGlobal = document.getElementById('btnGlobalFullscreen');
+        if (btnGlobal) {
+          btnGlobal.innerHTML = '<i class="fa-solid ' + iconClass + '"></i><span class="hidden sm:inline">' + labelText + '</span>';
+        }
+        const btnJudge = document.getElementById('btnJudgeFullscreen');
+        if (btnJudge) {
+          btnJudge.innerHTML = '<i class="fa-solid ' + iconClass + '"></i><span class="hidden md:inline">' + labelText + '</span>';
+        }
       }
 
       function saveLocalBackup() {
@@ -857,13 +962,21 @@
 
       function updateConnectionBadge(isConnected, customText) {
         const badge = document.getElementById('connectionBadge');
-        if (!badge) return;
-        if (isConnected) {
-          badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-950 text-emerald-300 border border-emerald-700';
-          badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400"></span>' + (customText || '실시간 연결됨');
-        } else {
-          badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-950 text-amber-300 border border-amber-700';
-          badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400"></span>오프라인 (로컬 백업)';
+        const judgeDot = document.getElementById('judgeSyncDot');
+        if (badge) {
+          if (isConnected) {
+            badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-300 border border-emerald-700';
+            badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400"></span>' + (customText || '실시간 연결됨');
+          } else {
+            badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-950 text-amber-300 border border-amber-700';
+            badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400"></span>오프라인(로컬백업)';
+          }
+        }
+        if (judgeDot) {
+          judgeDot.className = isConnected
+            ? 'w-2.5 h-2.5 rounded-full bg-emerald-400 shrink-0'
+            : 'w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse shrink-0';
+          judgeDot.title = isConnected ? 'Firebase 실시간 연결됨' : '오프라인(로컬 백업 중)';
         }
       }
 
@@ -889,7 +1002,7 @@
 
       async function fetchStateFromFirebase() {
         try {
-          // 심사위원 모드: 타 심사위원 점수는 절대 불러오지 않음 (철저한 비공개 분리)
+          // 심사위원 모드: 타 심사위원 점수는 절대 불러오지 않음 (비공개 보안 격리)
           if (state.role === 'judge' && state.currentJudgeId) {
             const jId = state.currentJudgeId;
             const responses = await Promise.all([
@@ -1006,9 +1119,10 @@
 
       function startPollingLoop() {
         if (pollIntervalId) clearInterval(pollIntervalId);
-        // 로비 화면 및 관리자 집계실에서 4초마다 자동 폴링 동기화
+        // 로비 및 관리자 집계실 4초 주기 실시간 폴링
         pollIntervalId = setInterval(function () {
           if (state.role === 'admin' && state.adminTab === 'settings') return;
+          if (state.role === 'judge') return; // 심사위원은 입력·저장 시 즉시 동기화
           fetchStateFromFirebase();
         }, 4000);
       }
@@ -1028,10 +1142,10 @@
 
           const btn = document.createElement('button');
           btn.type = 'button';
-          btn.className = 'p-4 rounded-xl border-2 border-slate-200 hover:border-blue-600 hover:bg-blue-50/40 transition text-left flex flex-col justify-between gap-2 group';
+          btn.className = 'p-4 rounded-xl border-2 border-slate-200 hover:border-blue-700 hover:bg-blue-50/40 active:scale-95 transition text-left flex flex-col justify-between gap-2 group';
           btn.innerHTML =
             '<div class="flex items-center justify-between w-full gap-1">' +
-              '<span class="text-sm sm:text-base font-extrabold text-slate-900 group-hover:text-blue-700 truncate">' +
+              '<span class="text-sm sm:text-base font-extrabold text-slate-900 group-hover:text-blue-800 truncate">' +
                 '<i class="fa-solid fa-lock text-xs text-slate-400 mr-1.5"></i>' + escapeHtml(displayName) +
               '</span>' +
               statusBadge +
@@ -1086,10 +1200,12 @@
       function enterJudgeMode(judgeId) {
         state.role = 'judge';
         state.currentJudgeId = judgeId;
-        document.getElementById('viewHome').classList.add('hidden');
-        document.getElementById('viewAdmin').classList.add('hidden');
-        document.getElementById('viewJudge').classList.remove('hidden');
-        document.getElementById('btnGoHome').classList.remove('hidden');
+        // 갤럭시탭 가로 1화면 최적화를 위해 일반 헤더/메인 숨기고 전용 풀스크린 뷰 활성화
+        document.getElementById('globalHeader').classList.add('hidden');
+        document.getElementById('mainContainer').classList.add('hidden');
+        const vj = document.getElementById('viewJudge');
+        vj.classList.remove('hidden');
+        vj.classList.add('judge-fullscreen-layout');
         renderJudgeView();
         fetchStateFromFirebase();
       }
@@ -1106,10 +1222,16 @@
         document.getElementById('adminPinInput').value = '';
         state.role = 'admin';
         state.currentJudgeId = null;
+
+        document.getElementById('globalHeader').classList.remove('hidden');
+        document.getElementById('mainContainer').classList.remove('hidden');
         document.getElementById('viewHome').classList.add('hidden');
-        document.getElementById('viewJudge').classList.add('hidden');
+        const vj = document.getElementById('viewJudge');
+        vj.classList.add('hidden');
+        vj.classList.remove('judge-fullscreen-layout');
         document.getElementById('viewAdmin').classList.remove('hidden');
         document.getElementById('btnGoHome').classList.remove('hidden');
+
         switchAdminTab('ranking');
         fetchStateFromFirebase();
       }
@@ -1122,13 +1244,13 @@
         const panelSet = document.getElementById('adminTabSettings');
 
         if (tabName === 'ranking') {
-          btnRank.className = 'px-4 py-2 rounded-xl bg-blue-700 text-white font-bold text-xs sm:text-sm shadow-sm transition';
+          btnRank.className = 'px-4 py-2 rounded-xl bg-blue-800 text-white font-bold text-xs sm:text-sm shadow-sm transition';
           btnSet.className = 'px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm transition';
           panelRank.classList.remove('hidden');
           panelSet.classList.add('hidden');
           renderAdminRankingView();
         } else {
-          btnSet.className = 'px-4 py-2 rounded-xl bg-blue-700 text-white font-bold text-xs sm:text-sm shadow-sm transition';
+          btnSet.className = 'px-4 py-2 rounded-xl bg-blue-800 text-white font-bold text-xs sm:text-sm shadow-sm transition';
           btnRank.className = 'px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm transition';
           panelRank.classList.add('hidden');
           panelSet.classList.remove('hidden');
@@ -1139,7 +1261,11 @@
       function returnHome() {
         state.role = 'home';
         state.currentJudgeId = null;
-        document.getElementById('viewJudge').classList.add('hidden');
+        const vj = document.getElementById('viewJudge');
+        vj.classList.add('hidden');
+        vj.classList.remove('judge-fullscreen-layout');
+        document.getElementById('globalHeader').classList.remove('hidden');
+        document.getElementById('mainContainer').classList.remove('hidden');
         document.getElementById('viewAdmin').classList.add('hidden');
         document.getElementById('viewHome').classList.remove('hidden');
         document.getElementById('btnGoHome').classList.add('hidden');
@@ -1153,7 +1279,7 @@
         else if (state.role === 'admin' && state.adminTab === 'ranking') renderAdminRankingView();
       }
 
-      // ==================== 6. 심사위원 채점표 렌더링 ====================
+      // ==================== 6. 심사위원 가로모드 1화면 채점표 렌더링 ====================
       function getParticipantJudgeScore(scoresObj, pNum) {
         const pScores = (scoresObj && scoresObj[pNum]) || {};
         let sum = 0;
@@ -1174,11 +1300,9 @@
         const pCount = state.config.participantCount;
 
         document.getElementById('judgeBadgeTitle').textContent = getJudgeDisplayName(j.id);
-        document.getElementById('judgeHeaderSubName').textContent =
-          '심사위원 ' + j.id + '번 (' + (j.submitted ? '최종 전송 완료' : '채점 진행 중') + ')';
         document.getElementById('judgeTotalParticipants').textContent = String(pCount);
 
-        // 서명 미리보기 및 지우기 버튼 상태 제어
+        // 인라인 서명 미리보기 & 지우기 버튼 제어
         const sigThumb = document.getElementById('signaturePreviewThumb');
         const sigEmpty = document.getElementById('signatureEmptyLabel');
         const sigBtn = document.getElementById('btnOpenSignature');
@@ -1203,49 +1327,49 @@
           sigClearBtn.classList.add('hidden');
         }
 
-        // 잠금 배너 및 전송 버튼 제어
+        // 잠금 배너 및 전송 버튼 상태
         const lockedBanner = document.getElementById('judgeLockedBanner');
         const btnSubmit = document.getElementById('btnSubmitScores');
 
         if (j.submitted) {
           lockedBanner.classList.remove('hidden');
           btnSubmit.disabled = true;
-          btnSubmit.className = 'px-6 py-3.5 rounded-xl bg-slate-400 text-white font-extrabold text-sm sm:text-base cursor-not-allowed flex items-center gap-2 ml-auto';
-          btnSubmit.innerHTML = '<i class="fa-solid fa-lock"></i><span>전송 완료됨 (잠금)</span>';
+          btnSubmit.className = 'px-3.5 py-1.5 rounded-lg bg-slate-500 text-slate-200 font-bold text-xs sm:text-sm cursor-not-allowed whitespace-nowrap flex items-center gap-1.5';
+          btnSubmit.innerHTML = '<i class="fa-solid fa-lock"></i><span>전송 완료</span>';
           sigBtn.disabled = true;
           sigBtn.classList.add('opacity-50', 'cursor-not-allowed');
         } else {
           lockedBanner.classList.add('hidden');
           btnSubmit.disabled = false;
-          btnSubmit.className = 'px-6 py-3.5 rounded-xl bg-blue-700 hover:bg-blue-800 active:bg-blue-900 text-white font-extrabold text-sm sm:text-base shadow-md transition flex items-center gap-2 ml-auto';
-          btnSubmit.innerHTML = '<i class="fa-solid fa-paper-plane"></i><span>최종 점수 전송하기</span>';
+          btnSubmit.className = 'px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-extrabold text-xs sm:text-sm shadow transition whitespace-nowrap flex items-center gap-1.5';
+          btnSubmit.innerHTML = '<i class="fa-solid fa-paper-plane"></i><span>최종 점수 전송</span>';
           sigBtn.disabled = false;
           sigBtn.classList.remove('opacity-50', 'cursor-not-allowed');
         }
 
-        // 채점표 헤더 렌더링 (좌측 3열 sticky 적용)
+        // 채점표 헤더 렌더링 (좌측 3열 sticky)
         const theadRow = document.getElementById('rubricTableHeadRow');
         theadRow.innerHTML =
-          '<th class="sticky-col-1 py-2.5 px-2 bg-slate-100">평가항목</th>' +
-          '<th class="sticky-col-2 py-2.5 px-1 bg-slate-100">배<br/>점</th>' +
-          '<th class="sticky-col-3 py-2.5 px-2 bg-slate-100">세부 평가 내용</th>';
+          '<th class="sticky-col-1 py-2 px-1 bg-slate-100 text-[11px] font-extrabold text-slate-800">평가항목</th>' +
+          '<th class="sticky-col-2 py-2 px-1 bg-slate-100 text-[11px] font-extrabold text-slate-800">배점</th>' +
+          '<th class="sticky-col-3 py-2 px-2 bg-slate-100 text-xs font-extrabold text-slate-800">세부 평가 내용</th>';
 
         for (let p = 1; p <= pCount; p++) {
           const pObj = state.config.participants[p - 1];
           const hasName = Boolean(pObj && pObj.name && pObj.name.trim());
           const th = document.createElement('th');
-          th.className = 'min-w-[60px] py-2 px-1 bg-slate-100 font-extrabold text-slate-900 align-middle';
+          th.className = 'min-w-[76px] w-[76px] py-1.5 px-1 bg-slate-100 font-extrabold text-slate-900 align-middle';
           if (hasName) {
             th.innerHTML =
-              '<div class="text-[11px] text-slate-500 leading-none">' + p + '.</div>' +
-              '<div class="text-xs font-extrabold text-blue-900 mt-1 break-keep leading-tight">' + escapeHtml(pObj.name.trim()) + '</div>';
+              '<div class="text-[10px] text-slate-500 leading-none">' + p + '번</div>' +
+              '<div class="text-xs font-extrabold text-blue-900 mt-0.5 truncate max-w-[70px] mx-auto" title="' + escapeHtml(pObj.name.trim()) + '">' + escapeHtml(pObj.name.trim()) + '</div>';
           } else {
-            th.innerHTML = '<div class="text-sm">' + p + '번</div>';
+            th.innerHTML = '<div class="text-sm font-extrabold text-slate-800">' + p + '번</div>';
           }
           theadRow.appendChild(th);
         }
 
-        // 채점표 바디 렌더링
+        // 채점표 바디 렌더링 (7개 항목)
         const tbody = document.getElementById('rubricTableBody');
         tbody.innerHTML = '';
 
@@ -1254,21 +1378,21 @@
           if (item.group) {
             const tdGroup = document.createElement('td');
             tdGroup.rowSpan = item.groupRowSpan;
-            tdGroup.className = 'first-col sticky-col-1 font-bold text-slate-900 bg-slate-50 px-2 py-2 whitespace-pre-line leading-snug';
+            tdGroup.className = 'first-col sticky-col-1 font-extrabold text-[11px] text-slate-800 bg-slate-50 px-1 py-1 whitespace-pre-line leading-tight';
             tdGroup.textContent = item.group;
             tr.appendChild(tdGroup);
           }
 
           const tdMax = document.createElement('td');
-          tdMax.className = 'sticky-col-2 font-bold text-slate-800 bg-slate-50 py-2';
+          tdMax.className = 'sticky-col-2 font-extrabold text-xs text-slate-800 bg-slate-50 py-1';
           tdMax.textContent = String(item.maxScore);
           tr.appendChild(tdMax);
 
           const tdDesc = document.createElement('td');
-          tdDesc.className = 'sticky-col-3 bg-white px-2.5 py-2.5 leading-snug';
+          tdDesc.className = 'sticky-col-3 bg-white px-2 py-1 text-left leading-tight';
           tdDesc.innerHTML =
-            '<div class="font-bold text-slate-900 whitespace-pre-line">' + escapeHtml(item.title) + '</div>' +
-            '<div class="text-[11px] text-slate-500 mt-0.5">' + escapeHtml(item.desc) + '</div>';
+            '<div class="font-bold text-slate-900 text-xs leading-snug">' + escapeHtml(item.title) + '</div>' +
+            '<div class="text-[10px] text-slate-500 mt-0.5 font-medium">' + escapeHtml(item.desc) + '</div>';
           tr.appendChild(tdDesc);
 
           for (let p = 1; p <= pCount; p++) {
@@ -1276,8 +1400,8 @@
             const hasVal = typeof val === 'number';
             const tdCell = document.createElement('td');
             tdCell.id = 'cell_' + p + '_' + item.id;
-            tdCell.className = 'score-cell font-extrabold text-base ' + (hasVal ? 'text-blue-700 bg-blue-50/40' : 'text-slate-300 bg-white');
-            tdCell.textContent = hasVal ? String(val) : '';
+            tdCell.className = 'score-cell font-black text-lg ' + (hasVal ? 'filled-cell' : 'empty-cell');
+            tdCell.textContent = hasVal ? String(val) : '·';
             tdCell.addEventListener('click', (function (pNum, cId) {
               return function () {
                 handleCellClick(pNum, cId);
@@ -1289,20 +1413,20 @@
           tbody.appendChild(tr);
         });
 
-        // 합계(100점 만점) 행
+        // 합계(100점 만점) 하단 고정 행
         const totalTr = document.createElement('tr');
         totalTr.className = 'total-row bg-slate-100 font-black text-slate-900';
         totalTr.innerHTML =
-          '<td class="first-col sticky-col-1 bg-slate-100 py-3 px-2 leading-tight">합계<br/>(100)</td>' +
-          '<td class="sticky-col-2 bg-slate-100 py-3 px-1">100</td>' +
-          '<td class="sticky-col-3 bg-slate-100 py-3 px-2">참가자별 총점</td>';
+          '<td class="first-col sticky-col-1 bg-slate-200 py-2 px-1 text-[11px] leading-tight">합계<br/>(100)</td>' +
+          '<td class="sticky-col-2 bg-slate-200 py-2 px-1 text-xs">100</td>' +
+          '<td class="sticky-col-3 bg-slate-200 py-2 px-2 text-xs text-left">참가자별 총점</td>';
 
         let completedCount = 0;
         for (let p = 1; p <= pCount; p++) {
           const res = getParticipantJudgeScore(j.scores, p);
           if (res.isComplete) completedCount++;
           const tdTotal = document.createElement('td');
-          tdTotal.className = 'py-3 px-1 text-sm sm:text-base ' + (res.isComplete ? 'text-emerald-700 bg-emerald-50' : 'text-slate-600 bg-slate-100');
+          tdTotal.className = 'py-2 px-1 text-base font-black ' + (res.isComplete ? 'text-emerald-800 bg-emerald-100' : 'text-slate-600 bg-slate-100');
           tdTotal.textContent = res.sum > 0 ? String(res.sum) : '-';
           totalTr.appendChild(tdTotal);
         }
@@ -1322,14 +1446,14 @@
         openScoreModal(pNum, cId);
       }
 
-      // ==================== 7. 원터치 배점 선택 모달 ====================
+      // ==================== 7. 원터치 배점 선택 모달 (필기인식 없음) ====================
       function openScoreModal(pNum, cId) {
         state.activeCell = { pNum: pNum, cId: cId };
         const item = RUBRIC_ITEMS.find(function (x) { return x.id === cId; });
         const currentVal = state.judges[state.currentJudgeId].scores[pNum] && state.judges[state.currentJudgeId].scores[pNum][cId];
 
         document.getElementById('modalParticipantTag').textContent = '발표자 ' + getParticipantHeaderLabel(pNum);
-        document.getElementById('modalCriterionTitle').textContent = item.title.replace(/\n/g, ' ');
+        document.getElementById('modalCriterionTitle').textContent = item.title;
         document.getElementById('modalValidScoresHint').textContent = '배점: ' + item.validScores.join(', ') + '점';
 
         const btnWrap = document.getElementById('modalQuickButtons');
@@ -1340,14 +1464,14 @@
           const isSelected = currentVal === sc;
           const btn = document.createElement('button');
           btn.type = 'button';
-          btn.className = 'py-4 px-1 rounded-xl border-2 font-extrabold transition flex flex-col items-center justify-center active:scale-95 ' + (
+          btn.className = 'py-5 px-1 rounded-2xl border-2 font-black transition flex flex-col items-center justify-center active:scale-95 ' + (
             isSelected
-              ? 'border-blue-700 bg-blue-700 text-white shadow-md'
-              : 'border-slate-200 hover:border-blue-500 hover:bg-blue-50 text-slate-900'
+              ? 'border-blue-800 bg-blue-800 text-white shadow-md'
+              : 'border-slate-200 hover:border-blue-600 hover:bg-blue-50 text-slate-900 bg-slate-50/50'
           );
           btn.innerHTML =
-            '<span class="text-2xl leading-none">' + sc + '</span>' +
-            '<span class="text-[11px] font-semibold mt-1.5 ' + (isSelected ? 'text-blue-100' : 'text-slate-400') + '">' + labels[idx] + '</span>';
+            '<span class="text-2xl sm:text-3xl leading-none">' + sc + '</span>' +
+            '<span class="text-xs font-bold mt-1.5 ' + (isSelected ? 'text-blue-100' : 'text-slate-500') + '">' + labels[idx] + '</span>';
 
           btn.addEventListener('click', function () {
             selectScoreAndClose(sc);
@@ -1422,9 +1546,9 @@
           isDrawingSig = false;
         }
 
-        sigCanvas.addEventListener('mousedown', start);
-        sigCanvas.addEventListener('mousemove', move);
-        window.addEventListener('mouseup', end);
+        sigCanvas.addEventListener('pointerdown', start);
+        sigCanvas.addEventListener('pointermove', move);
+        window.addEventListener('pointerup', end);
         sigCanvas.addEventListener('touchstart', start, { passive: false });
         sigCanvas.addEventListener('touchmove', move, { passive: false });
         sigCanvas.addEventListener('touchend', end, { passive: false });
@@ -1482,6 +1606,7 @@
         const pCount = state.config.participantCount;
         const missingDetails = [];
         let totalMissing = 0;
+        let firstMissingCell = null;
 
         for (let p = 1; p <= pCount; p++) {
           const missingItems = [];
@@ -1491,7 +1616,10 @@
               totalMissing++;
               missingItems.push(item.shortTitle);
               const cell = document.getElementById('cell_' + p + '_' + item.id);
-              if (cell) cell.classList.add('missing-highlight');
+              if (cell) {
+                cell.classList.add('missing-highlight');
+                if (!firstMissingCell) firstMissingCell = cell;
+              }
             }
           });
           if (missingItems.length > 0) {
@@ -1500,6 +1628,9 @@
         }
 
         if (totalMissing > 0) {
+          if (firstMissingCell && firstMissingCell.scrollIntoView) {
+            firstMissingCell.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+          }
           const previewList = missingDetails.slice(0, 8);
           if (missingDetails.length > 8) {
             previewList.push('...외 ' + (missingDetails.length - 8) + '명 미입력 항목 존재');
@@ -1538,7 +1669,7 @@
             } else {
               showDialog(
                 '로컬 저장 완료 (오프라인)',
-                '네트워크가 일시적으로 불안정하여 기기에 우선 저장되었습니다. 연결 복구 후 새로고침하거나 담당자에게 알려주세요.',
+                '네트워크가 일시적으로 불안정하여 태블릿에 우선 저장되었습니다. 연결 복구 후 담당자에게 알려주세요.',
                 'warning'
               );
             }
@@ -1607,7 +1738,6 @@
           }
         }
 
-        // 개별 잠금 해제 이벤트
         document.querySelectorAll('.btn-unlock-judge').forEach(function (btn) {
           btn.addEventListener('click', function () {
             const jId = Number(btn.getAttribute('data-unlock-id'));
@@ -1670,7 +1800,6 @@
           }
         }
 
-        // 동점자 경고 배너
         const tieBanner = document.getElementById('tieAlertBanner');
         if (tieScores.size > 0) {
           const tieLines = Array.from(tieScores).map(function (sc) {
@@ -1686,7 +1815,6 @@
           tieBanner.classList.add('hidden');
         }
 
-        // 순위표 테이블 렌더링
         const tbody = document.getElementById('adminRankingBody');
         tbody.innerHTML = '';
 
@@ -1839,7 +1967,7 @@
             }
           }
           tr.innerHTML =
-            '<td class="py-2 px-2 border border-slate-300 text-left font-medium text-slate-800">' + item.title.replace(/\n/g, ' ') + ' (' + item.maxScore + '점)</td>' +
+            '<td class="py-2 px-2 border border-slate-300 text-left font-medium text-slate-800">' + escapeHtml(item.title) + ' (' + item.maxScore + '점)</td>' +
             cellsHtml;
           tbody.appendChild(tr);
         });
@@ -1991,7 +2119,7 @@
           ]);
         });
 
-        // 한글 깨짐 방지를 위한 UTF-8 BOM 추가
+        // 한글 깨짐 방지 UTF-8 BOM 포함
         const csvContent = '\uFEFF' + rows.map(function (e) {
           return e.map(function (v) {
             return '"' + String(v).replace(/"/g, '""') + '"';
@@ -2025,7 +2153,7 @@
           iconWrap.className = 'w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-lg shrink-0';
           icon.className = 'fa-solid fa-triangle-exclamation';
         } else {
-          iconWrap.className = 'w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-lg shrink-0';
+          iconWrap.className = 'w-10 h-10 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-lg shrink-0';
           icon.className = 'fa-solid fa-circle-info';
         }
 
@@ -2049,7 +2177,7 @@
         document.getElementById('dialogTitle').textContent = title;
         document.getElementById('dialogMessage').textContent = message;
 
-        iconWrap.className = 'w-10 h-10 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-lg shrink-0';
+        iconWrap.className = 'w-10 h-10 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center text-lg shrink-0';
         icon.className = 'fa-solid fa-paper-plane';
 
         const btnContainer = document.getElementById('dialogButtons');
@@ -2063,8 +2191,8 @@
 
         const confirmBtn = document.createElement('button');
         confirmBtn.type = 'button';
-        confirmBtn.className = 'px-5 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs sm:text-sm font-bold shadow';
-        confirmBtn.textContent = '확인 및 진행';
+        confirmBtn.className = 'px-5 py-2.5 rounded-xl bg-blue-800 hover:bg-blue-900 text-white text-xs sm:text-sm font-bold shadow';
+        confirmBtn.textContent = '확인 및 전송';
         confirmBtn.addEventListener('click', function () {
           closeCustomDialog();
           onConfirm();
@@ -2085,7 +2213,20 @@
 
       // ==================== 14. 이벤트 바인딩 ====================
       function bindAllEvents() {
+        // 세로모드 배너 닫기
+        document.getElementById('btnDismissPortraitHint').addEventListener('click', function () {
+          document.getElementById('portraitHintBanner').classList.add('dismissed');
+        });
+
+        // 전체화면 전환
+        document.getElementById('btnGlobalFullscreen').addEventListener('click', toggleFullscreen);
+        document.getElementById('btnJudgeFullscreen').addEventListener('click', toggleFullscreen);
+        document.addEventListener('fullscreenchange', updateFullscreenButtons);
+        document.addEventListener('webkitfullscreenchange', updateFullscreenButtons);
+
+        // 홈 복귀 및 동기화
         document.getElementById('btnGoHome').addEventListener('click', returnHome);
+        document.getElementById('btnJudgeExit').addEventListener('click', returnHome);
         document.getElementById('btnHeaderSync').addEventListener('click', function () {
           updateConnectionBadge(true, '동기화 중...');
           fetchStateFromFirebase();
@@ -2107,7 +2248,7 @@
           if (e.target === this) closeJudgeAuthModal();
         });
 
-        // 심사위원 채점표 상단 및 하단 컨트롤
+        // 심사위원 상단 슬림 바 컨트롤
         document.getElementById('btnOpenSignature').addEventListener('click', openSignatureModal);
         document.getElementById('btnClearSavedSignature').addEventListener('click', clearSavedSignature);
         document.getElementById('btnSubmitScores').addEventListener('click', validateAndPromptSubmit);
@@ -2131,7 +2272,7 @@
           if (e.target === this) closeScoreModal();
         });
 
-        // ESC 키로 열린 모달 닫기
+        // ESC 키로 모달 닫기
         document.addEventListener('keydown', function (e) {
           if (e.key === 'Escape') {
             if (!document.getElementById('scoreInputModal').classList.contains('hidden')) closeScoreModal();
